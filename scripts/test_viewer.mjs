@@ -17,6 +17,16 @@ for(const mode of ['plain','checker','wireframe','textured']){await page.selectO
 await page.check('#sockets');
 const count=await page.locator('#clip option').count();
 if(count>1){await page.selectOption('#clip',{index:1});await page.click('#play');await page.locator('#time').evaluate(e=>{e.value='0.5';e.dispatchEvent(new Event('input',{bubbles:true}));});await page.click('#play');}
+const guided=await page.locator('#guided-review').isVisible();
+if(guided){
+ assert.equal(await page.locator('#workflow-stages li').count(),4,'All review stages visible');
+ const cards=page.locator('#features article');assert(await cards.count()>0,'Feature checklist visible');
+ await cards.first().locator('button').click();
+ assert((await page.locator('#region').inputValue()).startsWith('feature-'),'Feature button selects its close-ups');
+ assert(await page.locator('#shots figure').count()>0,'Selected feature has model evidence');
+ await page.locator('#guided-review').screenshot({path:output+'/guided.png'});
+ await page.selectOption('#region','');
+}
 const viewport=await page.locator('#viewport').screenshot({path:output+'/model.png'});
 const visiblePixels=await page.evaluate(async base64=>{
  const blob=await (await fetch('data:image/png;base64,'+base64)).blob(),bitmap=await createImageBitmap(blob),canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;const context=canvas.getContext('2d');context.drawImage(bitmap,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height).data;let count=0;for(let i=0;i<pixels.length;i+=4)if(Math.abs(pixels[i]-196)+Math.abs(pixels[i+1]-207)+Math.abs(pixels[i+2]-206)>70)count++;return count;
@@ -26,5 +36,5 @@ await page.screenshot({path:output+'/desktop.png',fullPage:true});
 await page.setViewportSize({width:390,height:844});await page.selectOption('#view','below');await page.screenshot({path:output+'/mobile.png',fullPage:false});
 assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Mobile horizontal overflow');
 assert.deepEqual(external,[],'External requests');assert.deepEqual(errors,[],'Browser errors');
-console.log('VIEWER PASS',JSON.stringify({clips:count-1,externalRequests:external.length,errors:errors.length}));
+console.log('VIEWER PASS',JSON.stringify({clips:count-1,guided,externalRequests:external.length,errors:errors.length}));
 } finally {await browser.close();}

@@ -13,13 +13,17 @@ def main(argv=None):
 def dispatch(args):
     if not args or args[0] in ("-h","--help"):
         print("""Lowpoly Workshop
-  lowpoly new FOLDER --kind static-prop|hollow-prop|wearable|articulated|character
+  lowpoly new FOLDER --kind static-prop|hollow-prop|wearable|articulated|character [--guided]
   lowpoly doctor
   lowpoly selftest [--blender]
   lowpoly release DESTINATION.zip
   lowpoly serve FOLDER [--port 8000]
   lowpoly ASSET build [--force]
   lowpoly ASSET check | review | skin | all | page | package | inspect
+  lowpoly ASSET features list
+  lowpoly ASSET features review ID --decision accepted|repair|waived --note NOTE
+  lowpoly ASSET workflow status | next
+  lowpoly ASSET workflow accept STAGE --note NOTE [--evidence out/pose.png]
   lowpoly ASSET references plan [--views front back ...]
   lowpoly ASSET references run --model MODEL [--max-jobs 1]
   lowpoly ASSET references import JOB_ID IMAGE
@@ -28,8 +32,8 @@ def dispatch(args):
     if args[0]=="--version":print(__version__);return
     if args[0]=="new":
         from .templates import create
-        parser=argparse.ArgumentParser();parser.add_argument("folder");parser.add_argument("--kind",choices=KINDS,default="static-prop");parser.add_argument("--title",default=None)
-        ns=parser.parse_args(args[1:]);create(ns.folder,ns.kind,ns.title);return
+        parser=argparse.ArgumentParser();parser.add_argument("folder");parser.add_argument("--kind",choices=KINDS,default="static-prop");parser.add_argument("--title",default=None);parser.add_argument("--guided",action="store_true")
+        ns=parser.parse_args(args[1:]);create(ns.folder,ns.kind,ns.title,guided=ns.guided);return
     if args[0]=="release":
         from .distribution import release
         if len(args)!=2:raise ValueError("release needs destination.zip")
@@ -52,6 +56,24 @@ def dispatch(args):
     if len(args)<2:raise ValueError("Expected asset folder and command")
     folder=str(Path(args[0]).resolve());command=args[1]
     spec=read_spec(folder)
+    if command in ("features", "workflow"):
+        from . import workflow
+        action = args[2] if len(args) > 2 else ("list" if command == "features" else "status")
+        if command == "features" and action == "list":
+            print(json.dumps(workflow.status(folder)["features"], indent=2));return
+        if command == "workflow" and action in ("status", "next"):
+            state = workflow.status(folder)
+            print(json.dumps(state if action == "status" else {k: state[k] for k in ("status", "current_stage", "next_action", "next_command")}, indent=2));return
+        parser = argparse.ArgumentParser()
+        parser.add_argument("id");parser.add_argument("--note",required=True)
+        if command == "features" and action == "review":
+            parser.add_argument("--decision",required=True,choices=("accepted","repair","waived"))
+            ns=parser.parse_args(args[3:]);result=workflow.review_feature(folder,ns.id,ns.decision,ns.note)
+        elif command == "workflow" and action == "accept":
+            parser.add_argument("--evidence",nargs="*",default=[])
+            ns=parser.parse_args(args[3:]);result=workflow.accept_stage(folder,ns.id,ns.note,ns.evidence)
+        else:raise ValueError("Unknown guided review action")
+        print(json.dumps(result,indent=2));return
     if command=="approve":
         from .approval import record
         parser=argparse.ArgumentParser();parser.add_argument('--note',required=True)

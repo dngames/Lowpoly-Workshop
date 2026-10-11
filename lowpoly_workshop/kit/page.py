@@ -19,6 +19,18 @@ def build_page(folder,scripts_dir=None):
     for i,ref in enumerate(a.spec.get('references',[])):
         src=Path(a.path(ref['path']))
         if src.exists():refs.append({**ref,'url':copy(src,f'images/reference-{i}{src.suffix.lower()}')})
+    feature_refs=[]
+    for i,feature in enumerate(a.spec.get('features',[])):
+        for j,evidence in enumerate(feature.get('evidence',[])):
+            src=Path(a.path(evidence['path']))
+            registered=next(r for r in a.spec['references'] if r['path']==evidence['path'])
+            if evidence.get('box'):
+                from PIL import Image
+                rel=f'images/feature-{i}-reference-{j}.png';dest=root/rel
+                dest.parent.mkdir(parents=True,exist_ok=True)
+                with Image.open(src) as image:image.convert('RGB').crop(evidence['box']).save(dest)
+            else:rel=copy(src,f'images/feature-{i}-reference-{j}{src.suffix.lower()}')
+            feature_refs.append(dict(feature_id=feature['id'],url=rel,source=registered['source'],view=evidence.get('view','reference')))
     review=Path(a.out('review','index.json'));shots=[]
     if review.exists():
         for i,shot in enumerate(json.loads(review.read_text())['shots']):
@@ -36,8 +48,11 @@ def build_page(folder,scripts_dir=None):
     if not fresh:check_rows.insert(0,dict(ok=False,text='Check evidence missing or stale; rerun check',detail='Current export/source hashes differ'))
     for shot in shots:
         source=next((o for o in outputs if o.get('sha256')==shot.get('sha256')),None)
-        shot['stale']=source is None
-    manifest=dict(title=a.spec.get('title',a.spec['name']),outputs=outputs,references=refs,shots=shots,checks=check_rows,fit_scores=json.loads(scores.read_text()) if scores.exists() else {},visual_approval=status(folder))
+        src=Path(a.path(shot['file']))
+        shot['stale']=source is None or not src.exists() or hashlib.sha256(src.read_bytes()).hexdigest()!=shot.get('image_sha256')
+    from lowpoly_workshop.workflow import status as workflow_status
+    workflow=workflow_status(folder)
+    manifest=dict(title=a.spec.get('title',a.spec['name']),outputs=outputs,references=refs,shots=shots,checks=check_rows,fit_scores=json.loads(scores.read_text()) if scores.exists() else {},visual_approval=status(folder),workflow=workflow,feature_references=feature_refs)
     (root/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print('PAGE',root/'index.html')
     return root/'index.html'

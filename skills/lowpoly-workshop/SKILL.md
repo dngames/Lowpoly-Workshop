@@ -11,6 +11,8 @@ When important structure is missing, plan inferred views and use an available im
 
 For gaps, wrapping, accessories, hollow props, decals and support contacts, read the relevant references/modelling.md recipe. Declare intended closed shells, relations, stress poses and targeted regions. Use host normals for attachment/offset, shared rings and thickness for continuous surfaces, and controlled overlap at moving joints. Preserve UV corners during cleanup.
 
+For guided projects, read references/guided-review.md. Establish important features and original/inferred evidence, bind them to exported parts and required views, then use workflow next to resume. Record repair findings. Accept features/stages only after actual inspection and within user authorization; a numeric score is not evidence. Existing projects can remain in legacy mode.
+
 Build/check, then inspect actual-export front/profile/back/below and useful close-ups in textured/clay/checker/wireframe modes. Repair source geometry/UV/frames/weights and rebuild; render again. An actual-model diagnostic and an inferred design reference have different meanings. Finite checks do not replace visual review.
 
 Use the generator's skin hook for skeletal exports and inspect target-runtime deformation. Ordinary rigid checks do not evaluate skinning. Preserve existing game contracts and add requirements through adapters.

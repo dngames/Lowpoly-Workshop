@@ -20,7 +20,8 @@ def build(folder,force=False):
     folder=Path(folder).resolve();spec=read_spec(folder)
     stamp=folder/".workshop/build.json"
     exe=Path(find_blender())
-    key=fingerprint(folder)+str(exe.stat().st_mtime_ns)
+    source_key=fingerprint(folder)
+    key=source_key+str(exe.stat().st_mtime_ns)
     old=json.loads(stamp.read_text()) if stamp.exists() else {}
     outputs=[folder/o["file"] for o in spec["outputs"]]
     expected={}
@@ -29,12 +30,13 @@ def build(folder,force=False):
         companions.append(p.with_name(p.stem+"_atlas.png"))
         if o.get("kit_mask"):companions.append(p.parent/o["kit_mask"])
     all_files=outputs+companions
-    expected={str(p.relative_to(folder)):hashlib.sha256(p.read_bytes()).hexdigest() for p in all_files if p.exists()}
-    if not force and old.get("key")==key and len(expected)==len(all_files) and old.get("outputs")==expected and all(p.exists() for p in companions):
+    expected={p.relative_to(folder).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in all_files if p.exists()}
+    if not force and old.get("key")==key and old.get("source")==source_key and len(expected)==len(all_files) and old.get("outputs")==expected and all(p.exists() for p in companions):
         print("BUILD cached; source and output hashes match")
         return False
     blender("build.py",folder)
     stamp.parent.mkdir(exist_ok=True)
-    expected={str(p.relative_to(folder)):hashlib.sha256(p.read_bytes()).hexdigest() for p in all_files}
-    stamp.write_text(json.dumps({"key":key,"outputs":expected},indent=2))
+    expected={p.relative_to(folder).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in all_files}
+    if fingerprint(folder)!=source_key:raise ValueError("Source changed during build; rebuild before review")
+    stamp.write_text(json.dumps({"key":key,"source":source_key,"outputs":expected},indent=2))
     return True

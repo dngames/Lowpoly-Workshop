@@ -28,7 +28,8 @@
     "generic skeleton export",
     "actual-export renderer",
     "offline viewer",
-    "docs/tests"
+    "docs/tests",
+    "independent feature checklist and evidence-bound staged review"
   ],
   "third_party": [
     {
@@ -43,5 +44,13 @@
     "consumer models and textures",
     "consumer source code and staging scripts",
     "consumer-specific profiles and adapter contracts"
+  ],
+  "design_references": [
+    {
+      "name": "img2threejs",
+      "url": "https://github.com/img2threejs/img2threejs",
+      "commit": "d508b596cb221f1509f6e50ab68fce275a5cfb44",
+      "scope": "Feature inventory and ordered review concepts; no source code/assets copied or bundled"
+    }
   ]
 }

@@ -90,6 +90,8 @@ def validate(spec, root):
             bounds=finite(region['bounds'])
             if bounds.shape!=(2,3) or not (bounds[1]>bounds[0]).all():raise ValueError('Invalid review bounds')
         if region.get('margin',1.3)<=0:raise ValueError('Review margin must be positive')
+    from .features import validate as validate_features
+    validate_features(spec, root)
     return spec
 
 def load_profile(name):

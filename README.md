@@ -4,7 +4,7 @@ An open-source workshop for building, checking and repairing editable low-poly g
 
 An artist or AI assistant turns drawings or photographs into editable parametric Blender projects and GLB assets. Python tools measure references, fit cameras, export models, check contracts, render problem areas and package a local review page. Characters, wearables, vehicles, hollow objects and static props share the same core.
 
-**0.2.2 · early release · MIT.** Code, documentation and bundled first-party examples are open source; see [licensing](docs/licensing.md). Original game artwork is excluded. Artistic quality and target-engine compatibility still require review.
+**0.3.0 · early release · MIT.** Code, documentation and bundled first-party examples are open source; see [licensing](docs/licensing.md). Original game artwork is excluded. Artistic quality and target-engine compatibility still require review.
 
 ## What it adds to a Blender agent
 
@@ -21,7 +21,7 @@ python -m venv .venv
 # Activate the environment using your shell, then:
 python -m pip install .
 lowpoly doctor
-lowpoly new work/crate --kind static-prop
+lowpoly new work/crate --kind static-prop --guided
 lowpoly work/crate all
 lowpoly serve work/crate/out/page --port 8000
 ```
@@ -35,6 +35,7 @@ Open http://127.0.0.1:8000. The viewer uses bundled Three.js locally. No CDN, ac
 - Named pivots/sockets, rigid-node clips and optional generator-defined skeletal export.
 - Configurable budgets, topology, joint contact, clearance, fit/support, ground, materials, masks and decal checks.
 - Multi-view camera fitting and rendered comparisons.
+- Optional feature checklist, source/evidence-bound staged review, saved findings and next-action guidance.
 - Actual-export review: back/underside, poses, clay/checker/wireframe, explicit and diagnostic close-ups.
 - Optional inferred reference views with original hashes and a provenance ledger.
 - Content cache, checksummed source/asset archives, offline review viewer, tests and an [agent skill](lowpoly_workshop/SKILL.md).
@@ -47,4 +48,4 @@ The CLI executes a generator written by an artist or AI assistant. It does not r
 
 ## Documentation
 
-[Quickstart](docs/quickstart.md) · [Contracts](docs/contracts.md) · [Repair recipes](docs/modelling.md) · [Repair demonstrations](docs/repair-demos.md) · [Comparison](docs/comparison.md) · [Benchmarks](docs/benchmark.md) · [Roadmap](docs/roadmap.md) · [References/providers](docs/references.md) · [Review/release](docs/review-release.md) · [Game adapters](docs/adapters.md) · [Migration](docs/migration.md) · [Testing](docs/testing.md) · [Licensing](docs/licensing.md)
+[Guided review](docs/guided-review.md) · [Quickstart](docs/quickstart.md) · [Contracts](docs/contracts.md) · [Repair recipes](docs/modelling.md) · [Repair demonstrations](docs/repair-demos.md) · [Comparison](docs/comparison.md) · [Benchmarks](docs/benchmark.md) · [Roadmap](docs/roadmap.md) · [References/providers](docs/references.md) · [Review/release](docs/review-release.md) · [Game adapters](docs/adapters.md) · [Migration](docs/migration.md) · [Testing](docs/testing.md) · [Licensing](docs/licensing.md)

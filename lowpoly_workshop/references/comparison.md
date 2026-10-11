@@ -27,3 +27,5 @@ Potential future integrations could feed generated meshes into a repair/review p
 ## Evidence needed
 
 Use the [benchmark protocol](benchmark.md) to compare time, cost, defects and accepted runtime results. Record failures and agent/artist effort. Local regression passes demonstrate specific checks, not competitive advantage or willingness to pay.
+
+Workshop 0.3.0 adopts independently implemented feature checklists and resumable staged acceptance inspired by img2threejs. See [guided review](guided-review.md) for shipped behaviour and limits. Its Three.js generator, domain plugins and appearance/material/anatomy gates have not been imported. No comparative performance claim is made.

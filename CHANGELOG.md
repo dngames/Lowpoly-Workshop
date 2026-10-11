@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 - guided feature review
+
+Optional feature declarations link original/inferred reference evidence to exported model parts and required view/mode/pose combinations. Automatic close-ups and reference crops appear in the offline page. Saved proportions/construction/appearance/motion-export stages enforce current build, render and check evidence, required feature decisions and earlier-stage acceptance. Changed evidence invalidates guided approval; legacy projects remain compatible. All five starters accept --guided. No automated artistic score or new mesh-generation backend.
+
 ## 0.2.2 — distribution cleanup
 
 Removed consumer-specific profiles and adapter recipes. Generalized inherited examples and runtime notes; kept consumer contracts outside the portable package.

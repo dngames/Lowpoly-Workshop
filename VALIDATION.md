@@ -1,25 +1,21 @@
-# Validation — 2026-10-11
+# Validation - 2026-10-11
 
-Version 0.2.2. Local environment: Windows, Python 3.12.14, Blender 4.5.14, bundled Three.js 0.186.1. Project, scratch, dependency and generated-output locations were on D:.
-
-## Compatibility with the previous release
-
-- Executable ASTs of all 37 non-version Python modules match the previous release after excluding docstrings. The only core-source edit is a documentation example; version metadata changed separately.
-- All five starter generators/specs and both generic portable/mobile profiles are unchanged.
-- Only consumer-specific profile/adapter data and documentation examples were removed or generalized. Generic per-output policy overrides remain supported.
+Version 0.3.0. Local environment: Windows, Python 3.12.14, Blender 4.5.14, bundled Three.js 0.186.1. Project, scratch, dependencies and generated output were on D:.
 
 ## Observed checks
 
-- 55 core and 6 inherited Python regressions passed, including synthetic reference fitting, topology, wrapped surfaces, attachment frames, posed contact/clearance/support, UV/decal rules, weights, reference/provider mocks, cache/approval staleness, path containment and archive checksums.
-- Blender selftest rebuilt all five starters and passed node hierarchy, pivot/socket, geometry roundtrip, budget, atlas/mask and closed-shell checks.
-- Skeletal export/reimport passed with 8 bones and 378 finite posed vertices. UV corners survived duplicate-face cleanup.
-- Actual-export underside and articulated-pose renders passed; pose geometry differed as expected.
-- An independent RGBA mask fixture passed its custom per-output budget and channel-policy checks, including fourth-channel data.
-- Offline Playwright viewer passed with visible meshes, two animation clips, view/material/socket controls, desktop/mobile layout, zero external requests and zero browser errors. Screenshots were inspected.
-- A checksummed generic asset bundle was extracted into a clean folder and rebuilt using its own bundled toolkit: build, checks, review, page and packaging passed.
-- Installed wheel templates/geometry passed outside the source checkout. The MIT metadata, license files and bundled documentation were inspected.
-- Source and wheel contents were scanned for known excluded consumer identifiers and personal paths; none were found in the sanitized artifacts. PNG copies have no EXIF metadata. This is a targeted audit, not a mathematical guarantee of absence.
+- 77 core plus 6 inherited regressions passed. This includes 22 new guided-review regressions: saved progress, stage ordering, required/optional decisions, source/export/reference/image/check changes, stale builds, evidence containment, skinned-evidence requirements, CLI/page and legacy approval behaviour. Unit workflow records/images are synthetic fixtures, not artistic quality measurements.
+- Full Blender selftest passed all five original starters, geometry roundtrip, names/pivots/sockets, budgets, atlas/masks, closed solids, generic skeletal reimport (8 bones/378 finite posed vertices), UV survival and actual-export posed renders.
+- Guided Blender selftest built a real static prop, bound four features to exported geometry and rendered 18 images. Original-reference crop validation works inside Blender without installing Pillow into its bundled Python. Current build/render/check evidence was admitted; no artistic acceptance was recorded.
+- A separate articulated guided fixture linked an original diagram crop to an arm feature and rendered 33 actual-export images, including declared poses and checker views.
+- The offline Playwright viewer passed with two animation clips, feature selection/close-up navigation, reference crop display, view/material/socket controls, visible meshes, desktop/mobile layout, zero external requests and zero browser errors. Screenshots were inspected.
 
-## Limits
+The release preparation also verifies a rebuilt extracted asset bundle, installed wheel, synchronized packaged docs, checksummed source/wheel archives, targeted privacy scan and remote CI. The release notes link the completed CI run and record distribution results.
 
-No comparative product benchmark, paid live image-provider call, Unity/Unreal/Godot import or animation retargeting was performed. Finite geometric/contact tests and sampled poses do not prove all animations or artistic quality. GitHub CI covers Windows/Linux and Python 3.10/3.12; consult the current release's linked run for its remote result. Local reports and private provenance details are excluded from distribution.
+## Compatibility and limits
+
+The five starter generators and their default asset specs remain unchanged; guided mode is opt-in through `new --guided` or feature/workflow declarations. Both portable/mobile profiles and generic contract overrides remain available. Existing projects do not acquire staged-review requirements unless they opt in. A new build-cache source field may cause a one-time rebuild.
+
+Acceptance remains a reviewer assertion. Hashes prove freshness, not the correctness of a screenshot or visual decision. Invalidation is conservative across project/tool changes and render-index changes. Declared rigid poses are sampled; skeletal deformation needs separate evidence. No regional appearance scoring, anatomy-specific gates, material inference or visual-hull generator was added.
+
+No comparative product benchmark, paid live provider call, target-engine import or animation retargeting was performed. Private consumer data and local audit reports are excluded from distribution. Targeted scans do not prove the absence of unknown sensitive information.

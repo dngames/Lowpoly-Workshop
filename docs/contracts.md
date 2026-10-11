@@ -44,3 +44,5 @@ This catches a face decal leaking onto a chin/underside or excessive UV distorti
 Review accepts size, views, modes and regions. Views: front/back/side/quarter/top/below. Modes: textured/plain/checker/wireframe. A region has name, nodes or world-rest bounds `[[min],[max]]`, optional views/margin/isolate. Node bounds follow each pose; explicit bounds stay fixed. Context stays visible unless isolation is requested.
 
 Review imports each actual GLB and applies declared rigid node poses without changing exports. Skinned pose review is separate in Blender/the game. Skeletal export verifies a finite posed roundtrip, not universal deformation quality.
+
+See [guided review](guided-review.md) for optional feature declarations, automatic exported-model close-ups, saved four-stage acceptance, evidence staleness and legacy compatibility.

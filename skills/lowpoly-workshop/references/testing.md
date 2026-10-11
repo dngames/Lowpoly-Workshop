@@ -16,3 +16,5 @@ Blender selftest exports all starters, validates nodes/pivots/empties/geometry/b
 scripts/test_viewer.mjs takes a local review URL and screenshot folder. It requires Playwright separately and checks controls, browser errors and absence of external requests.
 
 Limits: finite contact/collision sampling, visual skin-weight quality, artistic similarity and semantic texture mistakes need judgement. Neural image-to-mesh, engine retargeting/physics are absent. Image transport is tested with mocks unless a separate live call is recorded.
+
+See [guided review](guided-review.md) for optional feature declarations, automatic exported-model close-ups, saved four-stage acceptance, evidence staleness and legacy compatibility.

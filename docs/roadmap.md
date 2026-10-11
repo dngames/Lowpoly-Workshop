@@ -2,6 +2,10 @@
 
 This is an early open-source workshop, not a promise that every image can become a perfect model. Code, documentation and first-party examples are MIT licensed. No hosted service or paid tier is currently offered.
 
+## Available in 0.3.0
+
+Optional feature checklists, actual-export feature close-ups/reference crops, saved review stages, next-action guidance and source/evidence-bound acceptance. See [guided review](guided-review.md). Regional appearance metrics, anatomy-specific checks and material evidence tooling remain future work.
+
 ## First: reproducible adoption
 
 - Keep the CLI, templates, repair helpers and export checks reproducible and documented.

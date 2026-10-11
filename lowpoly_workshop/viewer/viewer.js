@@ -10,7 +10,19 @@ $('scores').textContent=JSON.stringify(data.fit_scores,null,2);
 function figure(item,label){const f=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption'),a=document.createElement('a');img.src=item.url;img.alt=label;img.loading='lazy';a.href=item.url;a.target='_blank';a.rel='noopener';a.append(img);caption.textContent=label;f.append(a,caption);return f;}
 for(const r of data.references)$('references').append(figure(r,`${r.source.toUpperCase()} · ${r.view||'reference'} · ${r.review_status||'unreviewed'}`));
 for(const region of [...new Set(data.shots.map(s=>s.region))])$('region').add(new Option(region,region));
-function shots(){ $('shots').replaceChildren();for(const s of data.shots.filter(s=>!$('region').value||s.region===$('region').value))$('shots').append(figure(s,`${s.region} · ${s.pose} · ${s.mode} · ${s.view}`)); }shots();$('region').onchange=shots;
+function shots(){ $('shots').replaceChildren();for(const s of data.shots.filter(s=>!$('region').value||s.region===$('region').value))$('shots').append(figure(s,`${s.stale?'STALE · ':''}${s.region} · ${s.pose} · ${s.mode} · ${s.view}`)); }shots();$('region').onchange=shots;
+if(data.workflow && data.workflow.status!=='disabled'){
+  $('guided-review').hidden=false;
+  $('workflow-summary').textContent=`${data.workflow.status} · ${data.workflow.current_stage||'All stages reviewed'} · ${data.workflow.next_action}`;
+  for(const s of data.workflow.stages){const li=document.createElement('li');li.className=s.status==='accepted'?'pass':'fail';li.textContent=`${s.id}: ${s.status} · ${s.next_action}`;$('workflow-stages').append(li);}
+  for(const f of data.workflow.features){
+    const card=document.createElement('article'),heading=document.createElement('h3'),detail=document.createElement('p'),note=document.createElement('p'),button=document.createElement('button');
+    heading.textContent=f.description;detail.textContent=`${f.id} · ${f.stage} · ${f.status} · ${f.basis.toUpperCase()} · ${f.required===false?'optional':'required'}`;
+    note.textContent=[f.notes,f.note,f.evidence_issue].filter(Boolean).join(' · ');button.textContent='Show model close-ups';button.onclick=()=>{$('region').value='feature-'+f.id;shots();$('shots').scrollIntoView({behavior:'smooth'});};
+    card.append(heading,detail,note,button);
+    const gallery=document.createElement('div');gallery.className='gallery';for(const r of (data.feature_references||[]).filter(r=>r.feature_id===f.id))gallery.append(figure(r,`${r.source.toUpperCase()} · ${r.view}`));card.append(gallery);$('features').append(card);
+  }
+}
 const host=$('viewport'),renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xc4cfce);renderer.outputColorSpace=THREE.SRGBColorSpace;host.append(renderer.domElement);
 const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,.001,1000),controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
 scene.add(new THREE.HemisphereLight(0xffffff,0x6c7880,2.2));const light=new THREE.DirectionalLight(0xffffff,2.5);light.position.set(3,5,4);scene.add(light);

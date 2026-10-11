@@ -3,7 +3,7 @@ from pathlib import Path
 import json,re,shutil
 from .spec import KINDS
 
-def create(folder,kind='static-prop',title=None):
+def create(folder,kind='static-prop',title=None,guided=False):
     if kind not in KINDS:raise ValueError('Unknown template kind')
     dest=Path(folder).resolve()
     if dest.exists() and any(dest.iterdir()):raise ValueError('Template destination must be empty')
@@ -14,5 +14,11 @@ def create(folder,kind='static-prop',title=None):
     spec['title']=title or dest.name.replace('-',' ').title()
     path.write_text(json.dumps(spec,indent=2)+'\n',encoding='utf-8')
     (dest/'ref').mkdir(exist_ok=True)
+    if guided:
+        from .kit.asset import Asset
+        from .features import guided as add_checklist
+        nodes = Asset(dest).build()
+        add_checklist(spec, nodes)
+        path.write_text(json.dumps(spec,indent=2)+'\n',encoding='utf-8')
     print('CREATED',dest)
     return dest

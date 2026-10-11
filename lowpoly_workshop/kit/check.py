@@ -194,6 +194,15 @@ def run(folder):
     report = Report()
     for out in a.outputs():
         check_output(a, out, report)
+    for feature in a.spec.get('features', []):
+        path=Path(a.path(feature['output']))
+        if not path.exists():
+            report(False, 'Feature '+feature['id']+': export exists');continue
+        g=G.Glb(path)
+        present=set(g.names)
+        meshes={n.get('name') for n in g.nodes if 'mesh' in n}
+        okay=set(feature['nodes'])<=present and bool(set(feature['nodes']) & meshes)
+        report(okay, 'Feature '+feature['id']+': nodes bind to exported geometry', str(feature['nodes']))
     from lowpoly_workshop.quality import check_relations, uv_diagnostics
     nodes = a.build(a.spec.get("review", {}).get("variant"))
     from .mesh import triangles

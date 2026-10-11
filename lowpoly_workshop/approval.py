@@ -13,7 +13,10 @@ def export_hashes(folder):
 def record(folder,note):
     if not note.strip():raise ValueError('Approval needs a review note')
     folder=Path(folder);spec=read_spec(folder)
+    from .workflow import approval_token
+    token=approval_token(folder)
     data=dict(status='approved',note=note,exports=export_hashes(folder),reviewed_at=datetime.now(timezone.utc).isoformat())
+    if token is not None:data['workflow_token']=token
     path=folder/spec.get('out_dir','out')/'approval.json';path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(data,indent=2))
     return data
 
@@ -23,4 +26,11 @@ def status(folder):
     data=json.loads(p.read_text())
     try:current=export_hashes(folder)
     except FileNotFoundError:return dict(status='stale',reason='Export missing')
-    return data if data.get('exports')==current else dict(status='stale',reason='Export hashes changed')
+    if data.get('exports')!=current:return dict(status='stale',reason='Export hashes changed')
+    from .features import enabled
+    if enabled(s) or data.get('workflow_token') is not None:
+        from .workflow import approval_token
+        try:token=approval_token(folder)
+        except (ValueError,FileNotFoundError):return dict(status='stale',reason='Guided review missing or stale')
+        if data.get('workflow_token')!=token:return dict(status='stale',reason='Guided review decisions changed')
+    return data
