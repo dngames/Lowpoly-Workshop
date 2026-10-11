@@ -1,0 +1,7 @@
+{
+  "pivot_tolerance": 0.005,
+  "max_materials": 1,
+  "square_atlas": true,
+  "mask_channels": "RGB",
+  "budget": 10000
+}

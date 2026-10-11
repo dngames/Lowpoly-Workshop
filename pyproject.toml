@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lowpoly-workshop"
+version = "0.2.2"
+description = "Reference-driven low-poly modelling, validation and review with Blender"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "lowpoly_workshop/viewer/vendor/LICENSE"]
+dependencies = ["numpy>=1.26,<3", "scipy>=1.11,<2", "Pillow>=10,<13", "opencv-python-headless>=4.8,<5"]
+
+[project.urls]
+Repository = "https://github.com/dngames/Lowpoly-Workshop"
+Issues = "https://github.com/dngames/Lowpoly-Workshop/issues"
+
+[project.scripts]
+lowpoly = "lowpoly_workshop.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["lowpoly_workshop*"]
+
+[tool.setuptools.package-data]
+lowpoly_workshop = ["assets/**/*", "profiles/*.json", "viewer/**/*", "schemas/*.json", "notices/*", "references/*.md", "SKILL.md"]

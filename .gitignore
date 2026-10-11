@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.blend1
+*.egg-info/
+.venv/
+.workshop/
+/build/
+/dist/
+out/
+.env
+!.env.example
+
+.runtime/
+work/
+.pytest_cache/

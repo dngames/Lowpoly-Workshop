@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "name": "hollow-prop",
+  "title": "Hollow Prop",
+  "kind": "hollow-prop",
+  "profile": "portable",
+  "generator": "gen.py",
+  "out_dir": "out",
+  "references": [],
+  "sets": {},
+  "outputs": [
+    {
+      "file": "out/model.glb",
+      "kit_mask": "kit_mask.png",
+      "clips": false,
+      "contract": {
+        "budget": 3000,
+        "closed": [
+          "Container"
+        ],
+        "ground": [
+          "Container"
+        ]
+      }
+    }
+  ],
+  "poses": {},
+  "relations": [],
+  "review": {
+    "views": [
+      "front",
+      "back",
+      "side",
+      "quarter",
+      "below"
+    ],
+    "modes": [
+      "textured",
+      "plain",
+      "checker"
+    ],
+    "regions": []
+  }
+}

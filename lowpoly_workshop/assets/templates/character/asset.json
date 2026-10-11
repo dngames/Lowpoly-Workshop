@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "name": "character",
+  "title": "Character",
+  "kind": "character",
+  "profile": "portable",
+  "generator": "gen.py",
+  "out_dir": "out",
+  "references": [],
+  "sets": {},
+  "outputs": [
+    {
+      "file": "out/model.glb",
+      "kit_mask": "kit_mask.png",
+      "clips": false,
+      "contract": {
+        "budget": 3000,
+        "closed": [
+          "Body",
+          "Head",
+          "UpperL",
+          "LowerL",
+          "LegL",
+          "ShoeL",
+          "UpperR",
+          "LowerR",
+          "LegR",
+          "ShoeR"
+        ],
+        "ground": []
+      }
+    }
+  ],
+  "poses": {
+    "elbow-bent": {
+      "LowerL": [
+        45,
+        0,
+        0
+      ],
+      "LowerR": [
+        -45,
+        0,
+        0
+      ]
+    }
+  },
+  "relations": [
+    {
+      "name": "elbow-L",
+      "type": "connected",
+      "a": "UpperL",
+      "b": "LowerL",
+      "max_gap": 0.008
+    },
+    {
+      "name": "elbow-R",
+      "type": "connected",
+      "a": "UpperR",
+      "b": "LowerR",
+      "max_gap": 0.008
+    },
+    {
+      "name": "ankle-L",
+      "type": "connected",
+      "a": "LegL",
+      "b": "ShoeL",
+      "max_gap": 0.008
+    },
+    {
+      "name": "ankle-R",
+      "type": "connected",
+      "a": "LegR",
+      "b": "ShoeR",
+      "max_gap": 0.008
+    }
+  ],
+  "review": {
+    "views": [
+      "front",
+      "back",
+      "side",
+      "quarter",
+      "below"
+    ],
+    "modes": [
+      "textured",
+      "plain",
+      "checker"
+    ],
+    "regions": [
+      {
+        "name": "elbow",
+        "nodes": [
+          "UpperL",
+          "LowerL"
+        ],
+        "views": [
+          "front",
+          "below"
+        ]
+      },
+      {
+        "name": "ankles",
+        "nodes": [
+          "LegL",
+          "ShoeL",
+          "LegR",
+          "ShoeR"
+        ],
+        "views": [
+          "side",
+          "below"
+        ]
+      }
+    ]
+  }
+}

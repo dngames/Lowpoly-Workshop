@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lowpoly Workshop asset v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "kind",
+    "outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "static-prop",
+        "hollow-prop",
+        "wearable",
+        "articulated",
+        "character"
+      ]
+    },
+    "profile": {
+      "enum": [
+        "portable",
+        "mobile"
+      ]
+    },
+    "generator": {
+      "type": "string"
+    },
+    "out_dir": {
+      "type": "string"
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "properties": {
+          "file": {
+            "type": "string",
+            "pattern": "\\.glb$"
+          },
+          "scale": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contract": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "source"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "original",
+              "generated",
+              "rendered"
+            ]
+          }
+        }
+      }
+    },
+    "poses": {
+      "type": "object"
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "a",
+          "b",
+          "type"
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "connected",
+              "clear",
+              "fit",
+              "support"
+            ]
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object"
+    },
+    "sets": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

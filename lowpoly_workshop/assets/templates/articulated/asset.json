@@ -1,0 +1,61 @@
+{
+  "schema_version": 2,
+  "name": "articulated",
+  "title": "Articulated",
+  "kind": "articulated",
+  "profile": "portable",
+  "generator": "gen.py",
+  "out_dir": "out",
+  "references": [],
+  "sets": {},
+  "outputs": [
+    {
+      "file": "out/model.glb",
+      "kit_mask": "kit_mask.png",
+      "clips": true,
+      "contract": {
+        "budget": 3000,
+        "closed": [
+          "Base",
+          "Arm"
+        ],
+        "ground": [
+          "Base"
+        ]
+      }
+    }
+  ],
+  "poses": {
+    "raised": {
+      "Arm": [
+        0,
+        0,
+        60
+      ]
+    }
+  },
+  "relations": [
+    {
+      "name": "arm-clears-base",
+      "type": "clear",
+      "a": "Arm",
+      "b": "Base",
+      "min_gap": 0.01
+    }
+  ],
+  "review": {
+    "views": [
+      "front",
+      "back",
+      "side",
+      "quarter",
+      "below"
+    ],
+    "modes": [
+      "textured",
+      "plain",
+      "checker"
+    ],
+    "regions": []
+  }
+}

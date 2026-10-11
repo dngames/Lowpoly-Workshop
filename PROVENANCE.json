@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "upstream": {
+    "name": "Lowpoly Asset Kit",
+    "source": "user-supplied lowpoly-asset-kit.zip",
+    "sha256": null,
+    "license_status": "MIT; owner confirmed original kit and examples are theirs and authorized open-source release",
+    "inherited": [
+      "lowpoly_workshop/kit/* except page.py and new Blender scripts",
+      "pipeline.py adapted from lowpoly.py",
+      "docs/legacy-*",
+      "scripts/test_organic.py",
+      "scripts/test_character_cleanup.py"
+    ],
+    "rights_confirmation": {
+      "date": "2026-10-11",
+      "copyright_holder": "dngames",
+      "basis": "Owner confirmation in the release preparation conversation; no separate third-party kit author",
+      "scope": "original kit code and owner-supplied examples",
+      "archive_hash_note": "Original ZIP hash was not captured; ownership confirmation does not establish archive byte identity"
+    }
+  },
+  "new": [
+    "portable validation/templates/profiles",
+    "surface/quality modules",
+    "reference ledger/provider",
+    "cache/bundles",
+    "generic skeleton export",
+    "actual-export renderer",
+    "offline viewer",
+    "docs/tests"
+  ],
+  "third_party": [
+    {
+      "name": "Three.js",
+      "version": "0.186.1",
+      "license": "MIT",
+      "notice": "lowpoly_workshop/viewer/vendor/LICENSE"
+    }
+  ],
+  "excluded": [
+    "consumer artwork and reference sheets",
+    "consumer models and textures",
+    "consumer source code and staging scripts",
+    "consumer-specific profiles and adapter contracts"
+  ]
+}

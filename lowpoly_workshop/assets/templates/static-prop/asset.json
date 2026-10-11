@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "name": "static-prop",
+  "title": "Static Prop",
+  "kind": "static-prop",
+  "profile": "portable",
+  "generator": "gen.py",
+  "out_dir": "out",
+  "references": [],
+  "sets": {},
+  "outputs": [
+    {
+      "file": "out/model.glb",
+      "kit_mask": "kit_mask.png",
+      "clips": false,
+      "contract": {
+        "budget": 3000,
+        "closed": [
+          "Crate"
+        ],
+        "ground": [
+          "Crate"
+        ]
+      }
+    }
+  ],
+  "poses": {},
+  "relations": [],
+  "review": {
+    "views": [
+      "front",
+      "back",
+      "side",
+      "quarter",
+      "below"
+    ],
+    "modes": [
+      "textured",
+      "plain",
+      "checker"
+    ],
+    "regions": []
+  }
+}

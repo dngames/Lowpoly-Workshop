@@ -1,0 +1,95 @@
+{
+  "workshop_version": "0.2.1",
+  "source": "original-procedural-example",
+  "purpose": "synthetic repair illustration; not a competitive benchmark",
+  "visual_approval": "pending",
+  "variants": {
+    "before": {
+      "generator": "before/gen.py",
+      "generator_sha256": "87d9b77d58a038df4d37d68bba3ac0f0d10747aea966b76a5fc254bb081372bd",
+      "glb": "before/out/model.glb",
+      "glb_sha256": "89071074baa4808ee055d1cfaabb4131288f69efde30e1e387d88d46358de7f9",
+      "review_index": "before/out/review/index.json",
+      "checks_passed": true,
+      "shots": [
+        {
+          "pose_geometry_sha256": "35d6d1db6f3b0a5412c46814e8374ebdcdb7dda4f2fda4b5ce017bb2e53034b6",
+          "file": "out/review/model-rest-comparison-textured-front.png",
+          "output": "out/model.glb",
+          "pose": "rest",
+          "region": "comparison",
+          "mode": "textured",
+          "view": "front",
+          "source": "exported-model-render",
+          "sha256": "89071074baa4808ee055d1cfaabb4131288f69efde30e1e387d88d46358de7f9"
+        },
+        {
+          "pose_geometry_sha256": "35d6d1db6f3b0a5412c46814e8374ebdcdb7dda4f2fda4b5ce017bb2e53034b6",
+          "file": "out/review/model-rest-comparison-textured-side.png",
+          "output": "out/model.glb",
+          "pose": "rest",
+          "region": "comparison",
+          "mode": "textured",
+          "view": "side",
+          "source": "exported-model-render",
+          "sha256": "89071074baa4808ee055d1cfaabb4131288f69efde30e1e387d88d46358de7f9"
+        },
+        {
+          "pose_geometry_sha256": "35d6d1db6f3b0a5412c46814e8374ebdcdb7dda4f2fda4b5ce017bb2e53034b6",
+          "file": "out/review/model-rest-comparison-textured-below.png",
+          "output": "out/model.glb",
+          "pose": "rest",
+          "region": "comparison",
+          "mode": "textured",
+          "view": "below",
+          "source": "exported-model-render",
+          "sha256": "89071074baa4808ee055d1cfaabb4131288f69efde30e1e387d88d46358de7f9"
+        }
+      ]
+    },
+    "after": {
+      "generator": "after/gen.py",
+      "generator_sha256": "63662f9f9502b386a1a35eb7752d7fc788ae274218cd3649dd55ad20791daaf5",
+      "glb": "after/out/model.glb",
+      "glb_sha256": "411f3dc0fca833aaafc08fa5a7c014005f223e5678094f8a0b1f7748a271f26f",
+      "review_index": "after/out/review/index.json",
+      "checks_passed": true,
+      "shots": [
+        {
+          "pose_geometry_sha256": "5b012e5f57dbf2f13617cac8c9c5726d1acfd4d9881f564a8c832fb8da426f84",
+          "file": "out/review/model-rest-comparison-textured-front.png",
+          "output": "out/model.glb",
+          "pose": "rest",
+          "region": "comparison",
+          "mode": "textured",
+          "view": "front",
+          "source": "exported-model-render",
+          "sha256": "411f3dc0fca833aaafc08fa5a7c014005f223e5678094f8a0b1f7748a271f26f"
+        },
+        {
+          "pose_geometry_sha256": "5b012e5f57dbf2f13617cac8c9c5726d1acfd4d9881f564a8c832fb8da426f84",
+          "file": "out/review/model-rest-comparison-textured-side.png",
+          "output": "out/model.glb",
+          "pose": "rest",
+          "region": "comparison",
+          "mode": "textured",
+          "view": "side",
+          "source": "exported-model-render",
+          "sha256": "411f3dc0fca833aaafc08fa5a7c014005f223e5678094f8a0b1f7748a271f26f"
+        },
+        {
+          "pose_geometry_sha256": "5b012e5f57dbf2f13617cac8c9c5726d1acfd4d9881f564a8c832fb8da426f84",
+          "file": "out/review/model-rest-comparison-textured-below.png",
+          "output": "out/model.glb",
+          "pose": "rest",
+          "region": "comparison",
+          "mode": "textured",
+          "view": "below",
+          "source": "exported-model-render",
+          "sha256": "411f3dc0fca833aaafc08fa5a7c014005f223e5678094f8a0b1f7748a271f26f"
+        }
+      ]
+    }
+  },
+  "comparison_sha256": "56a52125864362deacd0efe2d1710396e541ed1e1e03558c2d617134b48a166e"
+}

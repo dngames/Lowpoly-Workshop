@@ -1,0 +1,10 @@
+include README.md LICENSE CHANGELOG.md CONTRIBUTING.md THIRD_PARTY_NOTICES.md PROVENANCE.json VALIDATION.md
+recursive-include docs *.md *.png *.json
+recursive-include benchmarks *.md *.csv
+recursive-include tests *.py
+recursive-include scripts *.py *.mjs
+recursive-include skills *.md
+recursive-include adapters *.json
+recursive-include lowpoly_workshop *
+global-exclude *.pyc *.blend1
+prune lowpoly_workshop/__pycache__

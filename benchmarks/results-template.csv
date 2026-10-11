@@ -1,0 +1,1 @@
+run_id,case_id,route,agent_model,service_model,blender_version,target_runtime,hardware,setup_minutes,wall_minutes,human_active_minutes,agent_usd,provider_usd,render_minutes,repair_minutes,retries,triangles,glb_bytes,accepted,failed_requirements,evaluator,evidence_path,notes

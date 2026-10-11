@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.png binary
+*.glb binary
+*.blend binary
+*.zip binary
+lowpoly_workshop/viewer/vendor/** whitespace=-space-before-tab
