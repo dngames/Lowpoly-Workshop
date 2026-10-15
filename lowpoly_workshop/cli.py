@@ -28,6 +28,7 @@ def dispatch(args):
   lowpoly ASSET references run --model MODEL [--max-jobs 1]
   lowpoly ASSET references import JOB_ID IMAGE
   lowpoly ASSET fit all --grid | render views | render show | compose
+  lowpoly ASSET colour [SET ...] [--tolerance-ab 12] [--edge-px 3]
 """);return
     if args[0]=="--version":print(__version__);return
     if args[0]=="new":
@@ -96,6 +97,13 @@ def dispatch(args):
             if not job:raise ValueError("Unknown planned job")
             print(refs.register(folder,job,args[4],"external-image-provider"));return
         raise ValueError("Unknown references action")
+    if command=="colour":
+        from .kit import colourmatch
+        parser=argparse.ArgumentParser(prog="lowpoly ASSET colour");parser.add_argument("sets",nargs="*")
+        for name in ("tolerance-ab","tolerance-l","facing-low","facing-high"):parser.add_argument("--"+name,type=float)
+        for name in ("edge-px","min-pixels"):parser.add_argument("--"+name,type=int)
+        ns=vars(parser.parse_args(args[2:]));sets=ns.pop("sets") or None
+        colourmatch.run(folder,sets,**ns);return
     from . import pipeline
     if command=="build":
         from .runner import build

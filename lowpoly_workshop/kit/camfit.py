@@ -110,8 +110,8 @@ class ViewFit:
                         best, bv = s, w
         return bv
 
-    def panel(self, v):
-        """Sheet | model | overlay | difference strip for a solved vector."""
+    def textured(self, v, shade=True):
+        """The model's atlas colours through a solved vector: rgb (H,W,3) and depth."""
         H, W = self.cls.shape
         nodes, pose = self.a.scene(self.set, self.view, v[7:])
         T, C, U = rig.posed_triangles(nodes, pose, uv_fn=self.a.gen.ATLAS.face_uvs)
@@ -133,11 +133,20 @@ class ViewFit:
             m = owner == key
             if not m.any():
                 continue
-            img, _, z = rs.render(T[m], [c for c, k in zip(C, m) if k], cam, W, H, palette=pal,
+            img, _, z = rs.render(T[m], [c for c, k in zip(C, m) if k], cam, W, H, shade=shade, palette=pal,
                                   classes=self.cell_cls, uvs=U[m], tex=tex)
             upd = z < zbest
             rgb[upd], zbest[upd] = img[upd], z[upd]
-        _, cm, _ = rs.render(T, C, cam, W, H, shade=False, palette=pal, classes=self.cell_cls)
+        return rgb, zbest
+
+    def panel(self, v):
+        """Sheet | model | overlay | difference strip for a solved vector."""
+        H, W = self.cls.shape
+        rgb, _ = self.textured(v)
+        nodes, pose = self.a.scene(self.set, self.view, v[7:])
+        T, C = rig.posed_triangles(nodes, pose)
+        _, cm, _ = rs.render(T, C, make_cam(v, self.target), W, H, shade=False, palette=self.a.palette(nodes),
+                             classes=self.cell_cls)
         bgc = np.median(np.concatenate([self.img[0], self.img[-1]]), 0)
         ren = np.where((cm > 0)[..., None], rgb, bgc).astype(np.uint8)
         diff = np.full(self.img.shape, 236, np.uint8)

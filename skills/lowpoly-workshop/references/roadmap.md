@@ -4,7 +4,7 @@ This is an early open-source workshop, not a promise that every image can become
 
 ## Available in 0.3.0
 
-Optional feature checklists, actual-export feature close-ups/reference crops, saved review stages, next-action guidance and source/evidence-bound acceptance. See [guided review](guided-review.md). Regional appearance metrics, anatomy-specific checks and material evidence tooling remain future work.
+Optional feature checklists, actual-export feature close-ups/reference crops, saved review stages, next-action guidance and source/evidence-bound acceptance. See [guided review](guided-review.md). Since 0.4.0, `lowpoly ASSET colour` compares atlas cells with trusted reference pixels through the solved cameras; see [colour match](colour-match.md). Anatomy-specific checks and material evidence tooling remain future work.
 
 ## First: reproducible adoption
 
