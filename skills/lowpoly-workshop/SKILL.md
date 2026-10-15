@@ -13,6 +13,8 @@ For gaps, wrapping, accessories, hollow props, decals and support contacts, read
 
 For guided projects, read references/guided-review.md. Establish important features and original/inferred evidence, bind them to exported parts and required views, then use workflow next to resume. Record repair findings. Accept features/stages only after actual inspection and within user authorization; a numeric score is not evidence. Existing projects can remain in legacy mode.
 
+After fitting, run colour to compare atlas cells with the references; read the trust map before changing a palette value, and judge suggestions by eye.
+
 Build/check, then inspect actual-export front/profile/back/below and useful close-ups in textured/clay/checker/wireframe modes. Repair source geometry/UV/frames/weights and rebuild; render again. An actual-model diagnostic and an inferred design reference have different meanings. Finite checks do not replace visual review.
 
 Use the generator's skin hook for skeletal exports and inspect target-runtime deformation. Ordinary rigid checks do not evaluate skinning. Preserve existing game contracts and add requirements through adapters.

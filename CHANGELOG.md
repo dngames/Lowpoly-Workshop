@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased - colour match
+
+`lowpoly ASSET colour` compares every atlas cell with the reference pixels it covers through the solved cameras. Only visible, camera-facing pixels away from silhouettes, cell boundaries and ink lines count; reference shading is removed before hue and saturation are judged. Writes a JSON report, swatches, per-view trust maps and palette suggestions; advisory only. Reference guidance now covers pictures that fit well. Both follow ideas from AssetFurnace (image-to-3dlab); no code copied.
+
 ## 0.3.0 - guided feature review
 
 Optional feature declarations link original/inferred reference evidence to exported model parts and required view/mode/pose combinations. Automatic close-ups and reference crops appear in the offline page. Saved proportions/construction/appearance/motion-export stages enforce current build, render and check evidence, required feature decisions and earlier-stage acceptance. Changed evidence invalidates guided approval; legacy projects remain compatible. All five starters accept --guided. No automated artistic score or new mesh-generation backend.
