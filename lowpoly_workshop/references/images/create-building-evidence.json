@@ -10,9 +10,14 @@
   ],
   "source_sha256": {
     "gen.py": "ffc0febf1b42b430435a9bf677adb37dc8fb82be0b3d4d1f6d7fd9189a03fe0b",
-    "asset.json": "7ebc306c5ee55a78a15fe0229ffd02cc13c4cc3a242fc39d7c4c0216a6f9fb89",
+    "asset.json": "e605315ad387dc7d8499edcb4c18bf94772aaa672ec0f4d293e5ea5b529c92c3",
     "inputs/construction.json": "e46ea61f46788349b577a72677c8d3a4896fb9eeb31318eaebc906b4443acb23",
-    "provenance.json": "41f85d5d26bf7823b97551467ad2e6a688bc4cbf79f3eef0a9739585eea855e9"
+    "provenance.json": "15fc2bfd3d9305e60cccf63cb2d6d80a951ca3297cef47d47511825ea39f506e"
+  },
+  "original_reference": {
+    "path": "ref/station_rest_house_v01.png",
+    "sha256": "8509c0fe74279c8b83769cb73564c3189d9014fbca9d55d7c360ec62d51c283a",
+    "origin": "Historical 2D design input; not an exported-model render"
   },
   "checks_passed": true,
   "views": [
@@ -21,28 +26,28 @@
       "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
       "view": "quarter",
       "image": "out/review/station_rest_house_LOD0-rest-whole-textured-quarter.png",
-      "image_sha256": "0bb6f16764ff2a63884b5e08532574b90067a6405d3b78754c4369518a4cc724"
+      "image_sha256": "1552e37672118e3d577f0b4fb8e62dca544b7ee3f760defc7a4b34bf0b171a74"
     },
     {
       "output": "out/station_rest_house_LOD0.glb",
       "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
       "view": "front",
       "image": "out/review/station_rest_house_LOD0-rest-whole-textured-front.png",
-      "image_sha256": "73d3bec877ce00ff9dd6630bb1d6c9b4f35f32db7c146c4ef859c28f1fa81146"
+      "image_sha256": "eb07d9ce96ab89e784b4326626fc076b99fddb770add74cd1bdce7cb577246be"
     },
     {
       "output": "out/station_rest_house_LOD0.glb",
       "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
       "view": "back",
       "image": "out/review/station_rest_house_LOD0-rest-whole-textured-back.png",
-      "image_sha256": "a2b4a41514747190718e1e2eeab668ffd2a34d30a8681c5c4353d12aaa2c186d"
+      "image_sha256": "9588c41ee053be90cbc13c06358a3e24cb210d25ed29e2a688922dadba046d4d"
     },
     {
       "output": "out/station_rest_house_LOD2.glb",
       "glb_sha256": "209091b7d6987555d7ed429aefa8eaecb2d6424c3b2c5fb64002cb819eaa6a03",
       "view": "quarter",
       "image": "out/review/station_rest_house_LOD2-rest-whole-textured-quarter.png",
-      "image_sha256": "d0be36a06242a9ddbd152ff6e705cb82c1b2f273b6f25c74fc6bd3390d1f2e59"
+      "image_sha256": "22548d202a07edd8347c7c4a9aa6be689134b723c79055305c1d440b8a41933d"
     }
   ],
   "contact_sheet_sha256": "be106bcc85b06e0b51cf78da08183f210c7726bc2706e5b856abda3e0d5b2a25"

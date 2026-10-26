@@ -41,7 +41,7 @@
     }
   ],
   "excluded": [
-    "consumer artwork and reference sheets",
+    "consumer artwork and reference sheets (except the explicitly documented Station Rest House original sheet)",
     "consumer models and textures (except the explicitly documented Station Rest House example)",
     "consumer source code and staging scripts (except the explicitly documented Station Rest House example)",
     "consumer-specific profiles and adapter contracts"
@@ -66,7 +66,7 @@
       "license": "MIT",
       "basis": "Owner explicitly requested inclusion in the Workshop.",
       "details": "lowpoly_workshop/assets/examples/station-rest-house/provenance.json",
-      "scope": "Adapted procedural building source and original palette; no reference sheets, game textures or runtime integration."
+      "scope": "Adapted procedural building source, original palette, historical 2D input sheet and its prompt; no game textures or runtime integration."
     }
   ]
 }

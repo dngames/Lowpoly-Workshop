@@ -2,9 +2,19 @@
 
 Build an actual Tiny Tour asset with the standalone Workshop: the **Yuzu Station Rest House**, a two-storey building with a hipped roof, front gable, covered terrace, benches and framed windows.
 
+## Start with the original 2D design
+
+![Original Tiny Tour Station Rest House design sheet, with six views.](images/station-rest-house-original.png)
+
+This historical AI-generated design sheet was the original modelling input. It is copied byte-for-byte from Tiny Tour; the original prompt is bundled beside it. “Original” means the design input, not a mesh render or a claim that the sheet was hand-drawn. The provider/model is not recorded here.
+
+## Compare the exported result
+
 ![Actual exported views of the Station Rest House, including its simpler LOD2.](images/create-building.png)
 
-This is a first-party Tiny Tour example included at the repository owner's request under Workshop's MIT license. The source's `provenance.json` identifies the Tiny Tour commit and file hashes, plus the small portability changes. No reference sheet, game texture or runtime placement code is included. These pictures are rendered from the Workshop export, not captured from the game.
+This is a first-party Tiny Tour example included at the repository owner's request under Workshop's MIT license. The source's `provenance.json` identifies the Tiny Tour commit and file hashes, plus the small portability changes. The original sheet and prompt are included; game textures, fitted cameras and runtime placement code are excluded. The sheet is registered in `asset.json`, copied into new example projects and displayed in their review viewer. These pictures are rendered from the Workshop export, not captured from the game.
+
+The low-poly result preserves the broad roof, facade and terrace arrangement. It simplifies the reference’s curved roof tiles, timber framing, stone courses, bevels and painted surface finish. Compare these differences explicitly; this is not an exact reconstruction or automatic image-to-mesh result.
 
 ## Build and open it
 

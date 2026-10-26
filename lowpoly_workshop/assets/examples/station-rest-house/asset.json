@@ -6,7 +6,15 @@
   "profile": "portable",
   "generator": "gen.py",
   "out_dir": "out",
-  "references": [],
+  "references": [
+    {
+      "path": "ref/station_rest_house_v01.png",
+      "source": "original",
+      "view": "turnaround",
+      "sha256": "8509c0fe74279c8b83769cb73564c3189d9014fbca9d55d7c360ec62d51c283a",
+      "origin": "Historical Tiny Tour design sheet (AI-generated); original input, not a model render."
+    }
+  ],
   "sets": {},
   "geometry_sources": [
     "gen.py",

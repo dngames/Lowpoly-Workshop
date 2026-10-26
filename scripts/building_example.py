@@ -16,6 +16,7 @@ def create_project(destination):
     for name in ('gen.py','asset.json','provenance.json','README.md'):
         shutil.copyfile(source/name,folder/name)
     shutil.copytree(source/'inputs',folder/'inputs',dirs_exist_ok=True)
+    shutil.copytree(source/'ref',folder/'ref',dirs_exist_ok=True)
     return folder
 
 

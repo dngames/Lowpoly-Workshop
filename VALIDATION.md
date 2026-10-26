@@ -1,5 +1,11 @@
 # Validation
 
+## 2026-10-26 — reference-first example presentation
+
+- The Station Rest House original six-view sheet and prompt are copied byte-for-byte from the recorded Tiny Tour commit. The image hash matches the registered original, docs copy, local viewer and source bundle.
+- The reference-bearing building project rebuilds successfully, passes all 39 native checks, renders its declared views/diagnostics and packages the original image and prompt. Three architectural regressions pass. Geometry is unchanged.
+- README/tutorial links, diagram SVG syntax and packaged reference synchronization pass. The three new explanatory SVGs are rendered and inspected locally. They are explicitly labelled as later notes for procedural exercises, not historical originals or evidence of reference matching.
+
 ## 2026-10-26 — Tiny Tour building example
 
 - 131 core regressions pass, including architectural facade positions across detail levels, canopy support reach, bench seating and base/height limits. Full Blender selftest passes export/skeletal/UV roundtrips and actual-export rendering (headless EGL warnings do not prevent completion).

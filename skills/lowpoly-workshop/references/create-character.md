@@ -1,5 +1,13 @@
 # Create a character: the trail guide
 
+## Design input and provenance
+
+This example began with a written brief and procedural code, **not an original 2D reference sheet**. The newly added diagram explains that brief; it was made after the model and is not evidence of reference matching.
+
+![New explanatory 2D front/side construction notes, not historical concept art.](images/character-design-notes.svg)
+
+## Exported result
+
 Build an original, editable character with a readable face, cap, jacket, backpack and a greeting animation. This walkthrough starts from a written brief and procedural geometry, not a supplied drawing or an image-to-mesh service.
 
 ![Four actual-export views of the trail guide: front-quarter introduction, side silhouette, backpack and waving pose.](images/create-character.png)

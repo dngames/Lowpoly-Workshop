@@ -4,9 +4,19 @@
 
 Turn your references and modelling decisions into a Python generator, a Blender project and a GLB you can inspect. Workshop supplies the geometry helpers, contract checks and review tools; you or your modelling assistant author the model.
 
-![Five bundled starters rendered from actual exported GLBs: a solid prop, hollow container, fitted wearable, articulated mechanism and character.](docs/images/workshop-starters.png)
-
 **Open source · MIT · Python 3.10+ · Blender 4.5.** Current release: 0.3.0; main also includes [unreleased improvements](CHANGELOG.md). Modelling and local review need no account or image-generation service.
+
+## From the 2D original to an inspectable model
+
+**1. Original design input — Tiny Tour’s six-view Station Rest House sheet.** This is the historical 2D modelling reference, copied unchanged. It is AI-generated design art, not a render of the Workshop model.
+
+![Original 2D design sheet for the Yuzu Station Rest House: front, side, back, two quarter views and top view.](docs/images/station-rest-house-original.png)
+
+**2. Exported result — compare the actual geometry with the design above.** The low-poly model keeps the building’s structure while simplifying tiles, stonework, timber detail and surface finish. Those differences are visible tradeoffs, not a claim of exact reconstruction.
+
+![Actual exported Station Rest House model in several views, with a lower detail level for comparison.](docs/images/create-building.png)
+
+**[Follow the reference → construction → checks → model walkthrough](docs/create-building.md)** · Original sheet and prompt included · Four editable detail levels
 
 ## How it works
 
@@ -20,7 +30,11 @@ Turn your references and modelling decisions into a Python generator, a Blender 
 
 Workshop executes your generator; it does not reconstruct arbitrary images into meshes by itself. Optional image tools can suggest missing design views, with their provenance kept separate from supplied references.
 
-## Create your first character
+## Procedural character construction examples
+
+**Design input: a written brief, not a 2D original.** These models were authored procedurally. The diagram below was added later to explain the construction; it is not their historical reference.
+
+![New explanatory front/side construction notes for the procedural trail guide, not original concept art.](docs/images/character-design-notes.svg)
 
 Go beyond the basic starter: build an original trail guide with rounded forms, a face, cap, backpack and a looping greeting. Edit its dimensions and colours, then inspect the exported joints and poses.
 
@@ -28,17 +42,15 @@ Go beyond the basic starter: build an original trail guide with rounded forms, a
 
 **[Follow the character walkthrough →](docs/create-character.md)** · Editable source included · No image-generation account needed
 
-Want more detail? The **[high-poly character example](docs/create-character-high.md)** adds smooth forms, shaped ears/nose, straps, cuffs and boot details at about 21,000 triangles.
+The **[higher-density character construction example](docs/create-character-high.md)** adds smooth forms, shaped ears/nose, straps, cuffs and boot details at about 21,000 triangles. It demonstrates denser geometry, not detailed sculpted clothing or a finished textured character.
 
 ![The higher-detail trail guide, rendered from its exported model in four views.](docs/images/create-character-high.png)
 
-## Build a Tiny Tour building
-
-Explore the **[Yuzu Station Rest House walkthrough](docs/create-building.md)**: editable architecture, a covered terrace, benches and four detail levels from the game’s modelling source.
-
-![Tiny Tour Station Rest House, rendered from Workshop exports with a simpler detail level for comparison.](docs/images/create-building.png)
-
 ## See a repair
+
+**Design input: a procedural fit problem.** This newly added section diagram explains it; there was no original character drawing for this synthetic demonstration.
+
+![New explanatory cross-section diagram showing flat versus wrapped fringe fit.](docs/images/repair-design-notes.svg)
 
 A mesh can be closed and still fit badly. Here a flat fringe is replaced with a surface-wrapped patch; front, side and underside views make the difference visible.
 
@@ -65,6 +77,12 @@ lowpoly serve work/crate/out/page --port 8000
 Open **http://127.0.0.1:8000** to inspect the result. The viewer uses bundled Three.js locally. If Blender is not on PATH, set `KIT_BLENDER` to its executable. See the [setup guide](docs/quickstart.md) for Windows, local caches and the official `bpy` alternative.
 
 ## Choose a starting point
+
+**Design input: small code exercises, with no historical 2D originals.** These new schematic notes explain each exercise before its actual export.
+
+![New 2D explanatory construction notes for all five procedural starters.](docs/images/starter-design-notes.svg)
+
+![Actual exported GLBs of the five procedural starters.](docs/images/workshop-starters.png)
 
 | Starter | What it demonstrates |
 |---|---|
@@ -101,4 +119,4 @@ Use it directly or give your modelling assistant the [Workshop skill](lowpoly_wo
 
 Workshop is an early release. We have not measured a speed, cost or quality advantage over a plain Blender agent or image-to-3D service; see the [comparison](docs/comparison.md) and [benchmark protocol](docs/benchmark.md).
 
-The starter pictures and repair demonstration use original procedural examples. [Reproduce the README pictures](docs/readme-visuals.md); no consumer game artwork is included.
+The building example includes its original Tiny Tour design sheet at the owner’s request. The character, starter and repair examples are procedural exercises; their explanatory diagrams are newly authored, not historical originals. [Picture sources and reproduction](docs/readme-visuals.md).

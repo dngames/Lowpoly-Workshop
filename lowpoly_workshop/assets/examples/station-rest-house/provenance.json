@@ -7,13 +7,21 @@
   "construction_sha256": "e46ea61f46788349b577a72677c8d3a4896fb9eeb31318eaebc906b4443acb23",
   "copyright_holder": "dngames",
   "workshop_license": "MIT",
-  "authorization": "Repository owner explicitly requested adding a Tiny Tour building to the Workshop.",
+  "authorization": "Repository owner explicitly requested the Tiny Tour building and its original 2D design sheet in Workshop.",
   "adaptation": [
     "Standalone Workshop imports replace private kit bootstrap.",
     "Only the Station Rest House branch is retained; unrelated building generators are excluded.",
     "All four original geometry levels, named nodes, palette and dimensions are retained.",
-    "Reference sheets, fitted cameras, game textures and runtime placement code are excluded.",
+    "Original 2D sheet and its prompt are included; fitted cameras, game textures and runtime placement code remain excluded.",
     "Thin LOD2 window faces are registered as features for checks; their geometry is unchanged."
   ],
-  "artistic_approval": "not asserted for this export"
+  "artistic_approval": "not asserted for this export",
+  "original_reference": {
+    "path": "ref/station_rest_house_v01.png",
+    "source_path": "art/raw/models/kit/yuzu-station-rest-house/ref/station_rest_house_v01.png",
+    "sha256": "8509c0fe74279c8b83769cb73564c3189d9014fbca9d55d7c360ec62d51c283a",
+    "prompt_path": "ref/station_rest_house_v01.prompt.txt",
+    "origin": "Historical AI-generated 2D design sheet used as the original modelling input; provider/model not recorded here.",
+    "note": "Original means the prior design input, not an export of this mesh. Copied byte-for-byte from the recorded Tiny Tour commit."
+  }
 }

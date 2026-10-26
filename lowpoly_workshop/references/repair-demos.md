@@ -2,6 +2,12 @@
 
 The first demonstration recreates a problem observed while making game characters: a flat fringe can look acceptable from the front but stand away from the head at the temples. It uses an original procedural head proxy, not the private game's character art. This is a synthetic illustration of a repair technique, not a comparison with another product or an automatic defect detector.
 
+**Design input:** the procedural fit case described above. This newly authored cross-section diagram explains the intended repair; it is not a historical 2D reference.
+
+![New explanatory cross-section diagram of flat and wrapped fringe fit.](images/repair-design-notes.svg)
+
+**Actual exported results:**
+
 ![Flat fringe and wrapped fringe, rendered from the exported GLBs](images/fringe-comparison.png)
 
 Both models are closed meshes. A basic topology check can pass both. The before generator places a flat slab at the forehead; the after generator uses surface.wrapped_patch to project a grid onto the head and close its thickness. Front, side and underside views expose the difference. This deliberately shows a limit of automated checking: visual fit still needs review.

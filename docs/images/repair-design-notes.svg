@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<title id="title">Repair construction notes: fit matters beyond closure</title><desc id="desc">New schematic cross sections showing a flat fringe separating from a curved head and a surface-following fringe. Not historical reference art.</desc>
+<rect width="1200" height="420" rx="18" fill="#101d2d"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#edf1eb">
+<text x="28" y="42" font-size="26" font-weight="bold">Repair construction notes: fit matters beyond closure</text>
+<text x="28" y="72" font-size="16" fill="#b7c8cd">New explanatory diagram · procedural demo · no historical 2D original exists</text>
+
+<g stroke-width="5" fill="none">
+<path d="M90 310Q120 100 380 140" stroke="#dda678"/><path d="M100 150H380" stroke="#e8d8ab"/>
+<path d="M660 310Q690 100 950 140" stroke="#dda678"/><path d="M675 305Q705 87 955 126" stroke="#a7cbb7"/>
+<path d="M510 210H580M560 190L580 210L560 230" stroke="#b7c8cd"/>
+</g><g font-size="20"><text x="110" y="348">Flat patch: a visible gap</text><text x="670" y="348">Wrapped patch: follows the host</text></g>
+<text x="28" y="390" font-size="17" fill="#b7c8cd">The original input is a procedural repair case, not a supplied drawing. Compare the exported views below.</text></g></svg>

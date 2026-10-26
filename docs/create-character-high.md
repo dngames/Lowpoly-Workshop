@@ -1,4 +1,14 @@
-# Create a high-poly character: the trail guide
+# Higher-density character construction: the trail guide
+
+## Design input and provenance
+
+This example began with a written brief and procedural code, **not an original 2D reference sheet**. The newly added diagram explains that brief; it was made after the model and is not evidence of reference matching.
+
+![New explanatory 2D front/side construction notes, not historical concept art.](images/character-design-notes.svg)
+
+## Exported result
+
+This is a geometry-density exercise, not a detailed sculpted/cloth-textured character showcase. More triangles alone do not deliver that level of finish.
 
 Use the same editable Workshop pipeline to build a smoother, more detailed stylized character. This original example has **21,162 triangles**, compared with 1,010 in the [low-poly walkthrough](create-character.md). Its explicit budget is 40,000 triangles; choose your own target for your intended use.
 

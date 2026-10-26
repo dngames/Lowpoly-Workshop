@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<title id="title">Starter construction notes: five small technical exercises</title><desc id="desc">New schematic notes for the five procedural starter models; no original input art existed.</desc>
+<rect width="1200" height="420" rx="18" fill="#101d2d"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#edf1eb">
+<text x="28" y="42" font-size="26" font-weight="bold">Starter construction notes: five small technical exercises</text>
+<text x="28" y="72" font-size="16" fill="#b7c8cd">New explanatory diagram · procedural demo · no historical 2D original exists</text>
+
+<g stroke="#a7cbb7" stroke-width="3" fill="#477d70">
+<rect x="65" y="145" width="110" height="105" rx="3"/>
+<path d="M290 145H400V250H290Z M303 157V235H387V157Z" fill-rule="evenodd"/>
+<ellipse cx="565" cy="200" rx="51" ry="59" fill="#dda678"/>
+<path d="M515 186Q565 140 615 186" fill="none" stroke="#354353" stroke-width="15"/>
+<rect x="745" y="225" width="110" height="30"/><path d="M800 225V135" stroke="#e8d8ab" stroke-width="17"/>
+<circle cx="800" cy="225" r="8" fill="#dda678"/>
+<circle cx="1040" cy="142" r="26" fill="#dda678"/><rect x="1010" y="172" width="60" height="65"/>
+<path d="M1025 237V275M1055 237V275M1010 185L990 230M1070 185L1090 230" fill="none" stroke-width="15"/>
+</g>
+<g font-size="18" text-anchor="middle">
+<text x="120" y="307">Solid prop</text><text x="345" y="307">Hollow shell</text><text x="565" y="307">Surface wrap</text><text x="800" y="307">Moving pivot</text><text x="1040" y="307">Character joints</text>
+</g><text x="28" y="380" font-size="17" fill="#b7c8cd">These explain source-code exercises. They are not reference-to-model success examples.</text></g></svg>

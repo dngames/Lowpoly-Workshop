@@ -2,8 +2,8 @@
 
 First-party Tiny Tour architecture, included at the repository owner's request.
 See `provenance.json` for the source commit, hashes and adaptation notes.
-Released in Workshop under its MIT license. No reference sheet, game textures,
-branding atlas or runtime placement code is included.
+Released in Workshop under its MIT license. The original 2D design sheet and prompt are included in `ref/` and registered in
+`asset.json`. Game textures, branding atlases and runtime placement code are excluded.
 
 A 14 x 9 m two-storey rest house, with a hipped roof and front gable, covered
 terrace, four canopy supports, three benches, framed windows and a chimney.

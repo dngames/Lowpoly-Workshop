@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<title id="title">Character construction notes: the written brief in 2D</title><desc id="desc">Front and side schematics explain the procedural guide. These are newly authored notes, not original concept art or a model render.</desc>
+<rect width="1200" height="420" rx="18" fill="#101d2d"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#edf1eb">
+<text x="28" y="42" font-size="26" font-weight="bold">Character construction notes: the written brief in 2D</text>
+<text x="28" y="72" font-size="16" fill="#b7c8cd">New explanatory diagram · procedural demo · no historical 2D original exists</text>
+
+<g stroke="#a7cbb7" stroke-width="2" fill="none"><path d="M80 112V348M72 112h16M72 348h16"/><path d="M60 350H585"/></g>
+<text x="25" y="240" font-size="16" transform="rotate(-90 25 240)">1.72 m including cap</text>
+<g stroke="#243645" stroke-width="2">
+<rect x="185" y="273" width="36" height="66" rx="12" fill="#3b4f65"/><rect x="236" y="273" width="36" height="66" rx="12" fill="#3b4f65"/>
+<rect x="178" y="330" width="46" height="20" rx="7" fill="#76513d"/><rect x="235" y="330" width="46" height="20" rx="7" fill="#76513d"/>
+<rect x="177" y="198" width="103" height="91" rx="26" fill="#477d70"/>
+<path d="M179 214L158 279M279 214L301 279" stroke="#477d70" stroke-width="25" stroke-linecap="round"/>
+<circle cx="158" cy="288" r="12" fill="#dda678"/><circle cx="301" cy="288" r="12" fill="#dda678"/>
+<ellipse cx="228" cy="164" rx="48" ry="43" fill="#dda678"/><path d="M178 145Q180 108 228 110Q276 110 278 145Z" fill="#477d70"/>
+<circle cx="212" cy="165" r="3" fill="#352f32"/><circle cx="244" cy="165" r="3" fill="#352f32"/><path d="M219 182Q228 188 237 182" fill="none"/>
+<rect x="252" y="222" width="11" height="16" fill="#e8d8ab"/>
+<rect x="478" y="210" width="35" height="76" rx="8" fill="#b8824d"/>
+<rect x="435" y="199" width="55" height="90" rx="22" fill="#477d70"/><ellipse cx="461" cy="165" rx="35" ry="43" fill="#dda678"/>
+<path d="M426 145Q426 110 462 110Q494 110 497 145Z" fill="#477d70"/>
+<rect x="447" y="282" width="28" height="57" rx="9" fill="#3b4f65"/><rect x="428" y="330" width="50" height="20" rx="7" fill="#76513d"/>
+</g>
+<text x="180" y="382" font-size="18">Front / +Z</text><text x="424" y="382" font-size="18">Side / pack</text>
+<text x="650" y="130" font-size="22" font-weight="bold">Original input: a written design brief</text>
+<text x="650" y="173" font-size="18">Cap · teal jacket · dark trousers · boots</text>
+<text x="650" y="208" font-size="18">Backpack · friendly face · standing wave</text>
+<text x="650" y="258" font-size="18">Low detail: 1,010 triangles</text>
+<text x="650" y="291" font-size="18">Higher density: 21,162 triangles</text>
+<text x="650" y="340" font-size="16" fill="#b7c8cd">Both models predate this diagram.</text>
+<text x="650" y="369" font-size="16" fill="#b7c8cd">Neither matches the detailed character target yet.</text></g></svg>

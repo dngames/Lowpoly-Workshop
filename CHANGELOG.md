@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Lead the gallery with the original Tiny Tour 2D design sheet and exported result. Bundle/register the historical input and prompt. Add clearly labelled later construction diagrams before all procedural examples; distinguish source evidence from explanatory artwork and mesh density from sculpted detail.
+
 Added Tiny Tour’s first-party Yuzu Station Rest House as an editable building example, with four detail levels, provenance, export pictures and a standalone walkthrough.
 
 Added a higher-detail character companion with rounded volumes, modelled face/accessory details, checked rigid animation and reproducible export pictures.
