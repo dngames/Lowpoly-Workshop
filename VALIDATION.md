@@ -1,5 +1,12 @@
 # Validation
 
+## 2026-10-26 — high-detail character companion
+
+- 128 core unit regressions pass, including the high-detail example's closed solid nodes, editable height/ground contact, and sampled gesture attachment/head clearance.
+- The full Blender selftest passes export roundtrips, skeletal/UV checks and actual-export renders. Headless EGL warnings occur, but the pipeline completes.
+- The original 21,162-triangle character passes all 77 native export checks. Twelve actual-GLB review images, the local viewer and checksummed source bundle are generated successfully.
+- The source/spec and picture evidence hashes match the exported scratch project. The example remains a rigid-part stylized character; no sculpt, skeletal deformation, retopology or artistic acceptance is claimed.
+
 ## 2026-10-26 — character tutorial
 
 - 123 core unit regressions pass, including closed character geometry, editable height/ground contact, and sampled greeting attachment/head clearance.

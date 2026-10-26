@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "name": "trail-guide-high",
+  "title": "Create a high-poly character: trail guide",
+  "kind": "character",
+  "profile": "portable",
+  "generator": "gen.py",
+  "out_dir": "out",
+  "references": [],
+  "sets": {},
+  "geometry_sources": [
+    "gen.py"
+  ],
+  "camera_target": [
+    0,
+    0.86,
+    0
+  ],
+  "outputs": [
+    {
+      "file": "out/guide.glb",
+      "kit_mask": "guide_mask.png",
+      "clips": true,
+      "contract": {
+        "budget": 40000,
+        "closed": [
+          "Body",
+          "Head",
+          "UpperL",
+          "LowerL",
+          "LegL",
+          "ShoeL",
+          "UpperR",
+          "LowerR",
+          "LegR",
+          "ShoeR"
+        ],
+        "ground": [
+          "ShoeL",
+          "ShoeR"
+        ]
+      }
+    }
+  ],
+  "poses": {
+    "half-raised": {
+      "UpperR": [
+        0,
+        0,
+        -65
+      ]
+    },
+    "wave": {
+      "UpperR": [
+        0,
+        0,
+        -115
+      ],
+      "LowerR": [
+        0,
+        0,
+        -10
+      ],
+      "Head": [
+        0,
+        -8,
+        0
+      ]
+    }
+  },
+  "relations": [
+    {
+      "name": "neck",
+      "type": "connected",
+      "a": "Body",
+      "b": "Head",
+      "max_gap": 0.008
+    },
+    {
+      "name": "face-paint",
+      "type": "connected",
+      "a": "Head",
+      "b": "FacePaint",
+      "max_gap": 0.008
+    },
+    {
+      "name": "shoulder-L",
+      "type": "connected",
+      "a": "Body",
+      "b": "UpperL",
+      "max_gap": 0.008
+    },
+    {
+      "name": "elbow-L",
+      "type": "connected",
+      "a": "UpperL",
+      "b": "LowerL",
+      "max_gap": 0.008
+    },
+    {
+      "name": "hip-L",
+      "type": "connected",
+      "a": "Body",
+      "b": "LegL",
+      "max_gap": 0.008
+    },
+    {
+      "name": "ankle-L",
+      "type": "connected",
+      "a": "LegL",
+      "b": "ShoeL",
+      "max_gap": 0.008
+    },
+    {
+      "name": "shoulder-R",
+      "type": "connected",
+      "a": "Body",
+      "b": "UpperR",
+      "max_gap": 0.008
+    },
+    {
+      "name": "elbow-R",
+      "type": "connected",
+      "a": "UpperR",
+      "b": "LowerR",
+      "max_gap": 0.008
+    },
+    {
+      "name": "hip-R",
+      "type": "connected",
+      "a": "Body",
+      "b": "LegR",
+      "max_gap": 0.008
+    },
+    {
+      "name": "ankle-R",
+      "type": "connected",
+      "a": "LegR",
+      "b": "ShoeR",
+      "max_gap": 0.008
+    },
+    {
+      "name": "waving-hand-clears-head",
+      "type": "clear",
+      "a": "LowerR",
+      "b": "Head",
+      "min_gap": 0.015
+    }
+  ],
+  "review": {
+    "size": 384,
+    "views": [
+      "front",
+      "side",
+      "back",
+      "quarter"
+    ],
+    "modes": [
+      "textured"
+    ],
+    "regions": []
+  }
+}

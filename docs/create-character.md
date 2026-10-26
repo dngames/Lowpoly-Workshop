@@ -4,6 +4,8 @@ Build an original, editable character with a readable face, cap, jacket, backpac
 
 ![Four actual-export views of the trail guide: front-quarter introduction, side silhouette, backpack and waving pose.](images/create-character.png)
 
+For a smoother companion with additional modelled details, see [Create a high-poly character](create-character-high.md).
+
 ## 1. Create the project
 
 From a source checkout, with Workshop installed and Blender configured:

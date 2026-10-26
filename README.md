@@ -28,6 +28,10 @@ Go beyond the basic starter: build an original trail guide with rounded forms, a
 
 **[Follow the character walkthrough →](docs/create-character.md)** · Editable source included · No image-generation account needed
 
+Want more detail? The **[high-poly character example](docs/create-character-high.md)** adds smooth forms, shaped ears/nose, straps, cuffs and boot details at about 21,000 triangles.
+
+![The higher-detail trail guide, rendered from its exported model in four views.](docs/images/create-character-high.png)
+
 ## See a repair
 
 A mesh can be closed and still fit badly. Here a flat fringe is replaced with a surface-wrapped patch; front, side and underside views make the difference visible.
