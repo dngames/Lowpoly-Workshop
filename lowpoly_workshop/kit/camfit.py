@@ -28,7 +28,7 @@ class ViewFit:
         self.a, self.set, self.view = asset, set_name, view
         self.img = asset.sheet(set_name, view)
         classes, line = asset.classes(set_name)
-        self.cls = rs.classify(self.img, classes, bg_tol=asset.spec.get("sheet_bg_tol", 24), line_class=line)
+        self.cls = rs.classify(self.img, classes, bg_tol=asset.spec.get("sheet_bg_tol", 24), line_class=line, bg_mode=asset.spec.get("sheet_bg_mode", "border"))
         self.cell_cls = asset.cell_classes()
         self.names = asset.class_names()
         self.target = asset.target()

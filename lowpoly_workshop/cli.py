@@ -27,6 +27,8 @@ def dispatch(args):
   lowpoly ASSET references plan [--views front back ...]
   lowpoly ASSET references run --model MODEL [--max-jobs 1]
   lowpoly ASSET references import JOB_ID IMAGE
+  lowpoly ASSET coverage [SET] [--size 256] [--budget 4]
+  lowpoly ASSET paint | pieces | shell-lods
   lowpoly ASSET fit all --grid | render views | render show | compose
 """);return
     if args[0]=="--version":print(__version__);return
@@ -100,12 +102,28 @@ def dispatch(args):
     if command=="build":
         from .runner import build
         build(folder,"--force" in args);return
+    if command == "coverage":
+        from .kit import coverage
+        parser = argparse.ArgumentParser(description="Geometric camera coverage; does not paint or approve")
+        parser.add_argument("set", nargs="?")
+        parser.add_argument("--size", type=int, default=256)
+        parser.add_argument("--budget", type=int, default=4)
+        ns = parser.parse_args(args[2:])
+        coverage.run(folder, ns.set, ns.size, ns.budget);return
+    if command == "paint":
+        from .kit.paintcheck import run
+        run(folder);return
+    if command == "pieces":
+        from .kit.pieces import run
+        from .kit.asset import Asset
+        run(Asset(folder));return
     if command=="inspect":
         from .kit.asset import Asset
         from .kit.mesh import triangles
         from .quality import topology,uv_diagnostics
         a=Asset(folder);nodes=a.build(spec.get("review",{}).get("variant"))
         print(json.dumps({"nodes":{n:topology(triangles({n:nd})[0]) for n,nd in nodes.items() if nd["faces"]},"uv":uv_diagnostics(nodes,a.gen.ATLAS)},indent=2));return
+    if command=="shell-lods":pipeline.blender("shell_lods.py",folder);return
     if command=="review":pipeline.blender("review.py",folder);return
     if command=="skin":pipeline.blender("skin_export.py",folder);return
     if command=="all":

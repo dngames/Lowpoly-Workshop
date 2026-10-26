@@ -11,3 +11,21 @@ Blender 4.5 and bundled Three.js loading are tested. Other engines' glTF workflo
 ## Generic policy overrides
 
 Start from portable or mobile and declare a per-output contract for your consuming project. For example, `"contract": {"budget": 2345, "mask_channels": "RGBA"}` changes the triangle limit and mask encoding without needing a named consumer profile. Construct the generator atlas with `mask_channels="RGBA"` too, and assign cells to whichever R/G/B/A channels the consumer uses. Channel meanings, exact budgets, runtime node naming and staging remain in that consuming project. These options are unchanged from the original portable API.
+
+## Optional named-material vertex colours
+
+An output can opt out of an image atlas with `"vertex_surfaces": {"body": "painted_body"}`.
+Map every used palette cell to a material name. The exporter writes linear `COLOR_0`, UVs
+and those names with no embedded image; the checker verifies the declared names and colour
+data. Set a suitable `contract.max_materials` for multi-material outputs. Do not combine this
+mode with `kit_mask`: atlas/mask outputs remain the default and retain their existing policy.
+
+`"runtime_uv": true` additionally projects solid UVs in metres. Material names beginning
+`decal_` require explicit local 0–1 face UVs. This follows the inherited V-down adapter
+convention; verify it in the consuming renderer. The generic `kit.runtime_uv.face_uvs` helper
+is also available separately. Material meanings, shader flags and per-engine conversion are
+not inferred or bundled. Rebuild/check and inspect the actual exported model in the target.
+
+For image-free outputs, optional `contract.view_m` conflict checks are conservative:
+matching UVs cannot prove identical vertex/material colours, so coplanar overlaps are
+reported for review rather than silently classified as identical paint.

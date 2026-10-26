@@ -123,8 +123,38 @@ def check_output(a, out, report):
         ok = ok and k.size == imgs[0].size and uniq <= ({(0,0,0,0),(255,0,0,0),(0,255,0,0),(0,0,255,0),(0,0,0,255)} if mask_channels == "RGBA" else {(0,0,0),(255,0,0),(0,255,0),(0,0,255)}) \
             and ex.get("kitMask") == kit_name
         detail += ", kit %s colours %s, kitMask %s" % (k.size, sorted(uniq), ex.get("kitMask"))
-    report(ok, "%s: configured material/atlas policy%s" % (tag, ", exclusive kit mask channels" if kit_name else ""),
-           detail)
+    if out.get("vertex_surfaces"):
+        allowed = set(out["vertex_surfaces"].values())
+        materials = g.js.get("materials", [])
+        primitives = [p for mesh in g.js.get("meshes", []) for p in mesh["primitives"]]
+        ok = (not imgs and not kit_name and bool(materials) and
+              len(materials) <= c.get("max_materials", 1) and
+              all(m.get("name") in allowed for m in materials))
+        ok = ok and all("COLOR_0" in p["attributes"] and "TEXCOORD_0" in p["attributes"] for p in primitives)
+        for prim in primitives:
+            if "COLOR_0" in prim["attributes"]:
+                index = prim["attributes"]["COLOR_0"]
+                colours = g.acc(index).astype(float)
+                accessor = g.js["accessors"][index]
+                component = accessor["componentType"]
+                ok = ok and component in (5121, 5123, 5126)
+                if component in (5121, 5123):
+                    ok = ok and bool(accessor.get("normalized"))
+                    colours /= 255 if component == 5121 else 65535
+                ok = ok and bool(np.isfinite(colours).all() and (colours >= 0).all() and (colours <= 1).all())
+        report(ok, tag+": named palette materials, finite vertex colours and UVs; no image atlas")
+    else:
+        report(ok, "%s: configured material/atlas policy%s" % (tag, ", exclusive kit mask channels" if kit_name else ""),
+               detail)
+    # Opt-in legacy depth-resolution check; no new acceptance policy for old projects.
+    if "view_m" in c:
+        from . import surfaces
+        tris_all, names_all, uvs = surfaces.soup(g, {n: geo[n] for n in want_meshes})
+        texture = np.asarray(imgs[0].convert("RGB")) if imgs else None
+        conflicts = surfaces.overlaps(tris_all, names_all, uvs,
+            eps=surfaces.eps_for(float(c["view_m"])), tex=texture)
+        report(not conflicts["zfight"], tag+": no visible coplanar paint conflict",
+               "%d visible, %d faint, %d hidden" % (len(conflicts["zfight"]), len(conflicts["faint"]), len(conflicts["hidden"])))
     # ground contact
     for n in c.get("ground", []):
         lo = geo[n].reshape(-1, 3)[:, 1].min()
@@ -218,10 +248,11 @@ def run(folder):
         a.gen.extra_checks(a, report)
     print("RESULT:", "ALL PASS" if report.ok else "FAILURES")
     import json
-    Path(a.out("check.json")).write_text(json.dumps(report.rows,indent=1))
+    from .atomic import write_json
+    write_json(a.out("check.json"), report.rows, indent=1)
     from lowpoly_workshop.approval import export_hashes
     from lowpoly_workshop.runner import fingerprint
     try:hashes=export_hashes(folder)
     except FileNotFoundError:hashes={}
-    Path(a.out('check-meta.json')).write_text(json.dumps(dict(exports=hashes,source=fingerprint(folder)),indent=2))
+    write_json(a.out('check-meta.json'), dict(exports=hashes,source=fingerprint(folder)), indent=2)
     return report.ok

@@ -27,7 +27,8 @@ def build(folder,force=False):
     expected={}
     companions=[p.with_suffix(".blend") for p in outputs]
     for o,p in zip(spec["outputs"],outputs):
-        companions.append(p.with_name(p.stem+"_atlas.png"))
+        if not o.get("vertex_surfaces"):
+            companions.append(p.with_name(p.stem+"_atlas.png"))
         if o.get("kit_mask"):companions.append(p.parent/o["kit_mask"])
     all_files=outputs+companions
     expected={p.relative_to(folder).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in all_files if p.exists()}

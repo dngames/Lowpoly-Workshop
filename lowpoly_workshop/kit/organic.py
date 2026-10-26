@@ -32,3 +32,34 @@ def closed_surface(faces):
         for a,b in zip(keys,keys[1:]+keys[:1]):
             edges[tuple(sorted((a,b)))] += 1
     return bool(edges) and all(count == 2 for count in edges.values())
+
+
+def surface_orientation(faces):
+    """Report closure, directed edge consistency and outward signed volume of one solid.
+
+    Call before hidden-face cleanup, separately for each closed primitive. Deliberate cards
+    and assembled overlapping solids need their own checks. Centring the integration keeps
+    the result stable for a small object authored far from the world origin.
+    """
+    faces = list(faces)
+    if not faces:
+        return {"ok": False, "closed": False, "directed_edge_errors": 0, "signed_volume_m3": 0.0}
+    points = np.concatenate([face[0] for face in faces])
+    if not np.isfinite(points).all():
+        return {"ok": False, "closed": False, "directed_edge_errors": 0, "signed_volume_m3": 0.0}
+    origin = points.mean(axis=0)
+    directed = Counter()
+    volume = 0.0
+    for pts, *_ in faces:
+        keys = [tuple(np.round(p, 6)) for p in pts]
+        for a, b in zip(keys, keys[1:] + keys[:1]):
+            directed[tuple(sorted((a, b)))] += 1 if a < b else -1
+        local = np.asarray(pts) - origin
+        for i in range(1, len(local) - 1):
+            volume += float(np.dot(local[0], np.cross(local[i], local[i + 1]))) / 6
+    closed = closed_surface(faces)
+    errors = sum(count != 0 for count in directed.values())
+    scale = float(np.linalg.norm(np.ptp(points, axis=0)))
+    epsilon = np.finfo(float).eps * scale ** 3 * 32
+    return {"ok": bool(closed and not errors and volume > epsilon), "closed": bool(closed),
+            "directed_edge_errors": int(errors), "signed_volume_m3": float(volume)}

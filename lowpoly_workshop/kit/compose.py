@@ -36,6 +36,9 @@ def run(folder):
             crop = a.sheet(st, view)
             bgc = np.median(np.concatenate([crop[0], crop[-1], crop[:, 0], crop[:, -1]]), 0)
             fs = np.abs(crop.astype(float) - bgc).max(-1) > a.spec.get("sheet_bg_tol", 24)
+            if a.spec.get("sheet_bg_mode", "border") != "border":
+                from .raster import background_mask
+                fs = ~background_mask(crop, a.spec.get("sheet_bg_tol",24), a.spec["sheet_bg_mode"])
             if a.spec.get("sheet_denoise", True):
                 fs = ndimage.binary_opening(fs, iterations=1)
             rgba = np.asarray(Image.open(f).convert("RGBA")).astype(float)

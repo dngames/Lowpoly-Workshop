@@ -44,6 +44,12 @@ def find_blender():
 
 
 def blender(script, *args):
+    if script == "render.py":
+        from .kit.asset import Asset
+        a = Asset(args[0])
+        if a.spec.get("render_engine") == "raster":
+            from .kit.preview import run
+            run(a, list(args[1:]));return
     cmd = [find_blender(), "-t", os.environ.get("LOWPOLY_BLENDER_THREADS", "2"), "-b", "--factory-startup", "--python-exit-code", "1", "-P", os.path.join(HERE, "kit", "blender", script), "--"]
     cmd += [str(x) for x in args]
     p = subprocess.run(cmd, capture_output=True, text=True)

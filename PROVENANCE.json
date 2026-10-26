@@ -10,7 +10,8 @@
       "pipeline.py adapted from lowpoly.py",
       "docs/legacy-*",
       "scripts/test_organic.py",
-      "scripts/test_character_cleanup.py"
+      "scripts/test_character_cleanup.py",
+      "2026-10 generic legacy helper/diagnostic refresh; see docs/legacy-port-audit.md"
     ],
     "rights_confirmation": {
       "date": "2026-10-11",
@@ -51,6 +52,12 @@
       "url": "https://github.com/img2threejs/img2threejs",
       "commit": "d508b596cb221f1509f6e50ab68fce275a5cfb44",
       "scope": "Feature inventory and ordered review concepts; no source code/assets copied or bundled"
+    },
+    {
+      "name": "Trompe",
+      "url": "https://github.com/Patch-gg/trompe",
+      "commit": "fd81fe4",
+      "scope": "Coverage planning and controlled painting concepts; no external source code, assets or image-service integration bundled"
     }
   ]
 }

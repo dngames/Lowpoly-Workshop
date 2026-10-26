@@ -3,6 +3,7 @@ from pathlib import Path
 import hashlib,json,zipfile
 from .spec import read_spec
 from . import __version__
+from .kit.atomic import replacing
 
 def add_tree(z,base,prefix,exclude=()):
     manifest={}
@@ -20,7 +21,7 @@ def package_asset(folder):
     out=folder/spec.get("out_dir","out");out.mkdir(parents=True,exist_ok=True)
     path=out/(spec["name"]+"_package.zip")
     from .approval import status
-    with zipfile.ZipFile(path,"w",zipfile.ZIP_DEFLATED) as z:
+    with replacing(str(path)) as temporary, zipfile.ZipFile(temporary,"w",zipfile.ZIP_DEFLATED) as z:
         hashes=add_tree(z,folder,"project",exclude=(spec.get("out_dir","out"),))
         hashes.update(add_tree(z,Path(__file__).parent,"toolkit/lowpoly_workshop"))
         # Only declared deliverables/review evidence; never recursively include previous archives.
@@ -45,7 +46,7 @@ def release(destination):
     if not (root/"pyproject.toml").exists():raise ValueError("Source releases require a source checkout")
     path=Path(destination).resolve();path.parent.mkdir(parents=True,exist_ok=True)
     if path.is_relative_to(root):raise ValueError("Write source release outside the package tree")
-    with zipfile.ZipFile(path,"w",zipfile.ZIP_DEFLATED) as z:
+    with replacing(str(path)) as temporary, zipfile.ZipFile(temporary,"w",zipfile.ZIP_DEFLATED) as z:
         hashes=add_tree(z,root,"Lowpoly-Workshop",exclude=("dist","build",".egg-info","out",".runtime","work",".pytest_cache","node_modules"))
         z.writestr("Lowpoly-Workshop/RELEASE-MANIFEST.json",json.dumps({"version":__version__,"files":hashes},indent=2))
     path.with_suffix(path.suffix+".sha256").write_text(hashlib.sha256(path.read_bytes()).hexdigest()+"  "+path.name+"\n")

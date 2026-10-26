@@ -34,7 +34,8 @@ Open http://127.0.0.1:8000. The viewer uses bundled Three.js locally. No CDN, ac
 - Parametric primitives, closed organic shells, conservative hidden-face cleanup and surface-projected wrapping.
 - Named pivots/sockets, rigid-node clips and optional generator-defined skeletal export.
 - Configurable budgets, topology, joint contact, clearance, fit/support, ground, materials, masks and decal checks.
-- Multi-view camera fitting and rendered comparisons.
+- Multi-view camera fitting, coverage-driven camera suggestions, independent review views and rendered comparisons.
+- Paint-class/component diagnostics and reusable closed animal/organic geometry helpers.
 - Optional feature checklist, source/evidence-bound staged review, saved findings and next-action guidance.
 - Actual-export review: back/underside, poses, clay/checker/wireframe, explicit and diagnostic close-ups.
 - Optional inferred reference views with original hashes and a provenance ledger.
@@ -49,3 +50,13 @@ The CLI executes a generator written by an artist or AI assistant. It does not r
 ## Documentation
 
 [Guided review](docs/guided-review.md) · [Quickstart](docs/quickstart.md) · [Contracts](docs/contracts.md) · [Repair recipes](docs/modelling.md) · [Repair demonstrations](docs/repair-demos.md) · [Comparison](docs/comparison.md) · [Benchmarks](docs/benchmark.md) · [Roadmap](docs/roadmap.md) · [References/providers](docs/references.md) · [Review/release](docs/review-release.md) · [Game adapters](docs/adapters.md) · [Migration](docs/migration.md) · [Testing](docs/testing.md) · [Licensing](docs/licensing.md)
+
+## Coverage, appearance and legacy parity
+
+`lowpoly ASSET coverage` suggests missing geometric observations and writes an independent CPU
+review view. `paint` compares supplied-reference colour classes; `pieces` draws connected parts.
+These diagnostics do not approve an asset or substitute for actual-export review.
+
+Read the [appearance workflow](docs/appearance-workflow.md), [build validation guide](docs/build-validation.md)
+and [legacy kit parity audit](docs/legacy-port-audit.md). The audit lists restored generic tools,
+newer Workshop equivalents and the consumer-specific code intentionally kept in adapters.

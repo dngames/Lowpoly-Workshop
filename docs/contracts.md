@@ -12,7 +12,7 @@ Generators provide `ATLAS`, `params(variant=None, overrides=None)` and `build(p)
 
 Outputs contain file, optional variant/scale/nodes/exclude/origin/kit_mask/clips/contract. File ends in .glb; blend and atlas companions are emitted beside it. Origin subtracts a named node's pivot for accessory-local output. Node selection preserves declared parents/empties.
 
-Profile selects portable or mobile. Per-output contract overrides: budget, pivot_tolerance, max_materials, square_atlas, mask_channels, ground, closed, pivots, sweep, attach. A relaxed policy does not add PBR authoring; the current material workflow is an opaque atlas.
+Profile selects portable or mobile. Per-output contract overrides: budget, pivot_tolerance, max_materials, square_atlas, mask_channels, ground, closed, pivots, sweep, attach. A relaxed policy does not add PBR authoring; the default material workflow is an opaque atlas; opt-in named-material vertex colours are described in adapters.md.
 
 Closed lists intended watertight solid nodes. Hollow containers can have watertight wall/floor material with inward cavity walls and an open mouth. Do not cap intentional openings arbitrarily. Thin flags do not excuse holes in a declared closed node.
 

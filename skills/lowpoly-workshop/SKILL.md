@@ -18,3 +18,5 @@ Build/check, then inspect actual-export front/profile/back/below and useful clos
 Use the generator's skin hook for skeletal exports and inspect target-runtime deformation. Ordinary rigid checks do not evaluate skinning. Preserve existing game contracts and add requirements through adapters.
 
 Prepare the local review page and checksummed bundle. Record approval only after user/artist acceptance of the current export; approval is hash-bound. Respect requests to review one model before the next. This skill grants no authorization to publish/share/create repositories.
+
+After fitting, use `lowpoly ASSET coverage` for geometric observation gaps and a held-out CPU review view. Read references/appearance-workflow.md, references/build-validation.md and references/legacy-port-audit.md. Coverage is not paint acceptance. Use `paint` for supplied-sheet class diagnostics and `pieces` for disconnected-component views. CPU palette proofs never substitute for actual-export/runtime review.

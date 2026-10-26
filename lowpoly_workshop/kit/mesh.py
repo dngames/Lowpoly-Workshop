@@ -208,3 +208,38 @@ def triangles(nodes, names=None):
 
 def tri_count(node):
     return sum(len(f[0]) - 2 for f in node["faces"])
+
+
+def triangulate_profile(points):
+    """Triangulate one simple, non-self-intersecting 2D profile, including concave caps.
+
+    Returns indices into the original profile. No repeated closing point or zero-length
+    edges; collinear points may be retained when they do not prevent a valid ear.
+    """
+    p = np.asarray(points, dtype=float)
+    if p.ndim != 2 or p.shape[1] != 2 or len(p) < 3 or not np.isfinite(p).all():
+        raise ValueError('A profile needs at least three finite 2D points')
+    cross = lambda a, b: a[0] * b[1] - a[1] * b[0]
+    scale = max(float(np.ptp(p, axis=0).max()), 1e-12)
+    epsilon = np.finfo(float).eps * scale * scale * 32
+    area = sum(cross(p[i], p[(i + 1) % len(p)]) for i in range(len(p)))
+    if abs(area) <= epsilon:
+        raise ValueError('Profile has zero area')
+    sign = 1 if area > 0 else -1
+    remaining, out = list(range(len(p))), []
+    while len(remaining) > 3:
+        for j, b in enumerate(remaining):
+            a, c = remaining[j - 1], remaining[(j + 1) % len(remaining)]
+            if cross(p[b] - p[a], p[c] - p[b]) * sign <= epsilon:
+                continue
+            def contains(k):
+                return all(cross(p[v] - p[u], p[k] - p[u]) * sign >= -epsilon
+                           for u, v in [(a, b), (b, c), (c, a)])
+            if any(contains(k) for k in remaining if k not in [a, b, c]):
+                continue
+            out.append([a, b, c])
+            remaining.pop(j)
+            break
+        else:
+            raise ValueError('Profile cannot be triangulated; check crossings or repeated points')
+    return out + [remaining]

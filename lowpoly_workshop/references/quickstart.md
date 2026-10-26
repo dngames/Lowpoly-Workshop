@@ -51,3 +51,18 @@ On macOS/Linux use equivalent environment variables, `.venv/bin/activate` and yo
 `KIT_BLENDER` or `BLENDER` selects the executable. `LOWPOLY_KIT_HOME` searches an existing install. `LOWPOLY_BLENDER_THREADS` defaults to 2, `LOWPOLY_FIT_WORKERS` to 4, and review `LOWPOLY_RENDER_SAMPLES` to 16. TEMP/TMP control temporary renders. Reduce review modes/views while iterating, then inspect all relevant angles before approval.
 
 Generators execute Python. Inspect unfamiliar source before running; project path validation is not a Python sandbox.
+
+## Official bpy alternative
+
+A dedicated Python environment with the official `bpy` wheel can serve as Blender on Linux.
+For the tested `bpy==4.5.15` wheel use Python 3.11 and NumPy 1.26, separately from the host
+analysis environment. Set `KIT_BLENDER` to an executable wrapper:
+
+```sh
+#!/bin/sh
+exec /path/to/bpy-env/bin/python /path/to/lowpoly_workshop/blender_module.py "$@"
+```
+
+The shim supports the pipeline's background/factory/script/error-code and thread flags. It
+is not Blender's interactive CLI. Run `lowpoly selftest --blender` with that wrapper before
+building assets; installing a wheel alone does not prove export/render compatibility.

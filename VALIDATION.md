@@ -1,4 +1,31 @@
-# Validation - 2026-10-11
+# Validation
+
+## 2026-10-26 — unreleased coverage and legacy parity update
+
+Observed locally on Linux with host Python 3.12, the official Blender 4.5.15 bpy module
+in its separate Python 3.11 environment, and the standalone Workshop launcher.
+
+- 119 core unit regressions and 6 inherited regressions pass.
+- Full Blender selftest passes: all starter exports, skeletal roundtrip, UV survival,
+  actual-export renders, and guided feature evidence. EGL warnings occurred during
+  headless rendering, but the render/check pipeline completed successfully.
+- A synthetic static-organic shell smoke passes closure, outward orientation, budgets and
+  source-bound preservation at 198 / 78 / 30 triangles. Articulated source is rejected.
+- A mixed-output smoke passes atlas → named-material vertex-colour → atlas exports in one
+  process, checks the image-free palette output and verifies cache reuse. All three
+  actual GLBs produce component diagnostic images.
+- A synthetic supplied-reference CLI regression runs coverage and paint diagnostics and
+  verifies that project source, reference image and fitted camera hashes stay unchanged.
+- The wheel builds, installs outside the checkout and passes its installed selftest;
+  new modules import successfully. Packaged code/docs/notices match the checkout.
+- Skill/package reference synchronization passes. No consumer artwork, model exports,
+  production screenshots or service credentials were imported.
+
+These are functional checks, not a comparative benchmark or artistic acceptance. No paid
+image service, target-game integration or new remote CI result is claimed. Older consumer
+bindings and the newer Workshop equivalents are documented in `docs/legacy-port-audit.md`.
+
+## Historical validation — 2026-10-11
 
 Version 0.3.0. Local environment: Windows, Python 3.12.14, Blender 4.5.14, bundled Three.js 0.186.1. Project, scratch, dependencies and generated output were on D:.
 

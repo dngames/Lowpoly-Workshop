@@ -43,7 +43,9 @@ def main():
             for bn,w in row:groups[bn].add([i],w,'REPLACE')
     bpy.context.scene.unit_settings.system='METRIC'
     bpy.ops.wm.save_as_mainfile(filepath=str(dest.with_suffix('.blend')))
-    bpy.ops.export_scene.gltf(filepath=str(dest),export_format='GLB',export_yup=True,export_skins=True,export_animations=False,export_extras=True,export_attributes=True,export_apply=False,export_all_influences=False)
+    from lowpoly_workshop.kit.atomic import replacing
+    with replacing(str(dest)) as temporary:
+        bpy.ops.export_scene.gltf(filepath=temporary,export_format='GLB',export_yup=True,export_skins=True,export_animations=False,export_extras=True,export_attributes=True,export_apply=False,export_all_influences=False)
     # Import the result again and verify an actual deformed pose stays finite.
     bpy.ops.wm.read_factory_settings(use_empty=True);bpy.ops.import_scene.gltf(filepath=str(dest))
     arms=[o for o in bpy.context.scene.objects if o.type=='ARMATURE']

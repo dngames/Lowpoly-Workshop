@@ -106,14 +106,50 @@ def render(tris, cells, cam, W, H, shade=True, light=(-0.4, 0.75, 0.55), palette
     return rgb, cmap, zbuf
 
 
-def classify(img, classes, bg_tol=24, line_class=None, line_lum=40):
+def background_mask(img, tolerance=24, mode='border'):
+    """Background mask; opt-in gradient mode fits the sheet's empty border strips.
+
+    Turnaround sheets often use a grey studio gradient. A single median colour
+    mistakes its darker corners for geometry, while raising the tolerance loses
+    cream plaster. Fit a robust quadratic field without sampling the object.
+    """
+    im = img.astype(float)
+    if mode == 'blue':
+        # Opt-in for warm wood/neutral stone against a blue studio backdrop.
+        # Blue-tinted floor shadows are background too. Do not use for assets
+        # containing blue/teal parts: inspect the full-view masks first.
+        return (im[...,2]-im[...,0]>12)&(im[...,1]-im[...,0]>6)
+    border = np.concatenate([im[0], im[-1], im[:, 0], im[:, -1]])
+    if mode == 'border':
+        bg = np.median(border, 0)
+    elif mode == 'gradient':
+        h,w = im.shape[:2]
+        if min(h,w)<32:raise ValueError('Gradient masking needs crops at least 32 pixels across')
+        y,x = np.mgrid[-1:1:complex(h), -1:1:complex(w)]
+        field = np.stack((np.ones_like(x),x,y,x*x,x*y,y*y),-1)
+        # Inset past panel rules; robust rejection excludes props near an edge.
+        iy,ix = np.indices((h,w))
+        edge = np.minimum.reduce([iy,ix,h-1-iy,w-1-ix])
+        sample = (edge>=6)&(edge<14)
+        a,b = field[sample][::2],im[sample][::2]
+        keep = np.ones(len(a),bool)
+        for _ in range(4):
+            coeff = np.linalg.lstsq(a[keep],b[keep],rcond=None)[0]
+            residual = np.abs(a@coeff-b).max(-1)
+            keep = residual <= max(6.,float(np.quantile(residual,.85)))
+        bg = field@coeff
+    else:
+        raise ValueError(f'unknown sheet background mode: {mode}')
+    return np.abs(im-bg).max(-1)<tolerance
+
+
+
+def classify(img, classes, bg_tol=24, line_class=None, line_lum=40, bg_mode="border"):
     """Sheet pixels -> class ids by nearest palette colour; 0 = background (taken from the image border).
 
     classes: {class id: [hex, ...]}; line_class: class for dark ink pixels (None keeps nearest colour)."""
     im = img.astype(float)
-    border = np.concatenate([im[0], im[-1], im[:, 0], im[:, -1]])
-    bgc = np.median(border, 0)
-    bgm = np.abs(im - bgc).max(-1) < bg_tol
+    bgm = background_mask(img, bg_tol, bg_mode)
     cents, owner = [], []
     for k, hs in classes.items():
         for h in hs:

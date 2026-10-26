@@ -46,8 +46,19 @@ def validate(spec, root):
         seen.add(p)
         if out.get("scale", 1) <= 0 or not math.isfinite(out.get("scale", 1)):
             raise ValueError("scale must be finite and positive")
+        surfaces = out.get("vertex_surfaces")
+        if surfaces is not None:
+            if not isinstance(surfaces, dict) or not surfaces or not all(isinstance(k,str) and isinstance(v,str) and k and v for k,v in surfaces.items()):
+                raise ValueError("vertex_surfaces must map palette cells to material names")
+            if out.get("kit_mask"):
+                raise ValueError("vertex_surfaces cannot be combined with an atlas kit_mask")
+        if out.get("runtime_uv") and not surfaces:
+            raise ValueError("runtime_uv requires vertex_surfaces")
         if out.get("kit_mask"):
             local_path(p.parent, out["kit_mask"])
+        view_m = out.get("contract", {}).get("view_m")
+        if view_m is not None and (not isinstance(view_m, (int, float)) or not math.isfinite(view_m) or view_m <= 0):
+            raise ValueError("view_m must be finite and positive")
         if out.get("skin"):
             raise ValueError("Use the skin command for skeletal exports; ordinary outputs are rigid")
     for st in spec.get("sets", {}).values():

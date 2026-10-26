@@ -15,6 +15,7 @@ from mathutils import Matrix
 
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from lowpoly_workshop.kit.atomic import replacing
 from lowpoly_workshop.kit import rig  # noqa: E402
 from lowpoly_workshop.kit.asset import Asset  # noqa: E402
 from lowpoly_workshop.kit.atlas import write_png  # noqa: E402
@@ -69,10 +70,13 @@ def node_object(name, node, mat, atlas):
 
 
 def mesh_object(name, node, mat, atlas):
-    verts, index, faces, uvs, thin = [], {}, [], [], []
+    verts, index, faces, uvs, thin, cells = [], {}, [], [], [], []
     pv, R = node["pivot"], node.get("rot", np.eye(3))
     for pts, cell, uv, is_thin in node["faces"]:
         fuv = atlas.face_uvs(pts, cell, uv)
+        if node.get("runtime_uv"):
+            from lowpoly_workshop.kit.runtime_uv import face_uvs
+            fuv = face_uvs(pts, uv, node["vertex_surfaces"][cell])
         ids = []
         for p in pts:
             key = (round(p[0], 5), round(p[1], 5), round(p[2], 5), bool(is_thin))
@@ -92,6 +96,7 @@ def mesh_object(name, node, mat, atlas):
                 continue
             faces.append(tri)
             uvs.append([fuv[0], fuv[corner], fuv[corner + 1]])
+            cells.append(cell)
     me = bpy.data.meshes.new(name)
     V = np.array(verts) @ C4[:3, :3].T
     me.from_pydata(V.tolist(), [], faces)
@@ -102,12 +107,41 @@ def mesh_object(name, node, mat, atlas):
             uvl.data[poly.loop_start + k].uv = (u, 1.0 - v)
         poly.use_smooth = bool(node.get("smooth", False))
     # Keep UV corner data attached if validation removes an overlapping face.
+    cell_index = me.attributes.new("CellIndex", "INT", "FACE")
+    cell_index.data.foreach_set("value", list(range(len(faces))))
     me.validate(clean_customdata=False)
     attr = me.attributes.new("_THIN", "FLOAT", "POINT")
     attr.data.foreach_set("value", thin)
     if node.get("smooth", False):
         me.set_sharp_from_angle(angle=np.pi)
-    me.materials.append(mat)
+    if node.get("vertex_surfaces"):
+        # Opt-in consumer-independent palette export: COLOR_0 and named runtime surfaces, no atlas.
+        surfaces = node["vertex_surfaces"]
+        names = sorted({surfaces[cell] for cell in cells})
+        for surface_name in names:
+            surface = bpy.data.materials.get(surface_name) or bpy.data.materials.new(surface_name)
+            surface.use_nodes = True
+            bsdf = surface.node_tree.nodes["Principled BSDF"]
+            colour = surface.node_tree.nodes.get("PaletteColor")
+            if colour is None:
+                colour = surface.node_tree.nodes.new("ShaderNodeVertexColor")
+                colour.name = "PaletteColor"
+                colour.layer_name = "Color"
+                surface.node_tree.links.new(colour.outputs["Color"], bsdf.inputs["Base Color"])
+            bsdf.inputs["Roughness"].default_value = 0.85
+            me.materials.append(surface)
+        colour = me.color_attributes.new(name="Color", type="FLOAT_COLOR", domain="CORNER")
+        for poly in me.polygons:
+            cell = cells[me.attributes["CellIndex"].data[poly.index].value]
+            poly.material_index = names.index(surfaces[cell])
+            rgb = np.asarray(atlas.rgb_of(cell), float) / 255
+            linear = np.where(rgb <= .04045, rgb / 12.92, ((rgb + .055) / 1.055) ** 2.4)
+            for j in poly.loop_indices:
+                colour.data[j].color = (*linear, 1.0)
+        me.color_attributes.active_color = colour
+    else:
+        me.materials.append(mat)
+    me.attributes.remove(me.attributes["CellIndex"])
     ob = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(ob)
     ob.rotation_mode = "QUATERNION"
@@ -180,10 +214,15 @@ def build_output(a, out):
     p = a.params(variant)
     nodes_all = a.build(variant, k)
     want = [n for n in nodes_all if n in out.get("nodes", list(nodes_all)) and n not in out.get("exclude", [])]
-    nodes = {n: nodes_all[n] for n in want}
+    nodes = {n: dict(nodes_all[n]) for n in want}
     origin = nodes_all[out["origin"]]["pivot"] if out.get("origin") else np.zeros(3)
     atlas = a.gen.ATLAS
-    mat = material(atlas, folder, stem, out.get("kit_mask"))
+    surfaces = out.get("vertex_surfaces")
+    if surfaces:
+        for nd in nodes.values():
+            nd["vertex_surfaces"] = surfaces
+            nd["runtime_uv"] = bool(out.get("runtime_uv", False))
+    mat = None if surfaces else material(atlas, folder, stem, out.get("kit_mask"))
     objs = {n: node_object(n, nodes[n], mat, atlas) for n in want}
     W = world_matrices(nodes_all, {}, origin)
     for n in want:                       # generator order lists parents before children
@@ -204,13 +243,14 @@ def build_output(a, out):
         key_clips(objs, nodes_all, clips, origin)
     bpy.context.scene.unit_settings.system = "METRIC"
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(folder, stem + ".blend"))
-    bpy.ops.export_scene.gltf(
-        filepath=path, export_format="GLB", export_yup=True, export_apply=True, export_extras=True,
-        export_attributes=True, export_texcoords=True, export_normals=True, export_tangents=False,
-        export_materials="EXPORT", export_image_format="AUTO", export_cameras=False, export_lights=False,
-        export_animations=bool(clips), export_animation_mode="NLA_TRACKS", export_anim_slide_to_zero=True,
-        export_optimize_animation_size=False, export_optimize_animation_keep_anim_object=True,
-        export_skins=False, export_morph=False, use_selection=False)
+    with replacing(path) as temporary:
+        bpy.ops.export_scene.gltf(
+            filepath=temporary, export_format="GLB", export_yup=True, export_apply=True, export_extras=True,
+            export_attributes=True, export_texcoords=True, export_normals=True, export_tangents=False,
+            export_materials="EXPORT", export_image_format="AUTO", export_cameras=False, export_lights=False,
+            export_animations=bool(clips), export_animation_mode="NLA_TRACKS", export_anim_slide_to_zero=True,
+            export_optimize_animation_size=False, export_optimize_animation_keep_anim_object=True,
+            export_skins=False, export_morph=False, use_selection=False)
     for f in os.listdir(folder):
         if f.endswith(".blend1"):
             os.remove(os.path.join(folder, f))

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Added geometric coverage suggestions and an independent CPU review view, with confidence-aware visibility and input hashes. Added controlled appearance-painting guidance. Audited the older kit and restored generic animal/organic primitives, outward-orientation checks, paint/component/depth-conflict diagnostics, gradient-sheet masks, concave cap triangulation, optional CPU proofs, opt-in named-material vertex-colour exports, guarded static-organic shell LODs, atomic outputs and the official bpy launcher. Consumer assets, rig names and runtime material policy remain outside the portable core.
+
 ## 0.3.0 - guided feature review
 
 Optional feature declarations link original/inferred reference evidence to exported model parts and required view/mode/pose combinations. Automatic close-ups and reference crops appear in the offline page. Saved proportions/construction/appearance/motion-export stages enforce current build, render and check evidence, required feature decisions and earlier-stage acceptance. Changed evidence invalidates guided approval; legacy projects remain compatible. All five starters accept --guided. No automated artistic score or new mesh-generation backend.
