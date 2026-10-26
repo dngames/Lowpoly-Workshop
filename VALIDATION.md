@@ -1,5 +1,12 @@
 # Validation
 
+## 2026-10-26 — textured Station Rest House remodel
+
+- 132 core regressions pass, including painted texture variation, closed/outward tile relief, facade positions, canopy support reach and bench seating. Full Blender selftest passes export/skeletal/UV roundtrips and actual-export renders.
+- The rebuilt portable asset passes all 36 native checks at 34,680 / 5,132 / 1,212 / 28 triangles with an embedded 2048-square painted atlas. Each structural primitive passes directed-edge/closed-volume orientation checks; the complete overlapping assembly is not asserted to be a single watertight solid.
+- Original design input remains byte-identical. New material artwork, its prompt, packed pixels and provenance are included. The actual-export before/after panel records separate source/model/image hashes; no artistic approval is asserted.
+- The separate Tiny Tour candidate uses its existing named-material and physical-UV contract because the runtime replaces imported materials. Three focused loader tests, targeted lint and typecheck pass in the consuming repository; the live world asset is not replaced.
+
 ## 2026-10-26 — reference-first example presentation
 
 - The Station Rest House original six-view sheet and prompt are copied byte-for-byte from the recorded Tiny Tour commit. The image hash matches the registered original, docs copy, local viewer and source bundle.

@@ -18,7 +18,9 @@
   "sets": {},
   "geometry_sources": [
     "gen.py",
-    "inputs/construction.json"
+    "station_materials.py",
+    "inputs/construction.json",
+    "inputs/materials.npz"
   ],
   "camera_target": [
     0,
@@ -30,33 +32,33 @@
       "file": "out/station_rest_house_LOD0.glb",
       "variant": "0",
       "contract": {
-        "budget": 4000
+        "budget": 42000
       }
     },
     {
       "file": "out/station_rest_house_LOD1.glb",
       "variant": "1",
       "contract": {
-        "budget": 1200
+        "budget": 12000
       }
     },
     {
       "file": "out/station_rest_house_LOD2.glb",
       "variant": "2",
       "contract": {
-        "budget": 300
+        "budget": 3000
       }
     },
     {
       "file": "out/station_rest_house_far.glb",
       "variant": "3",
       "contract": {
-        "budget": 60
+        "budget": 80
       }
     }
   ],
   "review": {
-    "size": 384,
+    "size": 512,
     "views": [
       "front",
       "side",

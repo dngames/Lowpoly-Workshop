@@ -13,7 +13,7 @@ from lowpoly_workshop.templates import create
 def create_project(destination):
     folder=create(destination,'static-prop','Tiny Tour Station Rest House')
     source=Path(__file__).resolve().parents[1]/'lowpoly_workshop/assets/examples/station-rest-house'
-    for name in ('gen.py','asset.json','provenance.json','README.md'):
+    for name in ('gen.py','station_materials.py','asset.json','provenance.json','README.md'):
         shutil.copyfile(source/name,folder/name)
     shutil.copytree(source/'inputs',folder/'inputs',dirs_exist_ok=True)
     shutil.copytree(source/'ref',folder/'ref',dirs_exist_ok=True)

@@ -66,7 +66,7 @@
       "license": "MIT",
       "basis": "Owner explicitly requested inclusion in the Workshop.",
       "details": "lowpoly_workshop/assets/examples/station-rest-house/provenance.json",
-      "scope": "Adapted procedural building source, original palette, historical 2D input sheet and its prompt; no game textures or runtime integration."
+      "scope": "Owner-requested remodel with editable procedural geometry, original generated material art and prompt, historical 2D building input and prompt; runtime shader conversion stays in the consuming game."
     }
   ]
 }

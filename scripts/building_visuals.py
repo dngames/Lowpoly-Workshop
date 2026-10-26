@@ -25,7 +25,7 @@ def run(project,images):
     evidence={'source':'Tiny Tour first-party building, owner-requested Workshop adaptation',
               'source_commit':json.loads((root/'provenance.json').read_text())['source_commit'],
               'visual_approval':'not asserted','triangles':counts,
-              'source_sha256':{n:digest(root/n) for n in ['gen.py','asset.json','inputs/construction.json','provenance.json']},
+              'source_sha256':{n:digest(root/n) for n in ['gen.py','station_materials.py','asset.json','inputs/construction.json','inputs/materials.npz','inputs/material-sheet.png','provenance.json']},
               'original_reference':{'path':'ref/station_rest_house_v01.png','sha256':digest(root/'ref/station_rest_house_v01.png'),'origin':'Historical 2D design input; not an exported-model render'},
               'checks_passed':all(c['ok'] for c in json.loads((root/'out/check.json').read_text())), 'views':[]}
     for i,(label,lod,view) in enumerate(tiles):

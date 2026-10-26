@@ -3,9 +3,9 @@
   "model": "station_rest_house",
   "height": 8,
   "budgets": [
-    4000,
-    1200,
-    300,
-    60
+    42000,
+    12000,
+    3000,
+    80
   ]
 }

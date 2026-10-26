@@ -3,7 +3,8 @@
 The README leads with the historical 2D design input, then the actual model. Image provenance is explicit:
 
 - `images/station-rest-house-original.png`: the unchanged Tiny Tour six-view design sheet. The original prompt, source commit and image hash are bundled under `assets/examples/station-rest-house/ref` and `provenance.json`. This was historical AI-generated design art used as modelling input; it is not a mesh render. The provider/model is not recorded here.
-- `images/create-building.png`: actual exported building views. The standalone project registers its original in `asset.json` and shows it in the viewer. See [building walkthrough](create-building.md).
+- `images/station-rest-house-remodel.png`: old versus remodelled actual-export views, with separate source/model/image hashes. Reproduce with `python scripts/building_comparison.py OLD_PROJECT NEW_PROJECT`.
+- `images/create-building.png`: current textured building views. The standalone project registers its original in `asset.json` and shows it in the viewer. See [building walkthrough](create-building.md).
 - `images/character-design-notes.svg`, `starter-design-notes.svg`, `repair-design-notes.svg`: newly authored explanatory construction diagrams for procedural examples. They were made after those models. No historical 2D originals existed, so these are never described as originals or used as proof of reference matching. Regenerate with `python scripts/design_diagrams.py`.
 - `images/create-character.png` and `create-character-high.png`: actual procedural character exports, shown after their written-brief/construction notes. The denser model is not a demonstration of detailed sculpted clothing or reference fidelity.
 

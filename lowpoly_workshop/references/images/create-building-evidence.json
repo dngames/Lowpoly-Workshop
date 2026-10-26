@@ -3,16 +3,19 @@
   "source_commit": "e79ce5cb45a2d2ed72a7eb12722745253d136b83",
   "visual_approval": "not asserted",
   "triangles": [
-    685,
-    517,
-    201,
+    34680,
+    5132,
+    1212,
     28
   ],
   "source_sha256": {
-    "gen.py": "ffc0febf1b42b430435a9bf677adb37dc8fb82be0b3d4d1f6d7fd9189a03fe0b",
-    "asset.json": "e605315ad387dc7d8499edcb4c18bf94772aaa672ec0f4d293e5ea5b529c92c3",
-    "inputs/construction.json": "e46ea61f46788349b577a72677c8d3a4896fb9eeb31318eaebc906b4443acb23",
-    "provenance.json": "15fc2bfd3d9305e60cccf63cb2d6d80a951ca3297cef47d47511825ea39f506e"
+    "gen.py": "23f844bcfc3ef488f5de3781133b5d5988971ff050ede3bf2d6bcb21857ac09a",
+    "station_materials.py": "03df3ce1c0da1761911e4912421c0a67f436ff3b177de9d1348f685967a1d37d",
+    "asset.json": "b4937fe7ef8b5dd6b33f3905c0032cc6b41c056483f3e367e568bd66e4e973e5",
+    "inputs/construction.json": "114e55770eb707ec6f15e1f2e68a7de986c26082584c68a0fdac2ab3364de570",
+    "inputs/materials.npz": "a2d2b83ff9a0de80330bc252ab9975341b50877925791dad761f18433b62192c",
+    "inputs/material-sheet.png": "5e2c754503edcb282bbc687e17744c0cfa504a76288052209003684d2851eb36",
+    "provenance.json": "b4e6fe55b8a2978b040b09de0037f81cabd30c0a6a9c55329c061ab1d5eb34cb"
   },
   "original_reference": {
     "path": "ref/station_rest_house_v01.png",
@@ -23,32 +26,32 @@
   "views": [
     {
       "output": "out/station_rest_house_LOD0.glb",
-      "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
+      "glb_sha256": "a67ddec1b81cdc8c96697e37db350c1ae4e8349e837c8d9b0bca2136f54928d9",
       "view": "quarter",
       "image": "out/review/station_rest_house_LOD0-rest-whole-textured-quarter.png",
-      "image_sha256": "1552e37672118e3d577f0b4fb8e62dca544b7ee3f760defc7a4b34bf0b171a74"
+      "image_sha256": "60eee09a927265437fbdd748f72a175bce38c60767fcbcf6eb2dc0fb4a63d038"
     },
     {
       "output": "out/station_rest_house_LOD0.glb",
-      "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
+      "glb_sha256": "a67ddec1b81cdc8c96697e37db350c1ae4e8349e837c8d9b0bca2136f54928d9",
       "view": "front",
       "image": "out/review/station_rest_house_LOD0-rest-whole-textured-front.png",
-      "image_sha256": "eb07d9ce96ab89e784b4326626fc076b99fddb770add74cd1bdce7cb577246be"
+      "image_sha256": "7665bfa9960ec02fcef6855efd6aee26fd41087ae9bc159fb15dfb15463a1e04"
     },
     {
       "output": "out/station_rest_house_LOD0.glb",
-      "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
+      "glb_sha256": "a67ddec1b81cdc8c96697e37db350c1ae4e8349e837c8d9b0bca2136f54928d9",
       "view": "back",
       "image": "out/review/station_rest_house_LOD0-rest-whole-textured-back.png",
-      "image_sha256": "9588c41ee053be90cbc13c06358a3e24cb210d25ed29e2a688922dadba046d4d"
+      "image_sha256": "3dd97dbfc61bc9cc98bd17f1019b7968308c630cc70b530713c188da91cda777"
     },
     {
       "output": "out/station_rest_house_LOD2.glb",
-      "glb_sha256": "209091b7d6987555d7ed429aefa8eaecb2d6424c3b2c5fb64002cb819eaa6a03",
+      "glb_sha256": "0cf5adca34b0750d113ba8ee05a3d5a57423a451f71becb594f19cb01e873748",
       "view": "quarter",
       "image": "out/review/station_rest_house_LOD2-rest-whole-textured-quarter.png",
-      "image_sha256": "22548d202a07edd8347c7c4a9aa6be689134b723c79055305c1d440b8a41933d"
+      "image_sha256": "373c1a1f3d520056dfc6a6e02771e0955eda9e5fce56d4976f0c6e5378cbdb11"
     }
   ],
-  "contact_sheet_sha256": "be106bcc85b06e0b51cf78da08183f210c7726bc2706e5b856abda3e0d5b2a25"
+  "contact_sheet_sha256": "d35fd2313171aa407831bdab35615df1035f3086276a737a2036a27d3a179d8e"
 }

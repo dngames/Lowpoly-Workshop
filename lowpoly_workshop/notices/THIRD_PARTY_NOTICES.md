@@ -5,3 +5,5 @@
 - Declared, not vendored: NumPy, SciPy, Pillow and opencv-python-headless. Blender is not bundled. Their upstream licenses/requirements apply.
 
 - Tiny Tour Yuzu Station Rest House: first-party dngames procedural architecture, included at the owner’s explicit request under this repository’s MIT license. Source commit, hashes and adaptation scope are recorded in `lowpoly_workshop/assets/examples/station-rest-house/provenance.json`. Its original AI-generated 2D design sheet and prompt are included at the owner’s explicit request; game textures and runtime placement code are excluded.
+
+- Station Rest House remodel materials: new original material artwork generated with the OpenAI image tool for this owner-requested example. The material sheet, prompt and derivation are included with the example; they are separate from its historical 2D design reference.

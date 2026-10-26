@@ -9,11 +9,11 @@
   "workshop_license": "MIT",
   "authorization": "Repository owner explicitly requested the Tiny Tour building and its original 2D design sheet in Workshop.",
   "adaptation": [
-    "Standalone Workshop imports replace private kit bootstrap.",
-    "Only the Station Rest House branch is retained; unrelated building generators are excluded.",
-    "All four original geometry levels, named nodes, palette and dimensions are retained.",
-    "Original 2D sheet and its prompt are included; fitted cameras, game textures and runtime placement code remain excluded.",
-    "Thin LOD2 window faces are registered as features for checks; their geometry is unchanged."
+    "Original Tiny Tour design sheet and its prompt remain byte-identical.",
+    "Owner-requested geometry remodel: curved closed roof tiles, segmented ridge caps, masonry, exposed timber, framed windows and terrace joinery.",
+    "Standalone Workshop exports embed an original painted texture atlas.",
+    "Four detail levels retain wall footprint, base-centred origin and source node names; geometry and budgets supersede the earlier sparse port.",
+    "Game runtime uses a separate consuming-project named-surface/vertex-colour adapter; no game shader policy is added to Workshop core."
   ],
   "artistic_approval": "not asserted for this export",
   "original_reference": {
@@ -23,5 +23,28 @@
     "prompt_path": "ref/station_rest_house_v01.prompt.txt",
     "origin": "Historical AI-generated 2D design sheet used as the original modelling input; provider/model not recorded here.",
     "note": "Original means the prior design input, not an export of this mesh. Copied byte-for-byte from the recorded Tiny Tour commit."
+  },
+  "remodel": {
+    "date": "2026-10-26",
+    "base_workshop_commit": "ba03ab3",
+    "triangle_counts": [
+      34680,
+      5132,
+      1212,
+      28
+    ],
+    "budgets": [
+      42000,
+      12000,
+      3000,
+      80
+    ],
+    "material_source": "inputs/material-sheet.png",
+    "material_source_sha256": "5e2c754503edcb282bbc687e17744c0cfa504a76288052209003684d2851eb36",
+    "material_prompt": "inputs/material-sheet.prompt.txt",
+    "provider": "OpenAI image generation tool",
+    "model": "not recorded by tool",
+    "material_derivation": "Four quadrants resized to 512-square NumPy arrays; source-generated paint crops/tints provide per-surface atlas cells. Artwork is new material art, not the historical 2D building reference.",
+    "artistic_approval": "pending owner review"
   }
 }

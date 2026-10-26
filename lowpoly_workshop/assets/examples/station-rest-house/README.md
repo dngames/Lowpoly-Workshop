@@ -1,20 +1,19 @@
-# Tiny Tour: Yuzu Station Rest House
+# Tiny Tour: textured Yuzu Station Rest House remodel
 
-First-party Tiny Tour architecture, included at the repository owner's request.
-See `provenance.json` for the source commit, hashes and adaptation notes.
-Released in Workshop under its MIT license. The original 2D design sheet and prompt are included in `ref/` and registered in
-`asset.json`. Game textures, branding atlases and runtime placement code are excluded.
+Original 2D design → editable architectural geometry → painted materials → actual GLB review.
+The historical six-view sheet and prompt are in `ref/`; new material art, its prompt and
+packed pixels are in `inputs/`. `provenance.json` records source hashes and the remodel.
 
-A 14 x 9 m two-storey rest house, with a hipped roof and front gable, covered
-terrace, four canopy supports, three benches, framed windows and a chimney.
-All four source detail levels are retained: 685 / 517 / 201 / 28 triangles.
-The far proxy deliberately omits terrace furniture and facade openings.
-Metres, +Y up, street/front +Z; origin at the base centre.
+Wall footprint 14 x 9 m, +Y up, +Z street, origin at ground-centred base. The model adds
+closed curved roof tiles and ridge caps, bevelled timber and stone, framed glazing,
+terrace braces and slatted benches. Detail levels: 34,680 / 5,132 / 1,212 / 28 triangles.
+The nearer-level budget is intentionally increased; inspect performance in the intended game.
 
-Copy this directory to an empty workspace and run `lowpoly PATH all`, or use
-`python scripts/building_example.py work/station-rest-house` from the source checkout.
-Read `docs/create-building.md` for the walkthrough. Geometry, palette and detail
-policy are editable in `gen.py`; budget metadata is in `inputs/construction.json`.
-The generator checks individual closed primitives before hidden-face removal;
-whole cleaned assemblies are not claimed to be watertight single shells.
-No artistic approval is asserted for the Workshop export.
+Copy the folder into an empty workspace and run `lowpoly PATH all`, or use
+`python scripts/building_example.py work/station-rest-house` in the source checkout.
+`gen.py` authors geometry; `station_materials.py` builds the embedded 2048-square atlas.
+The generator checks each closed primitive; the overlapping assembly is not declared
+a single watertight solid. The portable default is the painted atlas. Runtime named-surface
+conversion belongs to the game adapter, since Tiny Tour replaces imported materials.
+
+MIT first-party example included at the owner's request. No artistic approval is asserted.
