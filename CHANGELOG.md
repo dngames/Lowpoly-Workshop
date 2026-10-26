@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Added an original trail-guide character tutorial with editable source, a rigid-node greeting, pose/contact regressions and reproducible actual-export pictures.
+
 Added geometric coverage suggestions and an independent CPU review view, with confidence-aware visibility and input hashes. Added controlled appearance-painting guidance. Audited the older kit and restored generic animal/organic primitives, outward-orientation checks, paint/component/depth-conflict diagnostics, gradient-sheet masks, concave cap triangulation, optional CPU proofs, opt-in named-material vertex-colour exports, guarded static-organic shell LODs, atomic outputs and the official bpy launcher. Consumer assets, rig names and runtime material policy remain outside the portable core.
 
 ## 0.3.0 - guided feature review

@@ -20,6 +20,14 @@ Turn your references and modelling decisions into a Python generator, a Blender 
 
 Workshop executes your generator; it does not reconstruct arbitrary images into meshes by itself. Optional image tools can suggest missing design views, with their provenance kept separate from supplied references.
 
+## Create your first character
+
+Go beyond the basic starter: build an original trail guide with rounded forms, a face, cap, backpack and a looping greeting. Edit its dimensions and colours, then inspect the exported joints and poses.
+
+![The trail-guide character shown from the side and back, plus a waving pose, rendered from its actual GLB.](docs/images/create-character.png)
+
+**[Follow the character walkthrough →](docs/create-character.md)** · Editable source included · No image-generation account needed
+
 ## See a repair
 
 A mesh can be closed and still fit badly. Here a flat fringe is replaced with a surface-wrapped patch; front, side and underside views make the difference visible.
@@ -71,6 +79,7 @@ Use it directly or give your modelling assistant the [Workshop skill](lowpoly_wo
 
 | Start here | Go deeper |
 |---|---|
+| [Create a character](docs/create-character.md) | [Character example source](lowpoly_workshop/assets/examples/trail-guide) |
 | [Quickstart](docs/quickstart.md) | [Generator and export contracts](docs/contracts.md) |
 | [Guided review](docs/guided-review.md) | [Modelling and repair recipes](docs/modelling.md) |
 | [Coverage and appearance](docs/appearance-workflow.md) | [Build validation](docs/build-validation.md) |

@@ -24,3 +24,6 @@ include = ["lowpoly_workshop*"]
 
 [tool.setuptools.package-data]
 lowpoly_workshop = ["assets/**/*", "profiles/*.json", "viewer/**/*", "schemas/*.json", "notices/*", "references/*.md", "references/images/*", "SKILL.md"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["**/__pycache__/*", "**/*.pyc", "**/*.blend1"]

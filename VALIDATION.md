@@ -1,5 +1,12 @@
 # Validation
 
+## 2026-10-26 — character tutorial
+
+- 123 core unit regressions pass, including closed character geometry, editable height/ground contact, and sampled greeting attachment/head clearance.
+- Full Blender selftest passes export roundtrips, skeletal/UV checks and actual-export renders; headless EGL warnings did not prevent completion.
+- The original trail-guide example builds and passes native export checks at 1,010 triangles. Its review contains 12 actual-export views across rest, half-raised and waving poses; page and source package generation complete.
+- Tutorial pictures carry source/spec, exported GLB and image hashes. They record evidence, not artistic acceptance. The example uses rigid nodes, with no skinning, retargeting or target-game integration claim.
+
 ## 2026-10-26 — unreleased coverage and legacy parity update
 
 Observed locally on Linux with host Python 3.12, the official Blender 4.5.15 bpy module

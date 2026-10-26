@@ -1,0 +1,36 @@
+{
+  "source": "original procedural character example",
+  "visual_approval": "not asserted",
+  "generator_sha256": "57f8d7b69357c1b9c54211c5ca105a774b63f1b3bad4804f827a192bb9d46918",
+  "asset_spec_sha256": "873e55d9a026ca8a0a6c19f3c56c4c3e212ba9a95db39ec9d67cf290198f586c",
+  "glb_sha256": "b394b65aa7c50309cf4471c74c416711f3fb0ff766cfcabf0a75220a5abe9b2a",
+  "triangles": 1010,
+  "checks_passed": true,
+  "views": [
+    {
+      "pose": "rest",
+      "view": "quarter",
+      "image": "out/review/guide-rest-whole-textured-quarter.png",
+      "image_sha256": "154047f6d550f674744a8864f2c6182b6a9d67ccf493effd85f2701dabe92e3a"
+    },
+    {
+      "pose": "rest",
+      "view": "side",
+      "image": "out/review/guide-rest-whole-textured-side.png",
+      "image_sha256": "0855a68ebe39cd0beec3d1a6d79d170e9a307ff03a381bd35772ba39dca84645"
+    },
+    {
+      "pose": "rest",
+      "view": "back",
+      "image": "out/review/guide-rest-whole-textured-back.png",
+      "image_sha256": "54cafabc3f19f803f68a8beea05da94e6595ff8b14954f2e528fc15fbfc4b092"
+    },
+    {
+      "pose": "wave",
+      "view": "quarter",
+      "image": "out/review/guide-wave-whole-textured-quarter.png",
+      "image_sha256": "b79ff8f2857450862fd50dc43e9d9eb761271d5bb3ce852d26396d88dc370bf8"
+    }
+  ],
+  "contact_sheet_sha256": "8e2cef63054ab4983ecc88abefe54bb52fbcc6243a47286be58e0ab0f4b2910a"
+}
