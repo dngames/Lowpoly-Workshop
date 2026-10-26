@@ -1,0 +1,63 @@
+{
+  "schema_version": 2,
+  "name": "station-rest-house",
+  "title": "Tiny Tour: Yuzu Station Rest House",
+  "kind": "static-prop",
+  "profile": "portable",
+  "generator": "gen.py",
+  "out_dir": "out",
+  "references": [],
+  "sets": {},
+  "geometry_sources": [
+    "gen.py",
+    "inputs/construction.json"
+  ],
+  "camera_target": [
+    0,
+    4,
+    0
+  ],
+  "outputs": [
+    {
+      "file": "out/station_rest_house_LOD0.glb",
+      "variant": "0",
+      "contract": {
+        "budget": 4000
+      }
+    },
+    {
+      "file": "out/station_rest_house_LOD1.glb",
+      "variant": "1",
+      "contract": {
+        "budget": 1200
+      }
+    },
+    {
+      "file": "out/station_rest_house_LOD2.glb",
+      "variant": "2",
+      "contract": {
+        "budget": 300
+      }
+    },
+    {
+      "file": "out/station_rest_house_far.glb",
+      "variant": "3",
+      "contract": {
+        "budget": 60
+      }
+    }
+  ],
+  "review": {
+    "size": 384,
+    "views": [
+      "front",
+      "side",
+      "back",
+      "quarter"
+    ],
+    "modes": [
+      "textured"
+    ],
+    "regions": []
+  }
+}

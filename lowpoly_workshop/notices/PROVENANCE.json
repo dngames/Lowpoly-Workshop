@@ -42,8 +42,8 @@
   ],
   "excluded": [
     "consumer artwork and reference sheets",
-    "consumer models and textures",
-    "consumer source code and staging scripts",
+    "consumer models and textures (except the explicitly documented Station Rest House example)",
+    "consumer source code and staging scripts (except the explicitly documented Station Rest House example)",
     "consumer-specific profiles and adapter contracts"
   ],
   "design_references": [
@@ -58,6 +58,15 @@
       "url": "https://github.com/Patch-gg/trompe",
       "commit": "fd81fe4",
       "scope": "Coverage planning and controlled painting concepts; no external source code, assets or image-service integration bundled"
+    }
+  ],
+  "explicit_first_party_examples": [
+    {
+      "name": "Tiny Tour Yuzu Station Rest House",
+      "license": "MIT",
+      "basis": "Owner explicitly requested inclusion in the Workshop.",
+      "details": "lowpoly_workshop/assets/examples/station-rest-house/provenance.json",
+      "scope": "Adapted procedural building source and original palette; no reference sheets, game textures or runtime integration."
     }
   ]
 }

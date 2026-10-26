@@ -1,0 +1,11 @@
+{
+  "kind": "station_rest_house",
+  "model": "station_rest_house",
+  "height": 8,
+  "budgets": [
+    4000,
+    1200,
+    300,
+    60
+  ]
+}

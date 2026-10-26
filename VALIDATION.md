@@ -1,5 +1,12 @@
 # Validation
 
+## 2026-10-26 — Tiny Tour building example
+
+- 131 core regressions pass, including architectural facade positions across detail levels, canopy support reach, bench seating and base/height limits. Full Blender selftest passes export/skeletal/UV roundtrips and actual-export rendering (headless EGL warnings do not prevent completion).
+- All four adapted Station Rest House levels match the recorded Tiny Tour source geometry, palette cells, UVs, pivots and parent names exactly in an independent source comparison.
+- The standalone building passes all 39 native checks at 685 / 517 / 201 / 28 triangles. The viewer, source bundle and 22 actual-export images (16 declared views plus six component diagnostics) are generated successfully.
+- Picture evidence matches the adapted source and exports. This is the explicitly owner-requested first-party building exception; no reference sheet, game texture, runtime placement or artistic approval is imported.
+
 ## 2026-10-26 — high-detail character companion
 
 - 128 core unit regressions pass, including the high-detail example's closed solid nodes, editable height/ground contact, and sampled gesture attachment/head clearance.

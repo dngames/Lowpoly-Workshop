@@ -1,0 +1,19 @@
+{
+  "source_repository": "https://github.com/dngames/Wheelsucker",
+  "source_commit": "e79ce5cb45a2d2ed72a7eb12722745253d136b83",
+  "source_path": "art/raw/models/kit/yuzu-station-rest-house/gen.py",
+  "source_sha256": "01709225fce6073805aad786c2f3c29e4dace3e745ed48d8f475580c2abb3334",
+  "construction_path": "art/raw/models/kit/yuzu-station-rest-house/inputs/construction.json",
+  "construction_sha256": "e46ea61f46788349b577a72677c8d3a4896fb9eeb31318eaebc906b4443acb23",
+  "copyright_holder": "dngames",
+  "workshop_license": "MIT",
+  "authorization": "Repository owner explicitly requested adding a Tiny Tour building to the Workshop.",
+  "adaptation": [
+    "Standalone Workshop imports replace private kit bootstrap.",
+    "Only the Station Rest House branch is retained; unrelated building generators are excluded.",
+    "All four original geometry levels, named nodes, palette and dimensions are retained.",
+    "Reference sheets, fitted cameras, game textures and runtime placement code are excluded.",
+    "Thin LOD2 window faces are registered as features for checks; their geometry is unchanged."
+  ],
+  "artistic_approval": "not asserted for this export"
+}

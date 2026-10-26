@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Added Tiny Tour’s first-party Yuzu Station Rest House as an editable building example, with four detail levels, provenance, export pictures and a standalone walkthrough.
+
 Added a higher-detail character companion with rounded volumes, modelled face/accessory details, checked rigid animation and reproducible export pictures.
 
 Added an original trail-guide character tutorial with editable source, a rigid-node greeting, pose/contact regressions and reproducible actual-export pictures.

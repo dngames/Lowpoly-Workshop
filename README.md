@@ -32,6 +32,12 @@ Want more detail? The **[high-poly character example](docs/create-character-high
 
 ![The higher-detail trail guide, rendered from its exported model in four views.](docs/images/create-character-high.png)
 
+## Build a Tiny Tour building
+
+Explore the **[Yuzu Station Rest House walkthrough](docs/create-building.md)**: editable architecture, a covered terrace, benches and four detail levels from the game’s modelling source.
+
+![Tiny Tour Station Rest House, rendered from Workshop exports with a simpler detail level for comparison.](docs/images/create-building.png)
+
 ## See a repair
 
 A mesh can be closed and still fit badly. Here a flat fringe is replaced with a surface-wrapped patch; front, side and underside views make the difference visible.
@@ -83,6 +89,7 @@ Use it directly or give your modelling assistant the [Workshop skill](lowpoly_wo
 
 | Start here | Go deeper |
 |---|---|
+| [Create a building](docs/create-building.md) | [Tiny Tour building source](lowpoly_workshop/assets/examples/station-rest-house) |
 | [Create a character](docs/create-character.md) | [Character example source](lowpoly_workshop/assets/examples/trail-guide) |
 | [Quickstart](docs/quickstart.md) | [Generator and export contracts](docs/contracts.md) |
 | [Guided review](docs/guided-review.md) | [Modelling and repair recipes](docs/modelling.md) |
