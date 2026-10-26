@@ -4,9 +4,9 @@ Original 2D design → editable architectural geometry → painted materials →
 The historical six-view sheet and prompt are in `ref/`; new material art, its prompt and
 packed pixels are in `inputs/`. `provenance.json` records source hashes and the remodel.
 
-Wall footprint 14 x 9 m, +Y up, +Z street, origin at ground-centred base. The model adds
+Wall footprint 14 x 7 m, +Y up, +Z street, origin at ground-centred base. The model adds
 closed curved roof tiles and ridge caps, bevelled timber and stone, framed glazing,
-terrace braces and slatted benches. Detail levels: 34,680 / 5,132 / 1,212 / 28 triangles.
+terrace braces and slatted benches. Detail levels: 34,356 / 5,208 / 1,220 / 44 triangles.
 The nearer-level budget is intentionally increased; inspect performance in the intended game.
 
 Copy the folder into an empty workspace and run `lowpoly PATH all`, or use
@@ -17,3 +17,7 @@ a single watertight solid. The portable default is the painted atlas. Runtime na
 conversion belongs to the game adapter, since Tiny Tour replaces imported materials.
 
 MIT first-party example included at the owner's request. No artistic approval is asserted.
+
+Structural correction: the first textured pass retained the wrong old massing. The current
+version uses a shorter body, a steeper irimoya roof with actual timber end faces and a short
+closed front cross-gable. Compare reference and clay views; see `inputs/reference-shape-notes.json`.

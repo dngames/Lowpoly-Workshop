@@ -25,3 +25,5 @@ The script writes isolated starter projects to the empty destination and the ima
 The building’s historical sheet is the explicitly included Tiny Tour reference. Other diagrams and models are procedural; their reproduction needs no external reference downloads or new image-generation calls. Text is laid out with DejaVu Sans or Windows Arial when available, otherwise Pillow's bundled font. Image bytes can differ across Blender/platform/font versions; inspect the result after regeneration.
 
 The flow diagram is plain SVG and can be edited directly. Its accessible title/description and the README alt text preserve the reading order when the graphic is unavailable.
+
+- `images/station-rest-house-reference-check.png` and `station-rest-house-shape-preview.png`: unchanged original design crops beside clay and painted renders of the same rebuilt GLB. Reproduce using `scripts/render_building_reference.py` followed by `scripts/building_reference_comparison.py PROJECT`. Cameras and source/export/image hashes are in the adjacent evidence JSON; framing is not a calibrated overlay.

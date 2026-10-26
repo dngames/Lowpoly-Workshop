@@ -12,9 +12,9 @@ Turn your references and modelling decisions into a Python generator, a Blender 
 
 ![Original 2D design sheet for the Yuzu Station Rest House: front, side, back, two quarter views and top view.](docs/images/station-rest-house-original.png)
 
-**2. Remodel the construction and materials.** The sparse first port has been rebuilt with curved tile relief, ridge caps, bevelled masonry, timber framing, window surrounds and terrace joinery, plus a painted texture atlas. Compare the old and new actual exports below.
+**2. Match the structure before painting.** The rest house has been rebuilt with the shorter body and timber gable ends shown in the drawing, rather than merely texturing the old hip-roof blockout. Compare the reference, actual clay geometry and painted mesh below.
 
-![Actual exported models before and after the Station Rest House architectural and material remodel.](docs/images/station-rest-house-remodel.png)
+![Reference drawing, actual clay geometry and the same painted Station Rest House mesh.](docs/images/station-rest-house-shape-preview.png)
 
 **[Follow the reference → construction → checks → model walkthrough](docs/create-building.md)** · Original sheet and prompt included · Four editable detail levels
 

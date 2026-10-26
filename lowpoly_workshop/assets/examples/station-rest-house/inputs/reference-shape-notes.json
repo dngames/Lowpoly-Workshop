@@ -1,0 +1,23 @@
+{
+  "source": "ref/station_rest_house_v01.png",
+  "method": "manual visual interpretation; not a calibrated pixel-perfect fit",
+  "wall_front_extent_px": [
+    82,
+    528
+  ],
+  "wall_side_extent_px": [
+    725,
+    947
+  ],
+  "adopted_wall_width_m": 14,
+  "adopted_wall_depth_m": 7,
+  "notes": [
+    "The side/front wall-span ratio is about 0.5; the earlier 9 m deep body was too deep.",
+    "Main roof rebuilt as a continuous pitched roof with timber gable ends above a lower hip skirt (irimoya), rather than a full hip.",
+    "The front timber feature is a closed, short ridge-mounted cross-gable; its infill, sill, bargeboards and ridge are modelled.",
+    "Roof height/pitch follow the drawing silhouette rather than the earlier 8 m envelope.",
+    "Hip tiles evaluate only their own skirt surface; they cannot bridge the vertical timber end and mask it.",
+    "Original views are design art; exact camera consistency is not asserted.",
+    "The prominent front/quarter timber triangle governs the cross-gable width and its mid-slope position; the right profile governs the actual main end gable. These design-art views are not a fully calibrated reconstruction."
+  ]
+}

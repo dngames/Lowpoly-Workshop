@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Corrected the rest house’s body depth and roof structure against the original sheet, with real timber end gables and a short closed front cross-gable. Added reference/clay/painted comparisons and a regression preventing hip tiles from stretching over the timber ends.
+
 Remodelled the Station Rest House around its original 2D design: curved roof tiles, segmented ridge caps, bevelled timber/masonry, framed windows and terrace joinery with original painted materials. Added actual-export before/after evidence and documented the separate Tiny Tour runtime adapter.
 
 Lead the gallery with the original Tiny Tour 2D design sheet and exported result. Bundle/register the historical input and prompt. Add clearly labelled later construction diagrams before all procedural examples; distinguish source evidence from explanatory artwork and mesh density from sculpted detail.

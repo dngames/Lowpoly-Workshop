@@ -12,7 +12,7 @@
     "Original Tiny Tour design sheet and its prompt remain byte-identical.",
     "Owner-requested geometry remodel: curved closed roof tiles, segmented ridge caps, masonry, exposed timber, framed windows and terrace joinery.",
     "Standalone Workshop exports embed an original painted texture atlas.",
-    "Four detail levels retain wall footprint, base-centred origin and source node names; geometry and budgets supersede the earlier sparse port.",
+    "Four detail levels retain the base-centred origin and source node names. Wall depth is corrected from 9 m to 7 m and the roof silhouette is rebuilt against the original sheet.",
     "Game runtime uses a separate consuming-project named-surface/vertex-colour adapter; no game shader policy is added to Workshop core."
   ],
   "artistic_approval": "not asserted for this export",
@@ -28,10 +28,10 @@
     "date": "2026-10-26",
     "base_workshop_commit": "ba03ab3",
     "triangle_counts": [
-      34680,
-      5132,
-      1212,
-      28
+      34356,
+      5208,
+      1220,
+      44
     ],
     "budgets": [
       42000,
@@ -45,6 +45,17 @@
     "provider": "OpenAI image generation tool",
     "model": "not recorded by tool",
     "material_derivation": "Four quadrants resized to 512-square NumPy arrays; source-generated paint crops/tints provide per-surface atlas cells. Artwork is new material art, not the historical 2D building reference.",
-    "artistic_approval": "pending owner review"
+    "artistic_approval": "pending owner review",
+    "shape_correction": {
+      "basis": "Owner feedback that wall depth and timber roof build-out did not match the sheet.",
+      "notes": "inputs/reference-shape-notes.json",
+      "wall_footprint_m": [
+        14,
+        7
+      ],
+      "height_envelope_m": 9.74,
+      "integration_authorization": "Owner requested integration into Workshop and Tiny Tour; later feedback requires corrected geometry before integration.",
+      "artistic_approval": "not separately asserted for the corrected export"
+    }
   }
 }

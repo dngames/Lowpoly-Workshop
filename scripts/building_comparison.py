@@ -8,10 +8,10 @@ from readme_visuals import font
 def run(before,after,images):
     out=Path(images);out.mkdir(parents=True,exist_ok=True)
     sheet=Image.new('RGB',(1280,740),'#101d2d');d=ImageDraw.Draw(sheet)
-    d.text((26,20),'Station Rest House: construction and materials make the difference',font=font(26,True),fill='#edf1eb')
+    d.text((26,20),'Station Rest House: correcting the reference geometry',font=font(26,True),fill='#edf1eb')
     d.text((26,62),'Same historical 2D design · actual exported models · quarter view',font=font(19),fill='#b7c8cd')
     evidence={'source':'actual-export comparison','visual_approval':'not asserted','models':[]}
-    for i,(project,title) in enumerate([(before,'Before: palette blockout'),(after,'After: textured architectural remodel')]):
+    for i,(project,title) in enumerate([(before,'Before: textured old massing'),(after,'After: rebuilt reference geometry')]):
         root=Path(project);index=json.loads((root/'out/review/index.json').read_text())
         shot=next(s for s in index['shots'] if s['output'].endswith('_LOD0.glb') and s['region']=='whole' and s['view']=='quarter')
         model=root/shot['output'];sha=hashlib.sha256(model.read_bytes()).hexdigest();assert sha==shot['sha256']

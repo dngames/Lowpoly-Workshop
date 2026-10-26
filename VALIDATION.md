@@ -1,5 +1,14 @@
 # Validation
 
+## 2026-10-26 — Station Rest House reference-geometry correction
+
+- Rebuilt the body at 14 × 7 m and the roof as a continuous pitched irimoya with actual timber end gables, lower hip skirt and a closed front cross-gable. Clay comparisons separate the changed geometry from the unchanged material artwork.
+- The full Blender selftest passes export/skeletal/UV roundtrips and actual-export guided rendering.
+- All 134 unit regressions pass, including body depth, real timber faces, roof slope continuity and preventing hip tiles from bridging the timber boundary. All four portable and named-surface assets pass native checks, at 34,356 / 5,208 / 1,220 / 44 triangles.
+- Tiny Tour's installed public asset passes 16 focused loader/package-model tests; lint, type checking and all three world checks pass. The broad feature lane was interrupted; no full lane or performance benchmark is claimed.
+- The world viewer did not finish loading high textures within the bounded inspection; no successful in-game screenshot is claimed.
+- The original six-view sheet remains unchanged. Comparison images show actual exported geometry with separately framed cameras, not fitted overlays or artistic acceptance.
+
 ## 2026-10-26 — textured Station Rest House remodel
 
 - 132 core regressions pass, including painted texture variation, closed/outward tile relief, facade positions, canopy support reach and bench seating. Full Blender selftest passes export/skeletal/UV roundtrips and actual-export renders.

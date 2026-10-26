@@ -3,21 +3,21 @@
   "visual_approval": "not asserted",
   "models": [
     {
-      "title": "Before: palette blockout",
-      "glb_sha256": "20ab192193bf7134f1f50c2b7b8eb63c71f8fea8ac49fca268f32aeeb3d3148b",
-      "generator_sha256": "ffc0febf1b42b430435a9bf677adb37dc8fb82be0b3d4d1f6d7fd9189a03fe0b",
-      "image_sha256": "1552e37672118e3d577f0b4fb8e62dca544b7ee3f760defc7a4b34bf0b171a74",
-      "view": "quarter",
-      "source": "exported-model-render"
-    },
-    {
-      "title": "After: textured architectural remodel",
+      "title": "Before: textured old massing",
       "glb_sha256": "a67ddec1b81cdc8c96697e37db350c1ae4e8349e837c8d9b0bca2136f54928d9",
       "generator_sha256": "23f844bcfc3ef488f5de3781133b5d5988971ff050ede3bf2d6bcb21857ac09a",
       "image_sha256": "60eee09a927265437fbdd748f72a175bce38c60767fcbcf6eb2dc0fb4a63d038",
       "view": "quarter",
       "source": "exported-model-render"
+    },
+    {
+      "title": "After: rebuilt reference geometry",
+      "glb_sha256": "c1bd2c98300c334bef04f6c1af326311df69d862a5886303e102068c025c78a1",
+      "generator_sha256": "e32a0f3650e8bfed90f598e29b631390ad02b6e3daa5868eda37b5437b9a7613",
+      "image_sha256": "ef06ba0ddc637acec0d86a22186c7b5e1e6e2725825123b45dc7e893f45f2c62",
+      "view": "quarter",
+      "source": "exported-model-render"
     }
   ],
-  "comparison_sha256": "21fbbc5532f2caf452af563a1a4dde13079a6c4b35ed00985c4b279b0bf9da73"
+  "comparison_sha256": "0dc80e19a7d12e6060e7126ee59823a58dfa745526b981b3aa6b7c3743a0c350"
 }
