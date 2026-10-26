@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+<title id="title">Lowpoly Workshop: reference to editable game asset</title>
+<desc id="desc">Set the reference and scale, author an editable generator, build GLB and Blender files, inspect and repair, then hand over a viewer and source bundle. Repairs loop back to the source.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 8 4 0 8" fill="none" stroke="#9ac5ad" stroke-width="1.5"/></marker></defs>
+<rect width="1200" height="400" rx="20" fill="#101d2d"/>
+<g font-family="DejaVu Sans,Arial,sans-serif">
+<text x="32" y="44" fill="#f1f4ef" font-size="29" font-weight="700">A repeatable route from reference to asset</text>
+<g fill="#1c2c3f" stroke="#35495b" stroke-width="1.5">
+<rect x="32" y="82" width="214" height="214" rx="15"/><rect x="266" y="82" width="214" height="214" rx="15"/>
+<rect x="500" y="82" width="214" height="214" rx="15"/><rect x="734" y="82" width="214" height="214" rx="15"/>
+<rect x="968" y="82" width="200" height="214" rx="15"/>
+</g>
+<g stroke="#9ac5ad" stroke-width="2" fill="none" marker-end="url(#arrow)"><path d="M248 183H260"/><path d="M482 183H494"/><path d="M716 183H728"/><path d="M950 183H962"/><path d="M841 305C841 348 373 348 373 305"/></g>
+<g stroke="#9ac5ad" stroke-width="2.5" fill="none">
+<rect x="93" y="110" width="92" height="70" rx="5"/><path d="M139 110v70M93 145h92"/><path d="m104 136 13-17 12 17m21 0h24m-70 30h25m24 0 9-13 10 13"/>
+<path d="m347 122-17 22 17 22m52-44 17 22-17 22m-16-50-20 56"/>
+<path fill="#8bb49e" d="m607 112 40 20v45l-40 20-40-20v-45z"/><path stroke="#101d2d" d="m567 132 40 20 40-20m-40 20v45"/>
+<circle cx="833" cy="142" r="29"/><path d="m854 164 24 23m-58-45 12 12 19-23"/>
+<path d="M1026 135v-17h34l10 13h42v56h-86z"/><path d="M1037 150h61m-61 12h40m-40 12h48"/>
+</g>
+<g fill="#f1f4ef" font-size="21" font-weight="700" text-anchor="middle">
+<text x="139" y="220">1 · Reference</text><text x="373" y="220">2 · Author</text><text x="607" y="220">3 · Build</text><text x="841" y="220" font-size="19">4 · Inspect &amp; repair</text><text x="1068" y="220">5 · Hand over</text>
+</g>
+<g fill="#bdcdd1" font-size="14" text-anchor="middle">
+<text x="139" y="250">Scale, views &amp; intended use</text><text x="139" y="273">Keep assumptions visible</text>
+<text x="373" y="250">Editable Python generator</text><text x="373" y="273">Artist or assistant authored</text>
+<text x="607" y="250">GLB + Blender scene</text><text x="607" y="273">Check geometry &amp; contracts</text>
+<text x="841" y="250">Poses, surfaces &amp; close-ups</text><text x="841" y="273">Correct the source; rebuild</text>
+<text x="1068" y="250">Local viewer + source</text><text x="1068" y="273">Review in your engine</text>
+</g>
+<text x="600" y="376" fill="#9ac5ad" text-anchor="middle" font-size="16">Edit the source → rebuild → inspect again</text>
+</g></svg>

@@ -23,4 +23,4 @@ lowpoly = "lowpoly_workshop.cli:main"
 include = ["lowpoly_workshop*"]
 
 [tool.setuptools.package-data]
-lowpoly_workshop = ["assets/**/*", "profiles/*.json", "viewer/**/*", "schemas/*.json", "notices/*", "references/*.md", "SKILL.md"]
+lowpoly_workshop = ["assets/**/*", "profiles/*.json", "viewer/**/*", "schemas/*.json", "notices/*", "references/*.md", "references/images/*", "SKILL.md"]

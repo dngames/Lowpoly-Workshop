@@ -1,24 +1,42 @@
 # Lowpoly Workshop
 
-An open-source workshop for building, checking and repairing editable low-poly game assets from references.
+**Build, inspect and repair editable low-poly game assets.**
 
-An artist or AI assistant turns drawings or photographs into editable parametric Blender projects and GLB assets. Python tools measure references, fit cameras, export models, check contracts, render problem areas and package a local review page. Characters, wearables, vehicles, hollow objects and static props share the same core.
+Turn your references and modelling decisions into a Python generator, a Blender project and a GLB you can inspect. Workshop supplies the geometry helpers, contract checks and review tools; you or your modelling assistant author the model.
 
-**0.3.0 · early release · MIT.** Code, documentation and bundled first-party examples are open source; see [licensing](docs/licensing.md). Original game artwork is excluded. Artistic quality and target-engine compatibility still require review.
+![Five bundled starters rendered from actual exported GLBs: a solid prop, hollow container, fitted wearable, articulated mechanism and character.](docs/images/workshop-starters.png)
 
-## What it adds to a Blender agent
+**Open source · MIT · Python 3.10+ · Blender 4.5.** Current release: 0.3.0; main also includes [unreleased improvements](CHANGELOG.md). Modelling and local review need no account or image-generation service.
 
-A Blender agent can already write scripts, model, render and repair assets. Workshop supplies reusable geometry helpers and a repeatable build/check/review/package process: configurable game contracts, joint and support checks, actual-export close-ups, and approval records that expire when exports change. The artist or agent still makes the modelling decisions.
+## How it works
 
-A capable agent could implement the same workflow. We have not measured a speed, cost or quality advantage over a plain Blender agent or image-to-3D services. See the [comparison](docs/comparison.md) and [benchmark protocol](docs/benchmark.md). [Repair demonstrations](docs/repair-demos.md) show the kind of problem this workflow addresses.
+![Workflow: reference and scale → editable generator → build and check → inspect and repair → viewer and source bundle. Repairs return to the source.](docs/images/workshop-flow.svg)
 
-## Start
+1. **Define the asset.** Set scale, supplied views, intended use and export requirements. Record assumptions about hidden parts.
+2. **Author an editable source.** Write `gen.py` with useful dimensions, materials, pivots and sockets, starting from a bundled example.
+3. **Build and check.** Export GLB and `.blend` files; check geometry, budgets, masks, joints and declared contacts.
+4. **Inspect and repair.** Review the actual export from different views and poses. Fix the source, rebuild and check again.
+5. **Hand it over.** Package the model, sources and local review page. Check its appearance and movement in your target engine.
 
-Python 3.10+ and Blender 4.5 are required. Set `KIT_BLENDER` to the Blender executable if it is not on PATH.
+Workshop executes your generator; it does not reconstruct arbitrary images into meshes by itself. Optional image tools can suggest missing design views, with their provenance kept separate from supplied references.
+
+## See a repair
+
+A mesh can be closed and still fit badly. Here a flat fringe is replaced with a surface-wrapped patch; front, side and underside views make the difference visible.
+
+![Actual exported models before and after a fringe repair: the flat slab separates from the head in profile; the repaired patch wraps around it.](docs/images/fringe-comparison.png)
+
+This is a reproducible procedural demonstration, not an automatic artistic score. [See the example, evidence and rebuild command →](docs/repair-demos.md)
+
+## Try it
+
+From a source checkout, with Python and Blender installed:
 
 ```sh
+git clone https://github.com/dngames/Lowpoly-Workshop.git
+cd Lowpoly-Workshop
 python -m venv .venv
-# Activate the environment using your shell, then:
+# Activate .venv, then:
 python -m pip install .
 lowpoly doctor
 lowpoly new work/crate --kind static-prop --guided
@@ -26,37 +44,41 @@ lowpoly work/crate all
 lowpoly serve work/crate/out/page --port 8000
 ```
 
-Open http://127.0.0.1:8000. The viewer uses bundled Three.js locally. No CDN, account or image-generation service is required for modelling, fitting, export or review. See the [Windows/D: quickstart](docs/quickstart.md) for local caches.
+Open **http://127.0.0.1:8000** to inspect the result. The viewer uses bundled Three.js locally. If Blender is not on PATH, set `KIT_BLENDER` to its executable. See the [setup guide](docs/quickstart.md) for Windows, local caches and the official `bpy` alternative.
 
-## Included
+## Choose a starting point
 
-- Five independent starters: static-prop, hollow-prop, wearable, articulated, character.
-- Parametric primitives, closed organic shells, conservative hidden-face cleanup and surface-projected wrapping.
-- Named pivots/sockets, rigid-node clips and optional generator-defined skeletal export.
-- Configurable budgets, topology, joint contact, clearance, fit/support, ground, materials, masks and decal checks.
-- Multi-view camera fitting, coverage-driven camera suggestions, independent review views and rendered comparisons.
-- Paint-class/component diagnostics and reusable closed animal/organic geometry helpers.
-- Optional feature checklist, source/evidence-bound staged review, saved findings and next-action guidance.
-- Actual-export review: back/underside, poses, clay/checker/wireframe, explicit and diagnostic close-ups.
-- Optional inferred reference views with original hashes and a provenance ledger.
-- Content cache, checksummed source/asset archives, offline review viewer, tests and an [agent skill](lowpoly_workshop/SKILL.md).
+| Starter | What it demonstrates |
+|---|---|
+| `static-prop` | A solid object with a support origin and socket |
+| `hollow-prop` | Inner walls, an open mouth and real thickness |
+| `wearable` | A fitted patch that wraps around its host |
+| `articulated` | Separate parts, pivots and motion |
+| `character` | Connected limbs, support and pose checks |
 
-## Workflow
+These are small, editable teaching examples. Build your asset's silhouette, proportions and detail into the generator rather than treating the starters as finished artwork.
 
-Establish scale and use → write `gen.py` → build → fit supplied views → inspect failures and close-ups → repair → rebuild → review in the target runtime.
+## What you get
 
-The CLI executes a generator written by an artist or AI assistant. It does not reconstruct arbitrary images into meshes by itself. The optional image provider creates design references, not geometry. Invented hidden parts stay labelled and reviewable. Passing checks cannot prove a silhouette, expression, texture or movement looks right.
+- **Editable modelling:** parametric primitives, closed organic shapes, wrapped patches, cleanup helpers, rigid clips and optional skeletal export.
+- **Configurable checks:** topology, triangle budgets, UVs, masks, pivots, contact, support and clearance at declared poses.
+- **Visual iteration:** fitted reference comparisons, coverage suggestions, actual-export close-ups and textured/clay/checker/wireframe views.
+- **Review and delivery:** optional feature checklists, decisions bound to current evidence, a local viewer and checksummed source/asset bundles.
 
-## Documentation
+Use it directly or give your modelling assistant the [Workshop skill](lowpoly_workshop/SKILL.md). Passing checks supports review; it cannot establish that an expression, silhouette, texture or animation looks right.
 
-[Guided review](docs/guided-review.md) · [Quickstart](docs/quickstart.md) · [Contracts](docs/contracts.md) · [Repair recipes](docs/modelling.md) · [Repair demonstrations](docs/repair-demos.md) · [Comparison](docs/comparison.md) · [Benchmarks](docs/benchmark.md) · [Roadmap](docs/roadmap.md) · [References/providers](docs/references.md) · [Review/release](docs/review-release.md) · [Game adapters](docs/adapters.md) · [Migration](docs/migration.md) · [Testing](docs/testing.md) · [Licensing](docs/licensing.md)
+## Explore
 
-## Coverage, appearance and legacy parity
+| Start here | Go deeper |
+|---|---|
+| [Quickstart](docs/quickstart.md) | [Generator and export contracts](docs/contracts.md) |
+| [Guided review](docs/guided-review.md) | [Modelling and repair recipes](docs/modelling.md) |
+| [Coverage and appearance](docs/appearance-workflow.md) | [Build validation](docs/build-validation.md) |
+| [Reference views and providers](docs/references.md) | [Game adapters](docs/adapters.md) |
+| [Review and release](docs/review-release.md) | [Legacy kit parity audit](docs/legacy-port-audit.md) |
 
-`lowpoly ASSET coverage` suggests missing geometric observations and writes an independent CPU
-review view. `paint` compares supplied-reference colour classes; `pieces` draws connected parts.
-These diagnostics do not approve an asset or substitute for actual-export review.
+[Roadmap](docs/roadmap.md) · [Testing](docs/testing.md) · [Validation record](VALIDATION.md) · [Licensing](docs/licensing.md) · [Contributing](CONTRIBUTING.md)
 
-Read the [appearance workflow](docs/appearance-workflow.md), [build validation guide](docs/build-validation.md)
-and [legacy kit parity audit](docs/legacy-port-audit.md). The audit lists restored generic tools,
-newer Workshop equivalents and the consumer-specific code intentionally kept in adapters.
+Workshop is an early release. We have not measured a speed, cost or quality advantage over a plain Blender agent or image-to-3D service; see the [comparison](docs/comparison.md) and [benchmark protocol](docs/benchmark.md).
+
+The starter pictures and repair demonstration use original procedural examples. [Reproduce the README pictures](docs/readme-visuals.md); no consumer game artwork is included.

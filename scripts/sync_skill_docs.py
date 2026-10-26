@@ -6,7 +6,7 @@ check='--check' in sys.argv
 for dest in (root/'lowpoly_workshop/references',root/'skills/lowpoly-workshop/references'):
     if not check:dest.mkdir(parents=True,exist_ok=True)
     for source in (root/'docs').rglob('*'):
-        if not source.is_file() or source.suffix not in ('.md','.png','.json'):continue
+        if not source.is_file() or source.suffix not in ('.md','.png','.json','.svg'):continue
         target=dest/source.relative_to(root/'docs')
         if not check:target.parent.mkdir(parents=True,exist_ok=True)
         if check:

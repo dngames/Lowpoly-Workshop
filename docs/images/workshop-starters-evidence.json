@@ -1,0 +1,59 @@
+{
+  "source": "bundled original procedural starters",
+  "render_source": "actual exported GLBs",
+  "purpose": "workflow illustration, not a quality benchmark",
+  "visual_approval": "not asserted",
+  "examples": [
+    {
+      "kind": "static-prop",
+      "generator": "static-prop/gen.py",
+      "generator_sha256": "7982aadcd2fe972c9f5cadddf42a8d8dbd30a9273dd93959aa015669dbc56924",
+      "glb": "static-prop/out/model.glb",
+      "glb_sha256": "fcae26c24c1e6f7dcd73958f0fc35b5073981b577667eb09cb85db5d4e111a5f",
+      "checks_passed": true,
+      "review_image": "static-prop/out/review/model-rest-whole-textured-quarter.png",
+      "review_image_sha256": "14d9c5619d2304ef7eb97126c363a8b3986b8273492524a8fe75ff760f2fa4b4"
+    },
+    {
+      "kind": "hollow-prop",
+      "generator": "hollow-prop/gen.py",
+      "generator_sha256": "249ea608b0c7f574cb3c3d4bd1896178ecb9cf8994a11d1abc5b684924f51f2d",
+      "glb": "hollow-prop/out/model.glb",
+      "glb_sha256": "726f6f2f739f8911058b48886f34ad74e9f8ef09c88b909de53545321ecb8d91",
+      "checks_passed": true,
+      "review_image": "hollow-prop/out/review/model-rest-whole-textured-quarter.png",
+      "review_image_sha256": "5feacabfaeda8e593d3a3efbd91ade3f553e28c9ee320120466351c1f606c100"
+    },
+    {
+      "kind": "wearable",
+      "generator": "wearable/gen.py",
+      "generator_sha256": "c228c6df9d101b06fc186c84f2cbb4aebae5175bf6a5816750bd3313ba3d70f0",
+      "glb": "wearable/out/model.glb",
+      "glb_sha256": "411f3dc0fca833aaafc08fa5a7c014005f223e5678094f8a0b1f7748a271f26f",
+      "checks_passed": true,
+      "review_image": "wearable/out/review/model-rest-whole-textured-quarter.png",
+      "review_image_sha256": "8866ccc9bde25472d0da207339a783b957dd9bea87c84e8844ceb89b77c15d41"
+    },
+    {
+      "kind": "articulated",
+      "generator": "articulated/gen.py",
+      "generator_sha256": "3fa6e9714f5769f965f599402ea9710f23baadcc4c5f6509328da93cac455751",
+      "glb": "articulated/out/model.glb",
+      "glb_sha256": "51cae94285f94416365b805559a51ae67c1f42f20fd18de19d6a6ac56f2ec63b",
+      "checks_passed": true,
+      "review_image": "articulated/out/review/model-rest-whole-textured-quarter.png",
+      "review_image_sha256": "e24934576f852cc7554b3eeef2347fc887d9b17c6f203617d177de1a0af31c74"
+    },
+    {
+      "kind": "character",
+      "generator": "character/gen.py",
+      "generator_sha256": "400c264237dd71fd06b2aa38dc16cd4b32c7d137f4c324501e9101798bfec8dc",
+      "glb": "character/out/model.glb",
+      "glb_sha256": "a4c0cf419ab1827583188be4d25efc18251bf5c536729ff17b89f9a231797db9",
+      "checks_passed": true,
+      "review_image": "character/out/review/model-rest-whole-textured-quarter.png",
+      "review_image_sha256": "066f87e02048db6b301cf19a4ba972dd478b82a054d421720574b7f0d9c54fa2"
+    }
+  ],
+  "contact_sheet_sha256": "06c51a860ae158f7be3525ba866807fd7ce07c954df1667e45c3fb5300d9ae06"
+}
