@@ -6,7 +6,7 @@ packed pixels are in `inputs/`. `provenance.json` records source hashes and the 
 
 Wall footprint 14 x 7 m, +Y up, +Z street, origin at ground-centred base. The model adds
 closed curved roof tiles and ridge caps, bevelled timber and stone, framed glazing,
-terrace braces and slatted benches. Detail levels: 39,444 / 6,464 / 1,400 / 44 triangles.
+terrace braces and slatted benches. Detail levels: 39,524 / 6,448 / 1,400 / 44 triangles.
 The nearer-level budget is intentionally increased; inspect performance in the intended game.
 
 Copy the folder into an empty workspace and run `lowpoly PATH all`, or use

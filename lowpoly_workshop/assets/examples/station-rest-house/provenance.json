@@ -28,8 +28,8 @@
     "date": "2026-10-26",
     "base_workshop_commit": "ba03ab3",
     "triangle_counts": [
-      39444,
-      6464,
+      39524,
+      6448,
       1400,
       44
     ],
@@ -59,6 +59,7 @@
     },
     "entrance_detail": "Two independently framed door leaves with lower timber panels, upper glazing lattice, central join and paired handles; projecting corner stones and terrace-post stone plinths.",
     "roof_joinery_detail": "Front and end gables use diagonal struts rising outward from the low centre beside the king post (\\|/); raised ceramic verge, hip and ridge caps and thicker tile noses.",
-    "roof_apron_fix": "Tile occlusion is bounded by the actual front-gable end; exposed main-roof tiles continue below the gable sill, including a short closure course."
+    "roof_apron_fix": "Tile occlusion is bounded by the actual front-gable end; exposed main-roof tiles continue below the gable sill, including a short closure course.",
+    "ground_and_gable_correction": "Broad flat sloping gable timbers placed visibly below and in front of the ceramic verge; corner and terrace-post stones reach ground, with plinth faces projecting beyond the wooden terrace."
   }
 }

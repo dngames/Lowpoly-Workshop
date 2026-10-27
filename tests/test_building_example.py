@@ -36,6 +36,35 @@ class BuildingExampleTests(unittest.TestCase):
                 if name.startswith('bench') and '_leg' in name:
                     self.assertAlmostEqual(pts[:,1].min(),.26)
 
+    def test_grounded_stone_and_visible_gable_bargeboards(self):
+        a=Asset(EXAMPLE)
+        for lod in range(3):
+            nodes=a.build(str(lod));f=a.gen.FEATURES[lod]
+            from lowpoly_workshop.quality import uv_diagnostics
+            self.assertEqual(uv_diagnostics(nodes,a.gen.ATLAS),[])
+            terrace=np.concatenate([q for q,*_ in f['terrace']])
+            bases=[fs for n,fs in f.items() if n.startswith('post_plinth') and (lod==2 or n.endswith(', 0)'))]
+            self.assertEqual(len(bases),4)
+            for faces in bases:
+                pts=np.concatenate([q for q,*_ in faces])
+                self.assertAlmostEqual(float(pts[:,1].min()),0,places=7)
+                self.assertGreater(float(pts[:,2].max()),float(terrace[:,2].max())+.05)
+            corners=[fs for n,fs in f.items() if n.startswith('corner_stone') and n.endswith(', 0)')]
+            self.assertEqual(len(corners),4)
+            for faces in corners:self.assertAlmostEqual(float(np.concatenate([q for q,*_ in faces])[:,1].min()),0,places=7)
+            if lod<2:
+                for face in ['front','back','left','right']:
+                    stones=[fs for name,fs in f.items() if name.startswith('stone_'+face+'(0,') ]
+                    self.assertTrue(stones)
+                    for faces in stones:self.assertAlmostEqual(float(np.concatenate([q for q,*_ in faces])[:,1].min()),0,places=7)
+                for sign in [-1,1]:
+                    pts=np.concatenate([q for q,*_ in f['gable_barge'+str(sign)]])
+                    d=np.array([sign*(a.gen.GABLE_HALF+.08),a.gen.GABLE_BASE-a.gen.GABLE_PEAK-.06]);d/=np.linalg.norm(d)
+                    perpendicular=np.array([-d[1],d[0]])
+                    self.assertGreater(float(np.ptp(pts[:,:2]@perpendicular)),.50)
+                    caps=[q for name,fs in f.items() if name.startswith('front_verge_tile'+str(sign)) for q,*_ in fs]
+                    self.assertGreater(float(pts[:,2].max()),float(np.concatenate(caps)[:,2].max())+.01)
+
     def test_scale_origin_and_invalid_level(self):
         a=Asset(EXAMPLE)
         for lod in range(4):

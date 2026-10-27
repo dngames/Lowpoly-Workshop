@@ -12,12 +12,12 @@
     },
     {
       "title": "After: rebuilt reference geometry",
-      "glb_sha256": "7a72676628197facdb7754cd7dbff131f677a22d01819299c2f878c8fe3fe436",
-      "generator_sha256": "a4de8be447a2e5145a440b96941ba33acee662594e3011d79ca009d1291dbc7e",
-      "image_sha256": "9b04f770d9862f5d72ecabb72ed985cd150f49d2b2b08e37cc8276b7e8c3079e",
+      "glb_sha256": "3d5c8ceda3738785973f529422136a49113c9e3d37f94698b80bc280baa7d50e",
+      "generator_sha256": "729b0f320c94ebc59074b1905e38cd69a741627483e506a7842000ca4e302388",
+      "image_sha256": "711e9cc2c3590172501356bbc399a8b3dc363a397add43b37ecbb02de21a49e8",
       "view": "quarter",
       "source": "exported-model-render"
     }
   ],
-  "comparison_sha256": "b2ad89b3b7817319dc0760895945e1d9c87fddf4559d805bb2cf52c04faf0ba1"
+  "comparison_sha256": "f8399cb9b5c93492d768eb3df92042d46e88ca9bb27482a4ed4fe84e8c3befb1"
 }

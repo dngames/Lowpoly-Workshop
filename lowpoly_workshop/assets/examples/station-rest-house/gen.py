@@ -132,17 +132,19 @@ def build(p):
   for x in [-7.1,-2.4,2.4,7.1]:
    top=3.01975609756;base=.72
    box('terrace_post'+str(x),[x,(top+base)/2,Z_WALL+1.5],[.12,(top-base)/2,.12],bevel=.035 if lod==0 else 0)
+   # The lower block reaches ground and projects beyond the terrace front,
+   # so the wooden deck cannot visually hide its foot.
    if lod<2:
-    for row in range(2):
-     box('post_plinth'+str((x,row)),[x,.26+(row+.5)*.25,Z_WALL+1.5],[.34 if row==0 else .30,.12,.33 if row==0 else .30],'stonegrain' if row==0 else 'lightstone',bevel=.045 if lod==0 else 0)
-   else:box('post_plinth'+str(x),[x,.51,Z_WALL+1.5],[.34,.25,.33],'stone')
+    box('post_plinth'+str((x,0)),[x,.19,Z_WALL+1.55],[.34,.19,.40],'stonegrain',bevel=.045 if lod==0 else 0)
+    box('post_plinth'+str((x,1)),[x,.565,Z_WALL+1.50],[.30,.175,.30],'lightstone',bevel=.045 if lod==0 else 0)
+   else:box('post_plinth'+str(x),[x,.37,Z_WALL+1.55],[.34,.37,.40],'stone')
   # Projecting corner stones wrap both faces and climb above the low stone skirt.
   for sx in [-1,1]:
    for sz in [-1,1]:
     rows=5 if lod==0 else 3 if lod==1 else 1
     for row in range(rows):
      height=1.90/rows;spread=.40 if row%2==0 else .35
-     box('corner_stone'+str((sx,sz,row)),[sx*6.86,(row+.5)*height,sz*(Z_WALL-.14)],[spread,height/2-.014,spread],'lightstone' if row%2==0 else 'stonegrain',bevel=.055 if lod==0 else 0)
+     box('corner_stone'+str((sx,sz,row)),[sx*6.86,(row+.5)*height-(.007 if row==0 else 0),sz*(Z_WALL-.14)],[spread,height/2-(.007 if row==0 else .014),spread],'lightstone' if row%2==0 else 'stonegrain',bevel=.055 if lod==0 else 0)
   for i,x in enumerate([-4.6,0,4.6]):bench('bench'+str(i),x)
   for face in ['front','back']:
    for i,x in enumerate([-4.8,-1.65,1.65,4.8]):window(face+str(i),face,x,4.75,1.3,1.35,Z_WALL)
@@ -180,8 +182,8 @@ def build(p):
      cuts=np.linspace(-span/2,span/2,cols+1)+(step*.25 if row%2 else 0);cuts[0]=-span/2;cuts[-1]=span/2
      for j,(a,b) in enumerate(zip(cuts[:-1],cuts[1:])):
       if b-a<.12:continue
-      c=n*(wall+.02)+u*(a+b)/2+[0,(row+.5)*.96/rows,0]
-      box('stone_'+face+str((row,j)),c,[(b-a)/2-.018,.96/rows/2-.014,.13],'lightstone' if (row+j)%3==0 else 'stonegrain',axes,.045 if lod==0 else 0)
+      c=n*(wall+.02)+u*(a+b)/2+[0,(row+.5)*.96/rows-(.007 if row==0 else 0),0]
+      box('stone_'+face+str((row,j)),c,[(b-a)/2-.018,.96/rows/2-(.007 if row==0 else .014),.13],'lightstone' if (row+j)%3==0 else 'stonegrain',axes,.045 if lod==0 else 0)
     for j,x in enumerate(np.linspace(-span/2+.15,span/2-.15,round(span/.35))):
      if face=='front' and abs(x)<1.85:continue
      box('board_'+face+str(j),n*(wall+.015)+u*x+[0,2.02,0],[.155,1.0,.025],'dark',axes)
@@ -190,7 +192,11 @@ def build(p):
   if lod<2:
    # Timber construction reads at street distance, including eaves, gable braces and terrace brackets.
    for side in [-1,1]:
-    beam('gable_barge'+str(side),[0,GABLE_PEAK,Z_GABLE+.11],[side*(GABLE_HALF+.08),GABLE_BASE-.06,Z_GABLE+.11],.20,n=6)
+    # The reference has broad flat timber bargeboards under the ceramic verge.
+    # Put the face forward and below the cap: a round beam behind the cap was hidden.
+    start=np.array([0,GABLE_PEAK-.20,Z_GABLE+.35]);end=np.array([side*(GABLE_HALF+.08),GABLE_BASE-.26,Z_GABLE+.35])
+    direction=(end-start)/np.linalg.norm(end-start);perpendicular=np.array([-direction[1],direction[0],0])
+    box('gable_barge'+str(side),(start+end)/2,[np.linalg.norm(end-start)/2,.27,.11],'wood',[direction,perpendicular,[0,0,1]],.025 if lod==0 else 0)
     beam('gable_brace'+str(side),[side*.12,GABLE_BASE+.12,Z_GABLE+.12],[side*1.45,GABLE_PEAK-(GABLE_PEAK-GABLE_BASE)*1.45/GABLE_HALF-.10,Z_GABLE+.12],.12)
     # These real side gables are the prominent timber triangles in the reference profile.
     gx=side*(HIP_X+.035)
@@ -263,7 +269,18 @@ def build(p):
   span=np.ptp(q,axis=0);axes=np.argsort(span)[-2:];a,b=int(axes[0]),int(axes[1])
   if cell in ['wood','dark'] and span[1]>.001:
    b=1 if span[1]>=max(span[0],span[2])*.5 else int(np.argmax(span));a=max((j for j in range(3) if j!=b),key=lambda j:span[j])
-  lo=q.min(0);uv=np.column_stack([(q[:,a]-lo[a])/max(span[a],1e-9),(q[:,b]-lo[b])/max(span[b],1e-9)])
+  lo=q.min(0)
+  def projection(x,y):
+   u=np.column_stack([(q[:,x]-lo[x])/max(span[x],1e-9),(q[:,y]-lo[y])/max(span[y],1e-9)])
+   area=abs(np.sum(u[:,0]*np.roll(u[:,1],-1)-u[:,1]*np.roll(u[:,0],-1)))
+   return u,area
+  uv,area=projection(a,b)
+  if area<1e-8:
+   # A sloping narrow face may span X and Y while those coordinates are
+   # collinear. Choose the non-collapsed planar projection instead.
+   candidates=[(projection(x,y)[1],x,y) for x,y in [(0,1),(0,2),(1,2)]]
+   _,a,b=max(candidates)
+   uv,_=projection(a,b)
   m.faces[i]=(q,cell,uv,thin)
  root=CFG['model']+('_far' if lod==3 else '_LOD'+str(lod));SHELLS[lod]=solids;FEATURES[lod]=features
  return {root:{'parent':None,'pivot':np.zeros(3),'faces':m.faces,'smooth':False}}

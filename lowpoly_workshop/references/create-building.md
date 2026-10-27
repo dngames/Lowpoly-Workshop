@@ -59,7 +59,7 @@ Edit geometry in `gen.py`, painted-region choices in `station_materials.py`, and
 
 ![New material artwork for the remodel: cedar, plaster, roof tiles and stone. This is surface texture art, separate from the historical building design sheet.](images/station-rest-house-materials.png)
 
-The entrance has **two separate door leaves**, each with its own timber panel, glazed upper lattice and frame. Paired handles and a central join make the split readable. Projecting stone courses wrap the house corners, and all four terrace posts stand on stone plinths. The gable struts rise outward from beside the foot of the centre post to form `\|/`. Separate raised ceramic caps follow the verges, hips and ridge; tile noses are thicker than their field surfaces. The cap and accent materials sample a single ceramic tile rather than repeating the complete roof drawing on every cap. The curved main-roof tile rows continue across the exposed apron below the front gable: its exclusion must stop at the actual gable front, rather than extrapolating across the street-side roof. Keep these construction details visible in clay before judging their materials.
+The entrance has **two separate door leaves**, each with its own timber panel, glazed upper lattice and frame. Paired handles and a central join make the split readable. Projecting stone courses wrap the house corners and reach ground level. All four terrace posts stand on stone plinths that extend to ground and project in front of the wooden terrace, keeping their feet visible. Broad, flat timber bargeboards sit beneath the ceramic gable edges. The gable struts rise outward from beside the foot of the centre post to form `\|/`. Separate raised ceramic caps follow the verges, hips and ridge; tile noses are thicker than their field surfaces. The cap and accent materials sample a single ceramic tile rather than repeating the complete roof drawing on every cap. The curved main-roof tile rows continue across the exposed apron below the front gable: its exclusion must stop at the actual gable front, rather than extrapolating across the street-side roof. Keep these construction details visible in clay before judging their materials.
 
 ![Original and actual-export close-ups of the gable, roof edges, paired doors and stone supports.](images/station-rest-house-details.png)
 
@@ -67,8 +67,8 @@ The entrance has **two separate door leaves**, each with its own timber panel, g
 
 | Level | Triangles | Treatment |
 |---|---:|---|
-| LOD0 | 39,444 | Curved closed tile strips/caps, bevelled stone/timber, framed glazing, braces and slatted benches |
-| LOD1 | 6,464 | Painted roof with segmented caps, masonry, framing and simplified joinery |
+| LOD0 | 39,524 | Curved closed tile strips/caps, bevelled stone/timber, framed glazing, braces and slatted benches |
+| LOD1 | 6,448 | Painted roof with segmented caps, masonry, framing and simplified joinery |
 | LOD2 | 1,400 | Painted architectural masses, window surrounds, timber belts, terrace and bench proxies |
 | Far | 44 | Roof and wall silhouette; furniture, openings and terrace omitted |
 

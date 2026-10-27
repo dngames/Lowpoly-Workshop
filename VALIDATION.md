@@ -1,5 +1,11 @@
 # Validation
 
+## 2026-10-27 — visible gable boards and grounded stone bases
+
+- Broad flat bargeboards sit below and visibly in front of the ceramic gable edge. Corner stones, wall base courses and four post plinths reach the ground plane; the lower plinths extend beyond the terrace face. Focused checks guard those contacts and the sloping timber UV projection.
+- All 135 unit regressions, seven focused building tests, the full Blender selftest and 36 checks for each portable and game export pass. LOD counts are 39,524 / 6,448 / 1,400 / 44 triangles. The game asset passes 16 focused loader/package-model tests and validates in all three worlds.
+- The reference comparisons show actual exported meshes. A successful in-game screenshot or performance benchmark is not claimed; earlier world-viewer attempts stalled during texture loading.
+
 ## 2026-10-27 — entrance, stonework and roof joinery
 
 - The entrance has two framed leaves; projecting stone courses wrap the house corners and stone plinths support the terrace posts. Gable braces form `\|/`, raised ceramic caps follow roof edges, and the exposed tiled apron below the front gable is restored. The portable ceramic cap artwork samples one tile rather than the entire roof image.

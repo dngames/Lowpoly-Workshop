@@ -1,5 +1,8 @@
 # Changelog
 
+- 2026-10-27: The Station Rest House has broad visible timber gable boards and stone corner/terrace-post bases that reach ground; the lower plinths extend past the terrace face. Sloping board UVs now choose a non-collapsed face projection.
+
+
 - 2026-10-27: Station Rest House now has two separately framed entrance leaves, projecting coursed corner stones, stone terrace-post plinths, corrected rising gable struts and heavier ceramic verge/hip/ridge caps and tile noses. The exposed roof below the front gable keeps its raised tile rows.
 
 
