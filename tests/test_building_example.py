@@ -30,7 +30,7 @@ class BuildingExampleTests(unittest.TestCase):
                 pts=np.concatenate([q for q,*_ in fs])
                 if name.startswith('terrace_post'):
                     z=pts[:,2].mean();roof=np.asarray(f['terrace_roof'][0][0]);slope,offset=np.linalg.lstsq(np.column_stack([roof[:,2],np.ones(len(roof))]),roof[:,1],rcond=None)[0];roof_top=slope*z+offset
-                    self.assertAlmostEqual(pts[:,1].min(),0)
+                    self.assertAlmostEqual(pts[:,1].min(),.72)
                     self.assertGreaterEqual(pts[:,1].max(),roof_top-.16)
                     self.assertLessEqual(pts[:,1].max(),roof_top)
                 if name.startswith('bench') and '_leg' in name:
@@ -85,7 +85,12 @@ class BuildingExampleTests(unittest.TestCase):
         for name,fs in a.gen.FEATURES[0].items():
             if name.startswith('hip_tile'):
                 pts=np.concatenate([q for q,*_ in fs])
-                self.assertLessEqual(float(pts[:,1].max()),a.gen.HIP_Y+.11,name)
+                self.assertLessEqual(float(pts[:,1].max()),a.gen.HIP_Y+.14,name)
+        apron=[np.concatenate([q for q,*_ in fs]) for name,fs in a.gen.FEATURES[0].items() if name.startswith('gable_apron_tile')]
+        self.assertTrue(apron, 'The exposed roof below the gable must retain raised tile rows')
+        for pts in apron:self.assertGreaterEqual(float(pts[:,2].min()),a.gen.Z_GABLE-1e-7)
+        front_field=[fs for name,fs in a.gen.FEATURES[0].items() if name.startswith('main_tile') and abs(np.concatenate([q for q,*_ in fs])[:,0].mean())<1 and np.concatenate([q for q,*_ in fs])[:,2].mean()>a.gen.Z_GABLE]
+        self.assertTrue(front_field, 'Gable exclusion must stop at the actual gable front')
         for z in np.linspace(0,a.gen.Z_EAVE,20):
             expected=a.gen.RIDGE-(a.gen.RIDGE-a.gen.EAVE)*z/a.gen.Z_EAVE
             self.assertAlmostEqual(a.gen.main_height([0,0,z]),expected)

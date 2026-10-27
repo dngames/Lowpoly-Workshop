@@ -28,9 +28,9 @@
     "date": "2026-10-26",
     "base_workshop_commit": "ba03ab3",
     "triangle_counts": [
-      34356,
-      5208,
-      1220,
+      39444,
+      6464,
+      1400,
       44
     ],
     "budgets": [
@@ -53,9 +53,12 @@
         14,
         7
       ],
-      "height_envelope_m": 9.74,
+      "height_envelope_m": 9.81,
       "integration_authorization": "Owner requested integration into Workshop and Tiny Tour; later feedback requires corrected geometry before integration.",
       "artistic_approval": "not separately asserted for the corrected export"
-    }
+    },
+    "entrance_detail": "Two independently framed door leaves with lower timber panels, upper glazing lattice, central join and paired handles; projecting corner stones and terrace-post stone plinths.",
+    "roof_joinery_detail": "Front and end gables use diagonal struts rising outward from the low centre beside the king post (\\|/); raised ceramic verge, hip and ridge caps and thicker tile noses.",
+    "roof_apron_fix": "Tile occlusion is bounded by the actual front-gable end; exposed main-roof tiles continue below the gable sill, including a short closure course."
   }
 }

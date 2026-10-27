@@ -16,6 +16,8 @@ def painter(name):
    source='wood' if name=='dark' else 'roof' if name in ['rooflight','clay','tile'] else 'stone' if name in ['lightstone','stonegrain','concrete'] else name
    im=DATA[source]
    if name=='tile':im=im[35:100,10:45]
+   # Cap and accent ceramics must sample one tile, not the whole roof-sheet.
+   if name in ['rooflight','clay']:im=im[35:90,10:32]
    if name in ['stonegrain','lightstone','concrete']:im=im[30:100,40:130]
    patch=stretch(im,h,w).astype(float)
    if name=='dark':patch*=np.array([.48,.51,.54])

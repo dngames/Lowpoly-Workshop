@@ -27,3 +27,5 @@ The building’s historical sheet is the explicitly included Tiny Tour reference
 The flow diagram is plain SVG and can be edited directly. Its accessible title/description and the README alt text preserve the reading order when the graphic is unavailable.
 
 - `images/station-rest-house-reference-check.png` and `station-rest-house-shape-preview.png`: unchanged original design crops beside clay and painted renders of the same rebuilt GLB. Reproduce using `scripts/render_building_reference.py` followed by `scripts/building_reference_comparison.py PROJECT`. Cameras and source/export/image hashes are in the adjacent evidence JSON; framing is not a calibrated overlay.
+
+- `images/station-rest-house-details.png`: reference crops beside the actual exported front view for roof and entrance details. Run `python scripts/building_detail_comparison.py PROJECT` after the reference render; adjacent evidence records source and export hashes.

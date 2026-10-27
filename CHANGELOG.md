@@ -1,5 +1,8 @@
 # Changelog
 
+- 2026-10-27: Station Rest House now has two separately framed entrance leaves, projecting coursed corner stones, stone terrace-post plinths, corrected rising gable struts and heavier ceramic verge/hip/ridge caps and tile noses. The exposed roof below the front gable keeps its raised tile rows.
+
+
 ## Unreleased
 
 Corrected the rest house’s body depth and roof structure against the original sheet, with real timber end gables and a short closed front cross-gable. Added reference/clay/painted comparisons and a regression preventing hip tiles from stretching over the timber ends.

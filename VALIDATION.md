@@ -1,5 +1,11 @@
 # Validation
 
+## 2026-10-27 — entrance, stonework and roof joinery
+
+- The entrance has two framed leaves; projecting stone courses wrap the house corners and stone plinths support the terrace posts. Gable braces form `\|/`, raised ceramic caps follow roof edges, and the exposed tiled apron below the front gable is restored. The portable ceramic cap artwork samples one tile rather than the entire roof image.
+- All 134 unit regressions, six focused building regressions and all 36 native export checks pass for the final geometry and ceramic crop. The full Blender selftest passes against this version. Portable and named-surface outputs have 39,444 / 6,464 / 1,400 / 44 triangles.
+- The installed named-surface runtime asset passes 16 focused loader/package-model tests and the three-world check. Bounded high- and low-quality world-viewer inspections stalled during texture loading; no in-game screenshot or full performance benchmark is claimed.
+
 ## 2026-10-26 — Station Rest House reference-geometry correction
 
 - Rebuilt the body at 14 × 7 m and the roof as a continuous pitched irimoya with actual timber end gables, lower hip skirt and a closed front cross-gable. Clay comparisons separate the changed geometry from the unchanged material artwork.

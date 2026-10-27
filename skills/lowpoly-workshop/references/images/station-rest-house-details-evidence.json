@@ -1,0 +1,39 @@
+{
+  "reference_sha256": "8509c0fe74279c8b83769cb73564c3189d9014fbca9d55d7c360ec62d51c283a",
+  "glb_sha256": "7a72676628197facdb7754cd7dbff131f677a22d01819299c2f878c8fe3fe436",
+  "render_sha256": "3cf71e8587e27058774fec2adba43dc1355662ee5e374b34b57da73e6924aa17",
+  "comparison_sha256": "89404e95bb25d58cea2964898188af1bee7871ebf7d89ac5ad8a20c6f2244ce1",
+  "views": [
+    {
+      "label": "Gable braces and tile edges",
+      "reference_crop": [
+        35,
+        55,
+        565,
+        220
+      ],
+      "render_crop": [
+        55,
+        125,
+        457,
+        250
+      ]
+    },
+    {
+      "label": "Two door leaves and stone post bases",
+      "reference_crop": [
+        150,
+        285,
+        455,
+        453
+      ],
+      "render_crop": [
+        150,
+        306,
+        364,
+        400
+      ]
+    }
+  ],
+  "visual_approval": "not asserted"
+}
