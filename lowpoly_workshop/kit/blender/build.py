@@ -186,6 +186,15 @@ def world_matrices(nodes, pose, origin):
     return out
 
 
+def action_curves(action):
+    """Legacy actions in 4.5, slot channel bags in Blender 5.x."""
+    curves = getattr(action, "fcurves", None)
+    if curves is not None:
+        return list(curves)
+    return [curve for layer in action.layers for strip in layer.strips
+            for bag in getattr(strip, "channelbags", ()) for curve in bag.fcurves]
+
+
 def key_clips(objs, nodes, clips, origin):
     """One NLA track per clip, plus "Stand" (rest) that stays active so the file exports in rest pose."""
     sc = bpy.context.scene
@@ -206,13 +215,16 @@ def key_clips(objs, nodes, clips, origin):
         for ob in objs.values():
             ad = ob.animation_data
             act = ad.action
+            slot = getattr(ad, "action_slot", None)
             act.name = name + "_" + ob.name
-            for fc in act.fcurves:
+            for fc in action_curves(act):
                 for kp in fc.keyframe_points:
                     kp.interpolation = "LINEAR"
             tr = ad.nla_tracks.new()
             tr.name = name
             st = tr.strips.new(name, start, act)
+            if slot is not None and hasattr(st, "action_slot"):
+                st.action_slot = slot
             st.extrapolation = "NOTHING" if name != "Stand" else "HOLD"
             ad.action = None
 

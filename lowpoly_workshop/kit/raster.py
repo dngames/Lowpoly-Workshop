@@ -89,14 +89,23 @@ def render(tris, cells, cam, W, H, shade=True, light=(-0.4, 0.75, 0.55), palette
         inside = (w0 >= -1e-6) & (w1 >= -1e-6) & (w2 >= -1e-6)
         if not inside.any():
             continue
-        zz = w0 * z[t, 0] + w1 * z[t, 1] + w2 * z[t, 2]
+        if cam.ortho:
+            zz = w0 * z[t, 0] + w1 * z[t, 1] + w2 * z[t, 2]
+            p0, p1, p2 = w0, w1, w2
+        else:
+            inverse_depth = w0 / z[t, 0] + w1 / z[t, 1] + w2 / z[t, 2]
+            # Pixels outside the triangle are never drawn. Keep their
+            # intermediate UVs finite even for a steep projected plane.
+            inverse_depth = np.where(inside, np.maximum(inverse_depth, 1e-12), 1.)
+            zz = 1. / inverse_depth
+            p0, p1, p2 = w0 * zz / z[t, 0], w1 * zz / z[t, 1], w2 * zz / z[t, 2]
         sub = zbuf[y0:y1 + 1, x0:x1 + 1]
         upd = inside & (zz < sub)
         sub[upd] = zz[upd]
         if tex is not None and uvs is not None:
             th, tw = tex.shape[:2]
-            uu = w0 * uvs[t, 0, 0] + w1 * uvs[t, 1, 0] + w2 * uvs[t, 2, 0]
-            vv = w0 * uvs[t, 0, 1] + w1 * uvs[t, 1, 1] + w2 * uvs[t, 2, 1]
+            uu = p0 * uvs[t, 0, 0] + p1 * uvs[t, 1, 0] + p2 * uvs[t, 2, 0]
+            vv = p0 * uvs[t, 0, 1] + p1 * uvs[t, 1, 1] + p2 * uvs[t, 2, 1]
             tx = np.clip((uu * tw).astype(int), 0, tw - 1)
             ty = np.clip((vv * th).astype(int), 0, th - 1)
             rgb[y0:y1 + 1, x0:x1 + 1][upd] = tex[ty[upd], tx[upd]] * k[t]

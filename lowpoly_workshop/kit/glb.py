@@ -148,6 +148,20 @@ class Glb:
             v = vo[k] * (1 - f) + vo[k + 1] * f
             node, path = ch["target"]["node"], ch["target"]["path"]
             if path == "rotation":
+                # glTF LINEAR rotations follow the shortest quaternion arc.
+                # q and -q encode the same orientation; interpolating their
+                # components directly can reverse a full-turn rotor at a key.
+                first = vo[k] / np.linalg.norm(vo[k])
+                last = vo[k + 1] / np.linalg.norm(vo[k + 1])
+                dot = float(np.dot(first, last))
+                if dot < 0:
+                    last, dot = -last, -dot
+                dot = float(np.clip(dot, -1, 1))
+                if dot > .9995:
+                    v = first * (1 - f) + last * f
+                else:
+                    angle = np.arccos(dot)
+                    v = (np.sin((1 - f) * angle) * first + np.sin(f * angle) * last) / np.sin(angle)
                 v = v / np.linalg.norm(v)
                 loc[node][0] = quat_to_m(v)
             elif path == "translation":

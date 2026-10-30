@@ -31,7 +31,10 @@ def gl2b(v):
 
 
 def setup(sc):
-    sc.render.engine = "BLENDER_EEVEE_NEXT"
+    try:
+        sc.render.engine = "BLENDER_EEVEE_NEXT"
+    except TypeError:  # Blender 5.x renamed the same engine.
+        sc.render.engine = "BLENDER_EEVEE"
     sc.eevee.taa_render_samples = int(os.environ.get("LOWPOLY_RENDER_SAMPLES","32"))
     world = bpy.data.worlds.new("Ambient")
     world.use_nodes = True
@@ -47,6 +50,8 @@ def setup(sc):
     sc.render.line_thickness_mode = "ABSOLUTE"
     sc.render.line_thickness = 1.1
     ls = sc.view_layers[0].freestyle_settings.linesets[0]
+    if ls.linestyle is None:
+        ls.linestyle = bpy.data.linestyles.new("Kit outline")
     ls.select_by_visibility = True
     ls.select_silhouette, ls.select_border, ls.select_crease = True, True, False
     ls.linestyle.color = (0.08, 0.07, 0.09)
@@ -174,7 +179,10 @@ def render_views(a, sets, cam, sun):
             cd.lens = s * dist * 36.0 / max(W, H)
             cd.shift_x = (W / 2 - cx) / max(W, H)
             cd.shift_y = (cy - H / 2) / max(W, H)
-            cd.clip_start, cd.clip_end = max(0.05, dist - 6), dist + 8
+            geometry, _ = rig.posed_triangles(nodes, pose)
+            reach = float(np.linalg.norm(geometry.reshape(-1, 3) - np.asarray(a.target()), axis=1).max()) + 1
+            cd.clip_start = max(0.05, dist - max(6., reach))
+            cd.clip_end = dist + max(8., reach)
             sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage = W, H, 100
             sc.render.filepath = a.out("render", st, view + ".png")
             bpy.ops.render.render(write_still=True)
@@ -183,7 +191,9 @@ def render_views(a, sets, cam, sun):
 
 def render_show(a, cam, sun):
     sc = bpy.context.scene
-    sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage = 900, 700, 100
+    width, height = a.spec.get("show_resolution", [900, 700])
+    sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage = width, height, 100
+    views = a.spec.get("show_views", SHOW_VIEWS)
     scenes = a.gen.show_scenes(a) if hasattr(a.gen, "show_scenes") else {
         "rest": (a.build(a.outputs()[0].get("variant"), a.outputs()[0].get("scale", 1.0)), {}, None)}
     for name, (nodes, pose, focus) in scenes.items():
@@ -193,7 +203,7 @@ def render_show(a, cam, sun):
         lo, hi = P.min(0), P.max(0)
         target = (lo + hi) / 2 if focus is None else np.asarray(focus)
         span = float(np.max(hi - lo))
-        for view, (az, el) in SHOW_VIEWS.items():
+        for view, (az, el) in views.items():
             aim(cam, sun, target, az, el, 0, span * 6 + 6)
             cam.data.type = "ORTHO"
             cam.data.ortho_scale = span * 1.25 * max(1, sc.render.resolution_x / sc.render.resolution_y)
