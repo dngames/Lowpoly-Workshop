@@ -123,7 +123,28 @@ def check_output(a, out, report):
         ok = ok and k.size == imgs[0].size and uniq <= ({(0,0,0,0),(255,0,0,0),(0,255,0,0),(0,0,255,0),(0,0,0,255)} if mask_channels == "RGBA" else {(0,0,0),(255,0,0),(0,255,0),(0,0,255)}) \
             and ex.get("kitMask") == kit_name
         detail += ", kit %s colours %s, kitMask %s" % (k.size, sorted(uniq), ex.get("kitMask"))
-    if out.get("vertex_surfaces"):
+    if out.get("vehicle"):
+        materials = g.js.get("materials", [])
+        primitives = [p for m in g.js.get("meshes", []) for p in m["primitives"]]
+        alpha = np.asarray(imgs[0].convert("RGBA"))[:, :, 3] if imgs else np.array([])
+        ok = (len(materials) == 1 and materials[0].get("name") == "vehicle" and
+              materials[0].get("alphaMode", "OPAQUE") == "OPAQUE" and len(imgs) == 1 and
+              imgs[0].size == (2048, 2048) and imgs[0].mode == "RGBA" and
+              set(np.unique(alpha)) == {0, 255} and bool(primitives) and
+              all("COLOR_0" in p["attributes"] and "TEXCOORD_0" in p["attributes"] for p in primitives))
+        paint = np.asarray(out["vehicle"]["paint_linear"], float)
+        has_paint = False
+        for prim in primitives:
+            index = prim["attributes"].get("COLOR_0")
+            if index is None: continue
+            values = g.acc(index).astype(float)[:, :3]
+            acc = g.js["accessors"][index]
+            if acc.get("normalized") and acc["componentType"] in (5121, 5123):
+                values /= 255.0 if acc["componentType"] == 5121 else 65535.0
+            ok = ok and bool(np.isfinite(values).all())
+            has_paint |= bool(np.any(np.max(np.abs(values-paint), axis=1) < 1/65535 + 1e-6))
+        report(ok and has_paint, tag + ": opaque vehicle atlas, binary paint mask and fallback colours")
+    elif out.get("vertex_surfaces"):
         allowed = set(out["vertex_surfaces"].values())
         materials = g.js.get("materials", [])
         primitives = [p for mesh in g.js.get("meshes", []) for p in mesh["primitives"]]

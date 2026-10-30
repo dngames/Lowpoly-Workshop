@@ -46,6 +46,16 @@ def validate(spec, root):
         seen.add(p)
         if out.get("scale", 1) <= 0 or not math.isfinite(out.get("scale", 1)):
             raise ValueError("scale must be finite and positive")
+        vehicle = out.get("vehicle")
+        if vehicle is not None:
+            if not isinstance(vehicle, dict) or out.get("vertex_surfaces") or out.get("kit_mask"):
+                raise ValueError("vehicle requires its own atlas and cannot use vertex_surfaces or kit_mask")
+            cells = vehicle.get("paint_cells")
+            if not isinstance(cells, list) or not cells or not all(isinstance(c, str) and c for c in cells):
+                raise ValueError("vehicle paint_cells must be a nonempty list of cell names")
+            colour = finite(vehicle.get("paint_linear"), 3)
+            if (colour < 0).any() or (colour > 1).any():
+                raise ValueError("vehicle paint_linear must be between 0 and 1")
         surfaces = out.get("vertex_surfaces")
         if surfaces is not None:
             if not isinstance(surfaces, dict) or not surfaces or not all(isinstance(k,str) and isinstance(v,str) and k and v for k,v in surfaces.items()):

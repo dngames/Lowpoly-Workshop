@@ -46,3 +46,20 @@ Review accepts size, views, modes and regions. Views: front/back/side/quarter/to
 Review imports each actual GLB and applies declared rigid node poses without changing exports. Skinned pose review is separate in Blender/the game. Skeletal export verifies a finite posed roundtrip, not universal deformation quality.
 
 See [guided review](guided-review.md) for optional feature declarations, automatic exported-model close-ups, saved four-stage acceptance, evidence staleness and legacy compatibility.
+
+### Vehicle atlas output
+
+A schema-v2 output may opt into `vehicle` with `paint_cells` (the atlas cell names
+whose R mask is set) and `paint_linear` (three linear RGB fallback values). It cannot
+also use `vertex_surfaces` or a separate `kit_mask`. The generator's atlas must paint
+at 2048 × 2048, using only the R mask channel with values 0 and 255. The exporter
+packs that mask into the atlas alpha, keeps the `vehicle` material opaque, and emits
+`COLOR_0` fallback colours alongside UVs. For non-paint faces those colours are the
+mean of the covered texels converted to linear RGB; paint faces use `paint_linear`.
+
+The atlas alpha is recolouring data, not transparency. A consuming textured shader
+must use atlas RGB and the alpha mask, and ignore `COLOR_0`; its low-detail fallback
+can use `COLOR_0` without the atlas. Ordinary glTF viewers multiply vertex colour
+by the atlas and therefore do not show the intended textured appearance. The exporter
+checks the binary channel and fallback presence; artists must still review the atlas,
+UVs, and mask coverage against the body panels.

@@ -34,8 +34,12 @@ def clear():
             coll.remove(item)
 
 
-def material(atlas, folder, stem, kit_name):
+def material(atlas, folder, stem, kit_name, vehicle=False):
     col, kit = atlas.paint()
+    if vehicle:
+        from lowpoly_workshop.kit.vehicle_atlas import pack_vehicle_atlas
+        if kit_name: raise ValueError('vehicle paint mask belongs in atlas alpha')
+        col = pack_vehicle_atlas(col, kit)
     pa = os.path.join(folder, stem + "_atlas.png")
     write_png(pa, col)
     if kit_name:
@@ -43,14 +47,24 @@ def material(atlas, folder, stem, kit_name):
     img = bpy.data.images.load(pa)
     img.name = stem + "_atlas.png"
     img.pack()
-    mat = bpy.data.materials.new(stem + "_material")
+    mat = bpy.data.materials.new("vehicle" if vehicle else stem + "_material")
     mat.use_nodes = True
     nt = mat.node_tree
     bsdf = nt.nodes["Principled BSDF"]
     tex = nt.nodes.new("ShaderNodeTexImage")
     tex.image = img
-    tex.interpolation = "Closest"
-    nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+    tex.interpolation = "Linear" if vehicle else "Closest"
+    if vehicle:
+        colour = nt.nodes.new("ShaderNodeVertexColor")
+        colour.layer_name = "Color"
+        multiply = nt.nodes.new("ShaderNodeMixRGB")
+        multiply.blend_type = "MULTIPLY"
+        multiply.inputs[0].default_value = 1.0
+        nt.links.new(tex.outputs["Color"], multiply.inputs[1])
+        nt.links.new(colour.outputs["Color"], multiply.inputs[2])
+        nt.links.new(multiply.outputs["Color"], bsdf.inputs["Base Color"])
+    else:
+        nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     bsdf.inputs["Metallic"].default_value = 0.0
     bsdf.inputs["Roughness"].default_value = 0.85
     if kit_name:
@@ -139,6 +153,17 @@ def mesh_object(name, node, mat, atlas):
             for j in poly.loop_indices:
                 colour.data[j].color = (*linear, 1.0)
         me.color_attributes.active_color = colour
+    elif node.get("vehicle"):
+        from lowpoly_workshop.kit.vehicle_atlas import fallback_linear
+        spec = node["vehicle"]
+        colour = me.color_attributes.new(name="Color", type="FLOAT_COLOR", domain="CORNER")
+        for poly in me.polygons:
+            i = me.attributes["CellIndex"].data[poly.index].value
+            rgb = fallback_linear(node["vehicle_atlas_rgb"], uvs[i], cells[i],
+                                  spec["paint_cells"], spec["paint_linear"])
+            for j in poly.loop_indices: colour.data[j].color = (*rgb, 1.0)
+        me.color_attributes.active_color = colour
+        me.materials.append(mat)
     else:
         me.materials.append(mat)
     me.attributes.remove(me.attributes["CellIndex"])
@@ -218,11 +243,18 @@ def build_output(a, out):
     origin = nodes_all[out["origin"]]["pivot"] if out.get("origin") else np.zeros(3)
     atlas = a.gen.ATLAS
     surfaces = out.get("vertex_surfaces")
+    vehicle = out.get("vehicle")
+    if vehicle and surfaces: raise ValueError('vehicle and vertex_surfaces cannot be combined')
     if surfaces:
         for nd in nodes.values():
             nd["vertex_surfaces"] = surfaces
             nd["runtime_uv"] = bool(out.get("runtime_uv", False))
-    mat = None if surfaces else material(atlas, folder, stem, out.get("kit_mask"))
+    if vehicle:
+        atlas_rgb, _ = atlas.paint()
+        for nd in nodes.values():
+            nd["vehicle"] = vehicle
+            nd["vehicle_atlas_rgb"] = atlas_rgb
+    mat = None if surfaces else material(atlas, folder, stem, out.get("kit_mask"), bool(vehicle))
     objs = {n: node_object(n, nodes[n], mat, atlas) for n in want}
     W = world_matrices(nodes_all, {}, origin)
     for n in want:                       # generator order lists parents before children
@@ -250,7 +282,8 @@ def build_output(a, out):
             export_materials="EXPORT", export_image_format="AUTO", export_cameras=False, export_lights=False,
             export_animations=bool(clips), export_animation_mode="NLA_TRACKS", export_anim_slide_to_zero=True,
             export_optimize_animation_size=False, export_optimize_animation_keep_anim_object=True,
-            export_skins=False, export_morph=False, use_selection=False)
+            export_skins=False, export_morph=False, use_selection=False,
+            **({"export_vertex_color": "ACTIVE"} if vehicle else {}))
     for f in os.listdir(folder):
         if f.endswith(".blend1"):
             os.remove(os.path.join(folder, f))
