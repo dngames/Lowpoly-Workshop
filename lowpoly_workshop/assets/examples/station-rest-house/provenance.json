@@ -13,7 +13,7 @@
     "Owner-requested geometry remodel: curved closed roof tiles, segmented ridge caps, masonry, exposed timber, framed windows and terrace joinery.",
     "Standalone Workshop exports embed an original painted texture atlas.",
     "Four detail levels retain the base-centred origin and source node names. Wall depth is corrected from 9 m to 7 m and the roof silhouette is rebuilt against the original sheet.",
-    "Game runtime uses a separate consuming-project named-surface/vertex-colour adapter; no game shader policy is added to Workshop core."
+    "In the game the building is textured at runtime: a consuming-project adapter exports named surfaces that the game fills with its own tiling textures; no game shader policy is added to Workshop core."
   ],
   "artistic_approval": "not asserted for this export",
   "original_reference": {

@@ -20,6 +20,12 @@ and those names with no embedded image; the checker verifies the declared names 
 data. Set a suitable `contract.max_materials` for multi-material outputs. Do not combine this
 mode with `kit_mask`: atlas/mask outputs remain the default and retain their existing policy.
 
+Image-free means no picture inside the file, not an untextured model: the material names are
+where a consuming game applies its own tiling textures at runtime (wood, stone, plaster, roof),
+while the names it treats as plain colour stay flat. Choose names the consumer textures for every
+surface that should carry grain. Workshop renders show only the palette colours, not the game's
+textures.
+
 `"runtime_uv": true` additionally projects solid UVs in metres. Material names beginning
 `decal_` require explicit local 0–1 face UVs. This follows the inherited V-down adapter
 convention; verify it in the consuming renderer. The generic `kit.runtime_uv.face_uvs` helper
