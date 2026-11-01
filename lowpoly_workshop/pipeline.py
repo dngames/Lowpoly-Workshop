@@ -53,7 +53,7 @@ def blender(script, *args):
     cmd = [find_blender(), "-t", os.environ.get("LOWPOLY_BLENDER_THREADS", "2"), "-b", "--factory-startup", "--python-exit-code", "1", "-P", os.path.join(HERE, "kit", "blender", script), "--"]
     cmd += [str(x) for x in args]
     p = subprocess.run(cmd, capture_output=True, text=True)
-    keep = ("BUILT", "RENDERED", "SHOT", "REVIEW", "SKIN", "Error", "Traceback", "File \"", "    ")
+    keep = ("BUILT", "RENDERED", "SHOT", "REVIEW", "SKIN", "SHELL", "DECIMATED", "Error", "Traceback", "File \"", "    ")
     for line in (p.stdout + p.stderr).splitlines():
         if line.startswith(keep) or "Error" in line or "Traceback" in line:
             print(line)

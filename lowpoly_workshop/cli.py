@@ -29,6 +29,7 @@ def dispatch(args):
   lowpoly ASSET references import JOB_ID IMAGE
   lowpoly ASSET coverage [SET] [--size 256] [--budget 4]
   lowpoly ASSET paint | pieces | shell-lods
+  lowpoly ASSET pixal3d status | prep | run | mcp-script | decimate
   lowpoly ASSET fit all --grid | render views | render show | compose
 """);return
     if args[0]=="--version":print(__version__);return
@@ -44,7 +45,12 @@ def dispatch(args):
         from .pipeline import find_blender
         import numpy,scipy,PIL,cv2
         print("Python",sys.version.split()[0],"Workshop",__version__)
-        print("Blender",find_blender());return
+        print("Blender",find_blender())
+        if "--pixal3d" in args or os.environ.get("LOWPOLY_PIXAL3D_BIN"):
+            from . import pixal3d
+            st=pixal3d.doctor_status()
+            print("Pixal3D",st.get("binary") or "not found","threads",st["threads"],"sv",st.get("models_sv") or "missing","mv",st.get("models_mv") or "missing")
+        return
     if args[0]=="selftest":
         from .selftest import run
         raise SystemExit(run("--blender" in args))
@@ -124,6 +130,24 @@ def dispatch(args):
         a=Asset(folder);nodes=a.build(spec.get("review",{}).get("variant"))
         print(json.dumps({"nodes":{n:topology(triangles({n:nd})[0]) for n,nd in nodes.items() if nd["faces"]},"uv":uv_diagnostics(nodes,a.gen.ATLAS)},indent=2));return
     if command=="shell-lods":pipeline.blender("shell_lods.py",folder);return
+    if command=="pixal3d":
+        from . import pixal3d
+        action=args[2] if len(args)>2 else "status"
+        if action=="status":
+            print(json.dumps(pixal3d.doctor_status(),indent=2));return
+        if action=="prep":
+            parser=argparse.ArgumentParser();parser.add_argument("--mode",choices=("sv","mv"),default="sv");parser.add_argument("--view",default="front");parser.add_argument("--set",dest="set_name",default=None);parser.add_argument("--size",type=int,default=1024)
+            ns=parser.parse_args(args[3:]);print(json.dumps(pixal3d.prepare_inputs(folder,ns.mode,ns.view,ns.set_name,ns.size),indent=2));return
+        if action=="run":
+            parser=argparse.ArgumentParser();parser.add_argument("--mode",choices=("sv","mv"),default="sv");parser.add_argument("--view",default="front");parser.add_argument("--set",dest="set_name",default=None);parser.add_argument("--threads",type=int,default=None);parser.add_argument("--gpu",type=int,default=-1);parser.add_argument("--seed",type=int,default=42);parser.add_argument("--decim",type=int,default=50000);parser.add_argument("--atlas",type=int,default=1024);parser.add_argument("--fov",type=float,default=pixal3d.DEFAULT_SV_FOV);parser.add_argument("--force",action="store_true")
+            ns=parser.parse_args(args[3:]);meta_path,_=pixal3d.run_pixal3d(folder,ns.mode,ns.view,ns.set_name,ns.threads,ns.gpu,ns.seed,ns.decim,ns.atlas,ns.fov,ns.force);print(meta_path);return
+        if action in ("mcp-script","decimate"):
+            parser=argparse.ArgumentParser();parser.add_argument("--budget",type=int,default=None);parser.add_argument("--height",type=float,default=None);parser.add_argument("--node",default=None);parser.add_argument("--no-ground",action="store_true");parser.add_argument("--no-rotate-front",action="store_true")
+            ns=parser.parse_args(args[3:]);ground=False if ns.no_ground else None
+            if action=="mcp-script":
+                print(pixal3d.blender_mcp_decimate_code(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front));return
+            print(pixal3d.decimate_with_blender(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front));return
+        raise ValueError("Unknown pixal3d action: "+action)
     if command=="review":pipeline.blender("review.py",folder);return
     if command=="skin":pipeline.blender("skin_export.py",folder);return
     if command=="all":
