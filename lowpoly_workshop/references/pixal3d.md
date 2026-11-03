@@ -53,7 +53,7 @@ cmake --build pixal3d-src/build --target trellis-cli -j
 
 The build takes about a minute and writes `pixal3d-src/build/trellis-cli`; no runtime libraries need copying. Run Workshop from an installed package (`pip install -e .`) rather than the system Python: Ubuntu 22.04's `python3-pil` 9.0 lacks `Image.Resampling`, and `pixal3d prep` fails with an `AttributeError`.
 
-Measured reference (i7-8850H laptop, 6C/12T at ≈2.2 GHz sustained, `--threads 6`, Q8 single-view, `--res 1024`): SS-flow step ≈ 6.3 min (mean of 7 steps, 1.7 GiB resident), about 2.7× faster than the i5-6500 native build. Steps took two to three times as long once other CPU-heavy jobs shared the machine, so generate on an otherwise idle machine.
+Measured reference (i7-8850H laptop, 6C/12T at ≈2.2 GHz sustained, `--threads 6`, Q8 single-view, `--res 1024`): SS-flow step ≈ 6.3 min (mean of 7 steps, 1.7 GiB resident), about 2.7× faster than the i5-6500 native build. The 512 shape flow then takes ≈ 5.2 min per step (≈ 2.6 min for the last four, which run without guidance); the 1024 shape flow (17,928 tokens for the Station Rest House front view, 3.8 GiB resident) took ≈ 80 min for its first (guided) step and dominates the run, so a full 1024 run takes more than a day here. Steps took two to three times as long once other CPU-heavy jobs shared the machine, so generate on an otherwise idle machine.
 
 ## 2. Prepare RGBA inputs and generate `inputs/pixal3d_raw.glb`
 
