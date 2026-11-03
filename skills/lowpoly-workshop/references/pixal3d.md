@@ -23,6 +23,24 @@ lowpoly doctor --pixal3d
 lowpoly ASSET pixal3d status
 ```
 
+### Native Windows CPU build (recommended over the portable release)
+
+The published Windows runtimes are built with `GGML_NATIVE=OFF`, so they do not use AVX2/FMA and run ~2–3× slower on Intel i5/i7. A native MinGW build is worth it for repeated CPU runs. All-portable toolchain (no install, lives on any drive):
+
+1. Download the winlibs x86_64 release (GCC + CMake + Ninja in one zip) and extract it.
+2. Shallow-clone the release tag with submodules:
+   ```sh
+   git clone --depth 1 --branch v0.10.1-desktop-alpha --recurse-submodules --shallow-submodules https://github.com/raven38/pixal3d.cpp.git pixal3d-src
+   ```
+3. Configure CPU-only with native arch and without WebP (MinGW curl has no CA certs for the FetchContent download; PNG fallback is used anyway since runs pass `--webp off`):
+   ```sh
+   cmake -S pixal3d-src -B pixal3d-src/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=ON -DTRELLIS_WEBP=OFF
+   cmake --build pixal3d-src/build --target trellis-cli -j 2
+   ```
+4. The exe still needs MinGW runtime DLLs beside it: `libgomp-1.dll`, `libdl.dll` (required by libgomp — missing it fails with `STATUS_DLL_NOT_FOUND`), `libgcc_s_seh-1.dll`, `libstdc++-6.dll`, `libwinpthread-1.dll`. Verify with `trellis-cli.exe --help` (exit 0). Note: a self-test can falsely pass when the toolchain `bin/` is on PATH — retest from a clean shell.
+
+Measured reference (i5-6500, 4C/4T, Q8 single-view, `--res 1024`): SS-flow step ≈ 17 min native vs ≈ 30 min portable; full 1024 cascade projects to 1.5–3 days. Budget wall-clock accordingly or move generation to stronger hardware.
+
 ## 2. Prepare RGBA inputs and generate `inputs/pixal3d_raw.glb`
 
 Pixal3D requires clean RGBA cutouts. Workshop extracts the reference view (or four canonical views `front`, `right`, `back`, `left`) from `asset.json` and writes centered square RGBA PNGs under `inputs/pixal3d/`:
