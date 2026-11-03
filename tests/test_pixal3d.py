@@ -158,6 +158,28 @@ class Pixal3DTests(unittest.TestCase):
             ["view00_front.png", "view01_right.png", "view02_back.png", "view03_left.png"],
         )
 
+    def test_prepare_inputs_sv_crops_front_from_turnaround_set(self):
+        """A turnaround reference must not be used whole as the front view.
+
+        `prepare_inputs(view="front")` used to fall back to the first reference before looking at
+        sheet sets, so a six-view turnaround sheet was cut out as one single-view input.
+        """
+        sheet = Image.new("RGB", (192, 64), (240, 240, 240))
+        draw = ImageDraw.Draw(sheet)
+        draw.rectangle([16, 8, 48, 56], fill=(96, 151, 118))
+        draw.rectangle([80, 8, 176, 56], fill=(151, 96, 118))
+        sheet.save(self.asset / "ref" / "sheet.png")
+        spec = read_spec(self.asset)
+        spec["references"] = [{"path": "ref/sheet.png", "source": "original", "view": "turnaround"}]
+        (self.asset / "asset.json").write_text(json.dumps(spec, indent=2), encoding="utf-8")
+        with self.assertRaises(ValueError):
+            pixal3d.prepare_inputs(self.asset, mode="sv", view="front", size=64)
+
+        spec["sets"] = {"sheet": {"image": "ref/sheet.png", "views": {"front": {"box": [0, 0, 64, 64]}}}}
+        (self.asset / "asset.json").write_text(json.dumps(spec, indent=2), encoding="utf-8")
+        meta = pixal3d.prepare_inputs(self.asset, mode="sv", view="front", size=64)
+        self.assertEqual(meta["box"], [0, 0, 64, 64])
+
     def test_run_pixal3d_executes_trellis_cli_and_caches_by_hash(self):
         fake_bin = self.root / "trellis-cli.exe"
         fake_bin.write_bytes(b"fake-trellis-cli")

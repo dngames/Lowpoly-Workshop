@@ -237,8 +237,6 @@ def _resolve_view_source(folder, spec, view, set_name=None):
     for ref in spec.get("references", []):
         if ref.get("view") == view:
             return local_path(folder, ref["path"]), None
-    if view == "front" and spec.get("references"):
-        return local_path(folder, spec["references"][0]["path"]), None
     sets = spec.get("sets", {})
     chosen_sets = [set_name] if set_name else list(sets)
     for sname in chosen_sets:
@@ -248,7 +246,15 @@ def _resolve_view_source(folder, spec, view, set_name=None):
             from .kit.asset import Asset
             a = Asset(folder)
             return local_path(folder, st["image"]), a.crop_box(sname, view)
-    raise ValueError(f"No reference or sheet view {view!r} configured in asset.json")
+    # A reference with a declared view (e.g. a turnaround sheet) is never a single front view
+    if view == "front":
+        for ref in spec.get("references", []):
+            if not ref.get("view"):
+                return local_path(folder, ref["path"]), None
+    raise ValueError(
+        f"No reference or sheet view {view!r} configured in asset.json; "
+        "for a multi-view sheet, declare a set with a crop box per view"
+    )
 
 
 def _canonical_transform_matrix(azimuth_deg):
