@@ -41,18 +41,38 @@ The published Windows runtimes are built with `GGML_NATIVE=OFF`, so they do not 
 
 Measured reference (i5-6500, 4C/4T, Q8 single-view, `--res 1024`): SS-flow step ≈ 17 min native vs ≈ 30 min portable; full 1024 cascade projects to 1.5–3 days. Budget wall-clock accordingly or move generation to stronger hardware.
 
+### Native Linux CPU build
+
+GCC and CMake from the distribution are enough (tested with GCC 11.4 and CMake 3.22 on Ubuntu 22.04; Ninja is optional). The default configuration is CPU-only:
+
+```sh
+git clone --depth 1 --branch v0.10.1-desktop-alpha --recurse-submodules --shallow-submodules https://github.com/raven38/pixal3d.cpp.git pixal3d-src
+cmake -S pixal3d-src -B pixal3d-src/build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=ON -DTRELLIS_WEBP=OFF
+cmake --build pixal3d-src/build --target trellis-cli -j
+```
+
+The build takes about a minute and writes `pixal3d-src/build/trellis-cli`; no runtime libraries need copying. Run Workshop from an installed package (`pip install -e .`) rather than the system Python: Ubuntu 22.04's `python3-pil` 9.0 lacks `Image.Resampling`, and `pixal3d prep` fails with an `AttributeError`.
+
+Measured reference (i7-8850H laptop, 6C/12T at ≈2.2 GHz sustained, `--threads 6`, Q8 single-view, `--res 1024`): SS-flow step ≈ 6.3 min (mean of 7 steps, 1.7 GiB resident), about 2.7× faster than the i5-6500 native build. Steps took two to three times as long once other CPU-heavy jobs shared the machine, so generate on an otherwise idle machine.
+
 ## 2. Prepare RGBA inputs and generate `inputs/pixal3d_raw.glb`
 
 Pixal3D requires clean RGBA cutouts. Workshop extracts the reference view (or four canonical views `front`, `right`, `back`, `left`) from `asset.json` and writes centered square RGBA PNGs under `inputs/pixal3d/`:
 
 ```sh
-# Single-view (uses front reference or sheet crop by default)
+# Single-view (uses the front reference or the front crop of a sheet set)
 lowpoly ASSET pixal3d prep --mode sv --view front
 lowpoly ASSET pixal3d run --mode sv --gpu -1 --decim 50000 --atlas 1024 --seed 42
 
 # Multi-view (requires front, right, back, left views)
 lowpoly ASSET pixal3d prep --mode mv
 lowpoly ASSET pixal3d run --mode mv --gpu -1 --decim 50000 --atlas 1024 --seed 42
+```
+
+A reference declared with any other view (for example a `turnaround` sheet) is never used whole as the front view. Declare a sheet set with a crop box (`[left, top, right, bottom]` in sheet pixels) for each view instead; otherwise `prep` stops with an error:
+
+```json
+"sets": {"sheet": {"image": "ref/turnaround.png", "views": {"front": {"box": [0, 0, 600, 512]}}}}
 ```
 
 `pixal3d run` passes `--webp off` so embedded textures are lossless PNGs, writes `inputs/pixal3d_raw.glb` atomically, and caches the result in `inputs/pixal3d_meta.json` by input and parameter SHA-256.
