@@ -26,7 +26,7 @@ from .kit.glb import Glb
 
 FIT_STEPS = ((0.08, 0.043), (0.04, 0.021), (0.02, 0.0086), (0.01, 0.0036))  # (scale, offset / extent)
 BUCKET_DOT = 0.35  # how closely a fallback point's normal must agree with the polygon's
-GUTTER = 3
+PAD = 2  # texels around each chart, sampled from the polygon's plane
 
 
 # -- the generated surface
@@ -138,7 +138,7 @@ def _plane_basis(q):
     return n, u, np.cross(n, u)
 
 
-def pack(polys, size, pad=2, fill=0.55):
+def pack(polys, size, pad=PAD, fill=0.55):
     """Shelf-pack every polygon as its own chart at one texel density.
 
     Returns per-polygon UVs (0..1, v from the top as glTF expects), polygon normals and texels/metre."""
@@ -262,30 +262,24 @@ def _trace(pts, nrm, tree, ext):
     return hit
 
 
-def _texels(polys, uvs, normals, size):
-    """World point, polygon normal and (row, col) of every texel a polygon covers."""
+def _texels(polys, uvs, normals, size, density):
+    """World point, polygon normal and (row, col) of every texel in each chart's padded rectangle.
+
+    Texels map back through the polygon's plane, so a chart thinner than a texel still gets its
+    texels and the padding carries the plane's colour as a gutter."""
     pts, nrm, pix = [], [], []
     for (q, _), uv, n in zip(polys, uvs, normals):
-        for k in range(1, len(q) - 1):
-            tri3, tri2 = q[[0, k, k + 1]], uv[[0, k, k + 1]] * size
-            x0, y0 = np.floor(tri2.min(0)).astype(int)
-            x1, y1 = np.ceil(tri2.max(0)).astype(int)
-            xs, ys = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
-            (ax, ay), (bx, by), (cx, cy) = tri2
-            den = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
-            if abs(den) < 1e-12:
-                continue
-            w0 = ((by - cy) * (xs - cx) + (cx - bx) * (ys - cy)) / den
-            w1 = ((cy - ay) * (xs - cx) + (ax - cx) * (ys - cy)) / den
-            w2 = 1 - w0 - w1
-            inside = (w0 >= -0.02) & (w1 >= -0.02) & (w2 >= -0.02)
-            if not inside.any():
-                continue
-            ww = np.stack([w0[inside], w1[inside], w2[inside]], 1)
-            pts.append(ww @ tri3)
-            nrm.append(np.repeat(n[None], len(ww), 0))
-            pix.append(np.stack([np.floor(ys[inside]).astype(int), np.floor(xs[inside]).astype(int)], 1))
-    return np.concatenate(pts), np.concatenate(nrm), np.clip(np.concatenate(pix), 0, size - 1)
+        _, u, w = _plane_basis(q)
+        px = uv * size
+        x0, y0 = np.floor(px.min(0)).astype(int) - PAD
+        x1, y1 = np.ceil(px.max(0)).astype(int) + PAD
+        cols, rows = np.meshgrid(np.arange(max(x0, 0), min(x1, size)), np.arange(max(y0, 0), min(y1, size)))
+        cols, rows = cols.ravel(), rows.ravel()
+        c2 = (np.stack([cols + 0.5, rows + 0.5], 1) - px[0]) / density
+        pts.append(q[0] + c2[:, :1] * u + c2[:, 1:] * w)
+        nrm.append(np.repeat(n[None], len(c2), 0))
+        pix.append(np.stack([rows, cols], 1))
+    return np.concatenate(pts), np.concatenate(nrm), np.concatenate(pix)
 
 
 class Baker:
@@ -304,15 +298,13 @@ class Baker:
                 if len(sel):
                     self.buckets.append((axis, sign, sel, cKDTree(self.pts[sel])))
 
-    def bake(self, polys, uvs, normals, size):
+    def bake(self, polys, uvs, normals, size, density):
         """Atlas (size, size, 3) floats 0..1 and the share of texels hit from outside."""
         img = np.zeros((size, size, 3))
-        filled = np.zeros((size, size), bool)
-        pts, nrm, pix = _texels(polys, uvs, normals, size)
+        pts, nrm, pix = _texels(polys, uvs, normals, size, density)
         hit = _trace(pts, nrm, self.tree, self.ext)
         got = hit >= 0
         img[pix[got, 0], pix[got, 1]] = self.col[hit[got]]
-        filled[pix[got, 0], pix[got, 1]] = True
         dom = np.argmax(np.abs(nrm), 1)
         sgn = np.sign(nrm[np.arange(len(nrm)), dom])
         rest = ~got
@@ -322,18 +314,10 @@ class Baker:
                 _, nn = tree.query(pts[m], k=min(4, len(sel)), workers=-1)
                 nn = nn.reshape(int(m.sum()), -1)
                 img[pix[m, 0], pix[m, 1]] = self.col[sel[nn]].mean(1)
-                filled[pix[m, 0], pix[m, 1]] = True
                 rest &= ~m
         if rest.any():
             _, nn = self.tree.query(pts[rest], workers=-1)
             img[pix[rest, 0], pix[rest, 1]] = self.col[nn]
-            filled[pix[rest, 0], pix[rest, 1]] = True
-        for _ in range(GUTTER):  # dilate into the gutters so mip levels keep chart colours
-            grow = ~filled
-            for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-                src = np.roll(np.roll(filled, dy, 0), dx, 1) & grow
-                img[src] = np.roll(np.roll(img, dy, 0), dx, 1)[src]
-                filled |= src
         return img, float(got.mean()), len(pts)
 
 
@@ -481,7 +465,7 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024):
     for variant in chosen:
         polys = polys_of(variant)
         uvs, normals, density = pack(polys, size)
-        img, hits, texels = baker.bake(polys, uvs, normals, size)
+        img, hits, texels = baker.bake(polys, uvs, normals, size, density)
         pixels = (np.clip(img, 0, 1) * 255).astype(np.uint8)
         stem = Path(by_variant[variant]["file"]).stem
         png, glb = out_dir / f"{stem}_bake.png", out_dir / f"{stem}_baked.glb"

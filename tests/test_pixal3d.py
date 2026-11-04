@@ -429,6 +429,24 @@ class Pixal3DBakeTests(unittest.TestCase):
             else:
                 self.assertGreater(b, r, "other faces should take the blue sides")
 
+    def test_bake_samples_charts_thinner_than_a_texel(self):
+        """A trim or bevel strip narrower than one texel has no texel centre inside its triangles.
+
+        Sampling only texels inside triangles left 6,856 of the rest house LOD0's charts black."""
+        from lowpoly_workshop import pixal3d_bake
+
+        wall = np.array([[0, 0, 0], [4, 0, 0], [4, 3, 0], [0, 3, 0]], float)
+        trim = np.array([[0, 3, 0.01], [4, 3, 0.01], [4, 3.02, 0.01], [0, 3.02, 0.01]], float)
+        polys = [(wall, "body"), (trim, "trim")]
+        uvs, normals, density = pixal3d_bake.pack(polys, 64)
+        self.assertLess(0.02 * density, 1.0)
+        pts, _, pix = pixal3d_bake._texels(polys, uvs, normals, 64, density)
+        for (q, _), uv in zip(polys, uvs):
+            col, row = (uv.mean(0) * 64).astype(int)
+            hit = np.nonzero((pix[:, 0] == row) & (pix[:, 1] == col))[0]
+            self.assertEqual(len(hit), 1)
+            self.assertLess(np.linalg.norm(pts[hit[0]] - q.mean(0)), 1.5 / density)
+
     def test_bake_rejects_unknown_variant_and_missing_source(self):
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()) as err:
             main([str(self.asset), "pixal3d", "bake"])
