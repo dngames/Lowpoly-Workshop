@@ -66,7 +66,7 @@ try {
   if ($PrepOnly) { Write-Output 'PREP-ONLY OK:'; Get-Item (Join-Path $job 'inputs\pixal3d\sv_input.png') | Select-Object FullName, Length; return }
 
   # 5. Generate (slow: minutes on GPU, hours/days on CPU - progress streams live).
-  Run-Step @($job, 'pixal3d', 'run', '--mode', 'sv', '--gpu', "$GpuIndex", '--threads', "$Threads", '--decim', '50000', '--atlas', '1024', '--seed', "$Seed") 'generate'
+  Run-Step @($job, 'pixal3d', 'run', '--mode', 'sv', '--gpu', "$GpuIndex", '--threads', "$Threads", '--atlas', '1024', '--seed', "$Seed") 'generate'
   Get-Item (Join-Path $job 'inputs\pixal3d_raw.glb') | Select-Object FullName, Length
 
   # 6. Blender stages (best effort - skipped cleanly when Blender is absent).
