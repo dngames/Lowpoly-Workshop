@@ -30,6 +30,7 @@ def dispatch(args):
   lowpoly ASSET coverage [SET] [--size 256] [--budget 4]
   lowpoly ASSET paint | pieces | shell-lods
   lowpoly ASSET pixal3d status | prep | run | mcp-script | decimate
+  lowpoly ASSET pixal3d bake [--source PLY_OR_GLB] [--variant V ...] [--fit-variant V] [--size 1024]
   lowpoly ASSET fit all --grid | render views | render show | compose
 """);return
     if args[0]=="--version":print(__version__);return
@@ -147,6 +148,10 @@ def dispatch(args):
             if action=="mcp-script":
                 print(pixal3d.blender_mcp_decimate_code(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front));return
             print(pixal3d.decimate_with_blender(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front));return
+        if action=="bake":
+            from .pixal3d_bake import bake_lods
+            parser=argparse.ArgumentParser();parser.add_argument("--source",default=None);parser.add_argument("--variant",nargs="+",default=None);parser.add_argument("--fit-variant",default=None);parser.add_argument("--size",type=int,default=1024)
+            ns=parser.parse_args(args[3:]);print(bake_lods(folder,ns.source,ns.variant,ns.fit_variant,ns.size));return
         raise ValueError("Unknown pixal3d action: "+action)
     if command=="review":pipeline.blender("review.py",folder);return
     if command=="skin":pipeline.blender("skin_export.py",folder);return

@@ -354,3 +354,88 @@ def build(p):
         build(self.asset, force=True)
         self.assertTrue(check_run(self.asset))
 
+
+
+def _write_trellis_ply(path, tris, colours):
+    """Binary PLY in trellis-cli's frame (Z-up, front -Y) from Workshop-frame triangles."""
+    pts = np.asarray(tris, float).reshape(-1, 3)
+    pts = np.stack([-pts[:, 0], pts[:, 2], pts[:, 1]], axis=1)
+    v = np.zeros(len(pts), dtype=[("p", "<f4", 3), ("c", "u1", 3)])
+    v["p"], v["c"] = pts, np.repeat(np.asarray(colours, np.uint8), 3, axis=0)
+    f = np.zeros(len(tris), dtype=[("n", "u1"), ("i", "<i4", 3)])
+    f["n"], f["i"] = 3, np.arange(len(pts)).reshape(-1, 3)
+    header = (
+        "ply\nformat binary_little_endian 1.0\nelement vertex %d\n"
+        "property float x\nproperty float y\nproperty float z\n"
+        "property uchar red\nproperty uchar green\nproperty uchar blue\n"
+        "element face %d\nproperty list uchar int vertex_indices\nend_header\n" % (len(v), len(f))
+    )
+    Path(path).write_bytes(header.encode() + v.tobytes() + f.tobytes())
+
+
+class Pixal3DBakeTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.asset = create(Path(self.tmp.name) / "crate", "static-prop")
+
+    def _generated_crate(self, path, scale=1.1, offset=(0.05, -0.04, 0.03)):
+        """A dense, red-fronted, blue-elsewhere copy of the crate, deliberately misregistered."""
+        from lowpoly_workshop import pixal3d_bake
+        from lowpoly_workshop.kit.asset import Asset
+
+        polys = pixal3d_bake.lod_polygons(Asset(self.asset).build())
+        tris = np.array([q[[0, k, k + 1]] for q, _ in polys for k in range(1, len(q) - 1)])
+        n = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+        n /= np.linalg.norm(n, axis=1, keepdims=True)
+        pts = pixal3d_bake.surface_samples(polys, n=40000)
+        # every sample becomes a 2 mm triangle in its face's plane, facing the same way
+        owner = np.argmin(np.abs(np.einsum("tj,sj->st", n, pts) - (n * tris[:, 0]).sum(1)), axis=1)
+        nn = n[owner]
+        u = np.cross(nn, [0.3, 0.5, 0.7])
+        u /= np.linalg.norm(u, axis=1, keepdims=True)
+        w = np.cross(nn, u)
+        micro = np.stack([pts, pts + 0.002 * u, pts + 0.002 * w], axis=1)
+        centre = pts.mean(0)
+        micro = centre + (micro - centre) * scale + np.asarray(offset)
+        colours = np.where((nn[:, 2] > 0.9)[:, None], [220, 30, 30], [30, 40, 200])
+        _write_trellis_ply(path, micro, colours)
+
+    def test_bake_fits_misregistered_source_and_writes_textured_glb(self):
+        from lowpoly_workshop.kit.glb import Glb
+
+        ply = self.asset / "inputs" / "pixal3d_raw.ply"
+        ply.parent.mkdir(parents=True, exist_ok=True)
+        self._generated_crate(ply)
+        with contextlib.redirect_stdout(io.StringIO()):
+            main([str(self.asset), "pixal3d", "bake", "--size", "256"])
+        record = json.loads((self.asset / "out" / "pixal3d_bake" / "bake.json").read_text())
+        self.assertGreater(record["fit"]["silhouette_iou"], 0.85)
+        self.assertEqual(record["outputs"][0]["triangles"], 12)
+        self.assertTrue((self.asset / record["preview"]).is_file())
+
+        g = Glb(self.asset / record["outputs"][0]["glb"])
+        tex = np.asarray(g.images()[0].convert("RGB"), float)
+        prim = g.js["meshes"][0]["primitives"][0]
+        P = g.acc(prim["attributes"]["POSITION"]).reshape(-1, 3, 3)
+        UV = g.acc(prim["attributes"]["TEXCOORD_0"]).reshape(-1, 3, 2)
+        self.assertEqual(len(P), 12)
+        for tri, uv in zip(P, UV):
+            normal = np.cross(tri[1] - tri[0], tri[2] - tri[0])
+            c = uv.mean(0) * tex.shape[1::-1]
+            r, _, b = tex[int(c[1]), int(c[0])]
+            if normal[2] / np.linalg.norm(normal) > 0.9:
+                self.assertGreater(r, b, "front face should take the red front")
+            else:
+                self.assertGreater(b, r, "other faces should take the blue sides")
+
+    def test_bake_rejects_unknown_variant_and_missing_source(self):
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()) as err:
+            main([str(self.asset), "pixal3d", "bake"])
+        self.assertIn("pixal3d run", err.getvalue())
+        ply = self.asset / "inputs" / "pixal3d_raw.ply"
+        ply.parent.mkdir(parents=True, exist_ok=True)
+        self._generated_crate(ply)
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()) as err:
+            main([str(self.asset), "pixal3d", "bake", "--variant", "9"])
+        self.assertIn("No output with variant '9'", err.getvalue())

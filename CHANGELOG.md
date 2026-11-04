@@ -8,6 +8,8 @@
 
 ## Unreleased
 
+`lowpoly ASSET pixal3d bake` bakes a Pixal3D generation's colours onto the asset's hand-built LODs — see docs/pixal3d.md.
+
 `pixal3d run` no longer passes `--decim 50000` by default, so generated meshes are simplified to 1M faces instead of staying at ≈ 25 M triangles — see docs/pixal3d.md.
 
 Single-view Pixal3D prep crops the front view from a declared sheet set instead of using a whole turnaround sheet. Documented the native Linux CPU build and its measured step rate.
