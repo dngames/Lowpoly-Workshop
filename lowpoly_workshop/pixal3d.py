@@ -376,7 +376,7 @@ def build_cli_command(
         "--atlas", str(int(atlas)),
         "--webp", "off",
     ]
-    # --decim is a legacy cluster-grid size; omitting it keeps the quadric simplify to 300K faces
+    # --decim is a legacy cluster-grid size; omitting it keeps the Pixal3D quadric simplify to 1M faces
     if decim is not None:
         cmd += ["--decim", str(int(decim))]
     cmd.append(str(out_path))

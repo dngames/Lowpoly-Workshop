@@ -87,7 +87,7 @@ A reference declared with any other view (for example a `turnaround` sheet) is n
 "sets": {"sheet": {"image": "ref/turnaround.png", "views": {"front": {"box": [0, 0, 600, 512]}}}}
 ```
 
-`pixal3d run` passes `--webp off` so embedded textures are lossless PNGs, and leaves decimation to `trellis-cli`'s quadric simplify (300K faces at `--res 1024`). `--decim N` selects `trellis-cli`'s legacy cluster grid of size `N` instead; it is not a face budget, and large values leave the mesh undecimated (≈ 25 M triangles, with UV charting abandoned after 300 s). The run writes `inputs/pixal3d_raw.glb` atomically, and caches the result in `inputs/pixal3d_meta.json` by input and parameter SHA-256.
+`pixal3d run` passes `--webp off` so embedded textures are lossless PNGs, and leaves decimation to `trellis-cli`'s Pixal3D quadric simplify (1M faces). `--decim N` selects `trellis-cli`'s legacy cluster grid of size `N` instead; it is not a face budget, and large values leave the mesh undecimated (≈ 25 M triangles, with UV charting abandoned after 300 s). The run writes `inputs/pixal3d_raw.glb` atomically, and caches the result in `inputs/pixal3d_meta.json` by input and parameter SHA-256.
 
 ## 3. Reduce polycount in Blender MCP (or headless Blender)
 

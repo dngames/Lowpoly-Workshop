@@ -183,7 +183,7 @@ class Pixal3DTests(unittest.TestCase):
     def test_build_cli_command_keeps_quadric_simplify_by_default(self):
         """`--decim` is trellis-cli's legacy cluster-grid size, not a face budget.
 
-        Passing `--decim 50000` by default disabled the quadric simplify to 300K faces and left a
+        Passing `--decim 50000` by default disabled the Pixal3D quadric simplify to 1M faces and left a
         res-1024 run at ~25M triangles, which also made xatlas charting time out.
         """
         cmd = pixal3d.build_cli_command(self.asset, models_dir=self.root, binary="trellis-cli", threads=1)
