@@ -180,6 +180,18 @@ class Pixal3DTests(unittest.TestCase):
         meta = pixal3d.prepare_inputs(self.asset, mode="sv", view="front", size=64)
         self.assertEqual(meta["box"], [0, 0, 64, 64])
 
+    def test_build_cli_command_keeps_quadric_simplify_by_default(self):
+        """`--decim` is trellis-cli's legacy cluster-grid size, not a face budget.
+
+        Passing `--decim 50000` by default disabled the quadric simplify to 300K faces and left a
+        res-1024 run at ~25M triangles, which also made xatlas charting time out.
+        """
+        cmd = pixal3d.build_cli_command(self.asset, models_dir=self.root, binary="trellis-cli", threads=1)
+        self.assertNotIn("--decim", cmd)
+        cmd = pixal3d.build_cli_command(self.asset, models_dir=self.root, binary="trellis-cli", threads=1, decim=64)
+        self.assertEqual(cmd[cmd.index("--decim") + 1], "64")
+        self.assertTrue(cmd[-1].endswith("pixal3d_raw.glb"))
+
     def test_run_pixal3d_executes_trellis_cli_and_caches_by_hash(self):
         fake_bin = self.root / "trellis-cli.exe"
         fake_bin.write_bytes(b"fake-trellis-cli")

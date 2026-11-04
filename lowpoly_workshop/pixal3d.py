@@ -348,7 +348,7 @@ def build_cli_command(
     threads=None,
     gpu=-1,
     seed=42,
-    decim=50000,
+    decim=None,
     atlas=1024,
     fov=DEFAULT_SV_FOV,
     output_rel="inputs/pixal3d_raw.glb",
@@ -373,11 +373,13 @@ def build_cli_command(
         "--threads", str(nthreads),
         "--seed", str(int(seed)),
         "--res", "1024",
-        "--decim", str(int(decim)),
         "--atlas", str(int(atlas)),
         "--webp", "off",
-        str(out_path),
     ]
+    # --decim is a legacy cluster-grid size; omitting it keeps the quadric simplify to 300K faces
+    if decim is not None:
+        cmd += ["--decim", str(int(decim))]
+    cmd.append(str(out_path))
     return cmd
 
 
@@ -389,7 +391,7 @@ def run_pixal3d(
     threads=None,
     gpu=-1,
     seed=42,
-    decim=50000,
+    decim=None,
     atlas=1024,
     fov=DEFAULT_SV_FOV,
     force=False,
@@ -407,7 +409,7 @@ def run_pixal3d(
                 "prep": prep,
                 "mode": mode,
                 "seed": int(seed),
-                "decim": int(decim),
+                "decim": None if decim is None else int(decim),
                 "atlas": int(atlas),
                 "fov": round(float(fov), 8) if mode == "sv" else None,
             },
@@ -449,7 +451,7 @@ def run_pixal3d(
         "cache_key": cache_key,
         "prep": prep,
         "seed": int(seed),
-        "decim": int(decim),
+        "decim": None if decim is None else int(decim),
         "atlas": int(atlas),
         "gpu": int(gpu),
         "threads": nthreads,

@@ -8,6 +8,8 @@
 
 ## Unreleased
 
+`pixal3d run` no longer passes `--decim 50000` by default, so generated meshes are simplified to 300K faces instead of staying at ≈ 25 M triangles — see docs/pixal3d.md.
+
 Single-view Pixal3D prep crops the front view from a declared sheet set instead of using a whole turnaround sheet. Documented the native Linux CPU build and its measured step rate.
 
 Corrected the rest house’s body depth and roof structure against the original sheet, with real timber end gables and a short closed front cross-gable. Added reference/clay/painted comparisons and a regression preventing hip tiles from stretching over the timber ends.

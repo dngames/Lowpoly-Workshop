@@ -53,7 +53,19 @@ cmake --build pixal3d-src/build --target trellis-cli -j
 
 The build takes about a minute and writes `pixal3d-src/build/trellis-cli`; no runtime libraries need copying. Run Workshop from an installed package (`pip install -e .`) rather than the system Python: Ubuntu 22.04's `python3-pil` 9.0 lacks `Image.Resampling`, and `pixal3d prep` fails with an `AttributeError`.
 
-Measured reference (i7-8850H laptop, 6C/12T at ≈2.2 GHz sustained, `--threads 6`, Q8 single-view, `--res 1024`): SS-flow step ≈ 6.3 min (mean of 7 steps, 1.7 GiB resident), about 2.7× faster than the i5-6500 native build. The 512 shape flow then takes ≈ 5.2 min per step (≈ 2.6 min for the last four, which run without guidance); the 1024 shape flow (17,928 tokens for the Station Rest House front view, 3.8 GiB resident) took ≈ 80 min for its first (guided) step and dominates the run, so a full 1024 run takes more than a day here. Steps took two to three times as long once other CPU-heavy jobs shared the machine, so generate on an otherwise idle machine.
+Measured reference (i7-8850H laptop, 6C/12T at ≈2.2 GHz sustained, `--threads 6`, Q8 single-view, `--res 1024`, Station Rest House front view): one complete run took 28.9 h and peaked at 3.9 GiB resident.
+
+| Stage | Measured |
+| --- | --- |
+| SS flow, 12 steps | ≈ 6.3 min per step (mean of 7 steps), about 2.7× faster than the i5-6500 native build |
+| 512 shape flow, 12 steps | 62 min; ≈ 5.2 min per guided step, ≈ 2.6 min for the last four unguided steps |
+| 1024 shape flow, 17,928 tokens | 14.6 h; ≈ 80 min per guided step, ≈ 40 min for the last four |
+| 1024 shape decode | 18 min; 7.45 M voxels, 15 M-triangle raw mesh |
+| 1024 texture flow, 12 unguided steps | ≈ 38 min per step |
+| PBR decode | 28 min |
+| Remesh, UV bake and GLB write | 23 min, measured with `--decim 50000` (undecimated 25 M-triangle mesh) |
+
+Steps took two to three times as long once other CPU-heavy jobs shared the machine, so generate on an otherwise idle machine.
 
 ## 2. Prepare RGBA inputs and generate `inputs/pixal3d_raw.glb`
 
@@ -62,11 +74,11 @@ Pixal3D requires clean RGBA cutouts. Workshop extracts the reference view (or fo
 ```sh
 # Single-view (uses the front reference or the front crop of a sheet set)
 lowpoly ASSET pixal3d prep --mode sv --view front
-lowpoly ASSET pixal3d run --mode sv --gpu -1 --decim 50000 --atlas 1024 --seed 42
+lowpoly ASSET pixal3d run --mode sv --gpu -1 --atlas 1024 --seed 42
 
 # Multi-view (requires front, right, back, left views)
 lowpoly ASSET pixal3d prep --mode mv
-lowpoly ASSET pixal3d run --mode mv --gpu -1 --decim 50000 --atlas 1024 --seed 42
+lowpoly ASSET pixal3d run --mode mv --gpu -1 --atlas 1024 --seed 42
 ```
 
 A reference declared with any other view (for example a `turnaround` sheet) is never used whole as the front view. Declare a sheet set with a crop box (`[left, top, right, bottom]` in sheet pixels) for each view instead; otherwise `prep` stops with an error:
@@ -75,7 +87,7 @@ A reference declared with any other view (for example a `turnaround` sheet) is n
 "sets": {"sheet": {"image": "ref/turnaround.png", "views": {"front": {"box": [0, 0, 600, 512]}}}}
 ```
 
-`pixal3d run` passes `--webp off` so embedded textures are lossless PNGs, writes `inputs/pixal3d_raw.glb` atomically, and caches the result in `inputs/pixal3d_meta.json` by input and parameter SHA-256.
+`pixal3d run` passes `--webp off` so embedded textures are lossless PNGs, and leaves decimation to `trellis-cli`'s quadric simplify (300K faces at `--res 1024`). `--decim N` selects `trellis-cli`'s legacy cluster grid of size `N` instead; it is not a face budget, and large values leave the mesh undecimated (≈ 25 M triangles, with UV charting abandoned after 300 s). The run writes `inputs/pixal3d_raw.glb` atomically, and caches the result in `inputs/pixal3d_meta.json` by input and parameter SHA-256.
 
 ## 3. Reduce polycount in Blender MCP (or headless Blender)
 
