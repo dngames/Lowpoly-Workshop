@@ -447,6 +447,19 @@ class Pixal3DBakeTests(unittest.TestCase):
             self.assertEqual(len(hit), 1)
             self.assertLess(np.linalg.norm(pts[hit[0]] - q.mean(0)), 1.5 / density)
 
+    def test_bake_edge_texels_sample_their_own_polygon(self):
+        """A texel straddling a thin frame's edge has its centre beyond the frame, on the wall behind.
+
+        Sampling that centre gave frames wall-coloured edge lines; it must be clamped onto the frame."""
+        from lowpoly_workshop import pixal3d_bake
+
+        frame = np.array([[0, 0, 0], [0.09, 0, 0], [0.09, 1, 0], [0, 1, 0]], float)
+        uvs, normals, density = pixal3d_bake.pack([(frame, "trim")], 16)
+        pts, _, _ = pixal3d_bake._texels([(frame, "trim")], uvs, normals, 16, density)
+        self.assertGreater(len(pts), 4)
+        self.assertTrue(np.all((pts[:, 0] >= -1e-9) & (pts[:, 0] <= 0.09 + 1e-9)))
+        self.assertTrue(np.all((pts[:, 1] >= -1e-9) & (pts[:, 1] <= 1 + 1e-9)))
+
     def test_bake_rejects_unknown_variant_and_missing_source(self):
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()) as err:
             main([str(self.asset), "pixal3d", "bake"])

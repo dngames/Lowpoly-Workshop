@@ -262,11 +262,28 @@ def _trace(pts, nrm, tree, ext):
     return hit
 
 
+def _clamp_into(pts, poly):
+    """Points outside a 2D polygon moved to its nearest boundary point; points inside unchanged."""
+    a, b = poly, np.roll(poly, -1, 0)
+    ab = b - a
+    rel = pts[:, None, :] - a[None]
+    t = np.clip((rel * ab).sum(2) / np.maximum((ab * ab).sum(1), 1e-18), 0, 1)
+    near = a[None] + t[..., None] * ab[None]
+    best = near[np.arange(len(pts)), ((pts[:, None, :] - near) ** 2).sum(2).argmin(1)]
+    # even-odd rule
+    ya, yb = a[:, 1][None], b[:, 1][None]
+    x, y = pts[:, :1], pts[:, 1:]
+    cross = (ya > y) != (yb > y)
+    xi = a[:, 0][None] + (y - ya) / np.where(yb != ya, yb - ya, 1e-18) * ab[:, 0][None]
+    inside = (cross & (x < xi)).sum(1) % 2 == 1
+    return np.where(inside[:, None], pts, best)
+
+
 def _texels(polys, uvs, normals, size, density):
     """World point, polygon normal and (row, col) of every texel in each chart's padded rectangle.
 
-    Texels map back through the polygon's plane, so a chart thinner than a texel still gets its
-    texels and the padding carries the plane's colour as a gutter."""
+    Texels map back through the polygon's plane and are clamped into the polygon, so a chart
+    thinner than a texel still gets its own colour and the padding repeats the polygon's edge."""
     pts, nrm, pix = [], [], []
     for (q, _), uv, n in zip(polys, uvs, normals):
         _, u, w = _plane_basis(q)
@@ -275,7 +292,8 @@ def _texels(polys, uvs, normals, size, density):
         x1, y1 = np.ceil(px.max(0)).astype(int) + PAD
         cols, rows = np.meshgrid(np.arange(max(x0, 0), min(x1, size)), np.arange(max(y0, 0), min(y1, size)))
         cols, rows = cols.ravel(), rows.ravel()
-        c2 = (np.stack([cols + 0.5, rows + 0.5], 1) - px[0]) / density
+        c2 = _clamp_into((np.stack([cols + 0.5, rows + 0.5], 1) - px[0]) / density,
+                         np.column_stack([(q - q[0]) @ u, (q - q[0]) @ w]))
         pts.append(q[0] + c2[:, :1] * u + c2[:, 1:] * w)
         nrm.append(np.repeat(n[None], len(c2), 0))
         pix.append(np.stack([rows, cols], 1))
