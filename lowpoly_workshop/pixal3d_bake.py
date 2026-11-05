@@ -300,6 +300,109 @@ def _texels(polys, uvs, normals, size, density):
     return np.concatenate(pts), np.concatenate(nrm), np.concatenate(pix)
 
 
+# -- facade alignment
+
+FACADES = (0, 90, 180, -90)  # camera azimuths: front, right, back, left
+FACADE_PX = 800  # pixels along the LOD's longest side
+FACADE_DOT = 0.9  # how squarely a polygon must face a facade camera to follow its warp
+WARP_X, WARP_Y = 0.035, 0.015  # largest shift as a share of the LOD's extent
+
+
+def _profile(lab, valid, axis):
+    """Per-column (axis 0) or per-row (axis 1) lightness and edge strength over the silhouette, z-scored."""
+    import cv2
+    L = lab[..., 0].astype(float)
+    red = 0 if axis == 0 else 1
+    w = np.maximum(valid.sum(red), 1)
+    edge = np.abs(np.gradient(cv2.GaussianBlur(L, (0, 0), 1.5), axis=1 - red)) * valid
+    f = np.stack([(L * valid).sum(red) / w, edge.sum(red) / w], 1)
+    return (f - f.mean(0)) / (f.std(0) + 1e-9)
+
+
+def _dtw_shift(a, g, reach):
+    """Smoothed monotone shift j - i (|shift| <= reach) aligning profile `a` onto profile `g`."""
+    import cv2
+    n, span = len(a), 2 * reach + 1
+    offs = np.arange(-reach, reach + 1)
+    idx = np.clip(np.arange(n)[:, None] + offs[None], 0, len(g) - 1)
+    cost = ((a[:, None, :] - g[idx]) ** 2).sum(2) + 0.02 * offs[None] ** 2
+    D = cost.copy()
+    back = np.zeros((n, span), int)
+    for i in range(1, n):
+        cand = np.stack([np.r_[np.inf, D[i - 1, :-1]], D[i - 1], np.r_[D[i - 1, 1:], np.inf]])
+        k = cand.argmin(0)
+        D[i] += cand[k, np.arange(span)]
+        back[i] = np.arange(span) + k - 1
+    off = np.zeros(n, int)
+    o = int(D[-1].argmin())
+    for i in range(n - 1, -1, -1):
+        off[i] = o
+        o = back[i, o]
+    return cv2.GaussianBlur((off - reach).astype(np.float32)[None], (0, 0), 3)[0]
+
+
+def facade_warps(baker, polys, cells_rgb):
+    """Per side of the LOD, the in-plane shift that best lines the generated facade up with the authored one.
+
+    Both are rendered orthographically; a monotone column mapping and a monotone row mapping are found by
+    dynamic time warping their lightness and edge profiles, so posts and window bays move into place
+    without tearing. Returns [(camera, pixels per metre, x shift px, y shift px)] per side."""
+    import cv2
+    from .kit.raster import Camera, render
+    tris, cells = [], []
+    for q, c in polys:
+        for k in range(1, len(q) - 1):
+            tris.append(q[[0, k, k + 1]])
+            cells.append(c)
+    tris = np.array(tris)
+    allq = tris.reshape(-1, 3)
+    centre, ext = (allq.min(0) + allq.max(0)) / 2, float(np.ptp(allq, axis=0).max())
+    ppm = FACADE_PX / ext
+    pal = {c: np.asarray(cells_rgb(c), float) / 255 for c in set(cells)}
+    out = []
+    for az in FACADES:
+        cam = Camera(az, 0, 0, 10 * ext, ppm * 10 * ext, 0, 0, target=tuple(centre), ortho=True)
+        uv, _ = cam.project(allq)
+        lo = uv.min(0) - 4
+        W, H = (uv.max(0) - lo + 4).astype(int)
+        cam = Camera(az, 0, 0, 10 * ext, ppm * 10 * ext, -lo[0], -lo[1], target=tuple(centre), ortho=True)
+        A, _, za = render(tris, cells, cam, W, H, shade=False, palette=pal, classes={"_default": 1})
+        valid = ~np.isinf(za)
+        uv, z = cam.project(baker.pts)
+        px, py = uv[:, 0].astype(int), uv[:, 1].astype(int)
+        ok = (px >= 0) & (px < W) & (py >= 0) & (py < H)
+        pix = py[ok] * W + px[ok]
+        order = np.lexsort((z[ok], pix))
+        pix, col = pix[order], baker.col[ok][order]
+        first = np.ones(len(pix), bool)
+        first[1:] = pix[1:] != pix[:-1]
+        G = np.zeros((H * W, 3), np.uint8)
+        G[pix[first]] = (np.clip(col[first], 0, 1) * 255).astype(np.uint8)
+        hole = np.ones(H * W, np.uint8)
+        hole[pix[first]] = 0
+        G = cv2.inpaint(G.reshape(H, W, 3), hole.reshape(H, W), 3, cv2.INPAINT_TELEA)
+        A8 = (np.clip(np.where(valid[..., None], A, 0), 0, 1) * 255).astype(np.uint8)
+        la, lg = cv2.cvtColor(A8, cv2.COLOR_RGB2LAB), cv2.cvtColor(G, cv2.COLOR_RGB2LAB)
+        dx = _dtw_shift(_profile(la, valid, 0), _profile(lg, valid, 0), max(1, int(WARP_X * FACADE_PX)))
+        dy = _dtw_shift(_profile(la, valid, 1), _profile(lg, valid, 1), max(1, int(WARP_Y * FACADE_PX)))
+        out.append((cam, ppm, dx, dy))
+    return out
+
+
+def _warp(pts, nrm, warps):
+    """Shift texel points on facade-facing polygons by their facade's warp."""
+    pts = pts.copy()
+    for cam, ppm, dx, dy in warps:
+        m = nrm @ -cam.fwd > FACADE_DOT
+        if not m.any():
+            continue
+        uv, _ = cam.project(pts[m])
+        ix = np.clip(uv[:, 0].astype(int), 0, len(dx) - 1)
+        iy = np.clip(uv[:, 1].astype(int), 0, len(dy) - 1)
+        pts[m] += (dx[ix, None] * cam.right - dy[iy, None] * cam.up) / ppm
+    return pts
+
+
 class Baker:
     """The fitted generated surface, reused for every LOD."""
 
@@ -316,10 +419,11 @@ class Baker:
                 if len(sel):
                     self.buckets.append((axis, sign, sel, cKDTree(self.pts[sel])))
 
-    def bake(self, polys, uvs, normals, size, density):
+    def bake(self, polys, uvs, normals, size, density, warps=()):
         """Atlas (size, size, 3) floats 0..1 and the share of texels hit from outside."""
         img = np.zeros((size, size, 3))
         pts, nrm, pix = _texels(polys, uvs, normals, size, density)
+        pts = _warp(pts, nrm, warps)
         hit = _trace(pts, nrm, self.tree, self.ext)
         got = hit >= 0
         img[pix[got, 0], pix[got, 1]] = self.col[hit[got]]
@@ -444,7 +548,7 @@ def _preview(path, baker, lods, size=360):
         sheet.save(tmp, format="PNG")
 
 
-def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024):
+def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, align=True):
     """Bake the generated colours onto the asset's outputs; returns the path of the bake record."""
     import io
     import time
@@ -483,7 +587,8 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024):
     for variant in chosen:
         polys = polys_of(variant)
         uvs, normals, density = pack(polys, size)
-        img, hits, texels = baker.bake(polys, uvs, normals, size, density)
+        warps = facade_warps(baker, polys, a.gen.ATLAS.rgb_of) if align else []
+        img, hits, texels = baker.bake(polys, uvs, normals, size, density, warps)
         pixels = (np.clip(img, 0, 1) * 255).astype(np.uint8)
         stem = Path(by_variant[variant]["file"]).stem
         png, glb = out_dir / f"{stem}_bake.png", out_dir / f"{stem}_baked.glb"
@@ -498,6 +603,8 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024):
         record["outputs"].append({"variant": variant, "triangles": tris, "charts": len(polys),
                                   "texels_per_metre": round(density, 1), "texels": texels,
                                   "outside_in_hits": round(hits, 4),
+                                  "facade_shift_max_m": round(max((float(np.abs(np.r_[dx, dy]).max()) / ppm
+                                                                   for _, ppm, dx, dy in warps), default=0.0), 3),
                                   "texture": png.relative_to(a.dir).as_posix(),
                                   "glb": glb.relative_to(a.dir).as_posix()})
         previews.append((stem, polys, uvs, img))

@@ -460,6 +460,20 @@ class Pixal3DBakeTests(unittest.TestCase):
         self.assertTrue(np.all((pts[:, 0] >= -1e-9) & (pts[:, 0] <= 0.09 + 1e-9)))
         self.assertTrue(np.all((pts[:, 1] >= -1e-9) & (pts[:, 1] <= 1 + 1e-9)))
 
+    def test_facade_warp_recovers_a_shifted_bay_layout(self):
+        """Generated window edges sit a few pixels off the authored ones; the warp must pull them together."""
+        from lowpoly_workshop import pixal3d_bake
+
+        x = np.arange(200, dtype=float)
+        authored = ((x // 25) % 2)[:, None] * np.ones((1, 2))
+        generated = np.roll(authored, 6, axis=0)
+        shift = pixal3d_bake._dtw_shift(authored, generated, 12)
+        warped = generated[np.clip(np.round(x + shift).astype(int), 0, 199)]
+        before = np.abs(authored - generated)[30:170].mean()
+        after = np.abs(authored - warped)[30:170].mean()
+        self.assertLess(after, 0.6 * before)
+        self.assertLessEqual(np.abs(shift).max(), 12)
+
     def test_bake_rejects_unknown_variant_and_missing_source(self):
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()) as err:
             main([str(self.asset), "pixal3d", "bake"])

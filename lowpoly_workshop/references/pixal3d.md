@@ -146,17 +146,18 @@ Decimation keeps the generated shape but loses its detail: below a few thousand 
 
 ```sh
 lowpoly ASSET pixal3d bake
-lowpoly ASSET pixal3d bake --variant 2 3 --fit-variant 2 --size 2048
+lowpoly ASSET pixal3d bake --variant 2 3 --fit-variant 2 --size 2048 [--no-align]
 ```
 
 The source is `inputs/pixal3d_raw.ply` (the vertex-coloured dense mesh `trellis-cli` writes beside its `.glb`), else `inputs/pixal3d_raw.glb` with its base-colour texture; `--source` picks another file. The bake
 
 1. maps the generated mesh onto the LOD named by `--fit-variant` (default: the first baked output), first by bounds, then by a per-axis scale and offset that maximise front and side silhouette overlap, and uses that one mapping for every LOD;
 2. gives every authored polygon its own chart in a `--size`² atlas, all at one texel density;
-3. colours each texel from the first generated surface met coming in from outside along the polygon's normal, falling back to the nearest generated point facing the same way.
+3. lines each side up locally: front, back and both side walls are rendered orthographically, authored and generated, and a monotone column and row mapping (at most 3.5 % and 1.5 % of the LOD's size) moves the generated posts and window bays onto the authored ones; `--no-align` skips this;
+4. colours each texel from the first generated surface met coming in from outside along the polygon's normal, falling back to the nearest generated point facing the same way.
 
 It writes, per output, `out/pixal3d_bake/<output>_bake.png` and `<output>_baked.glb` (one flattened, textured mesh), plus `preview.png` and `bake.json` with the fit, the texel density and the share of texels hit from outside. It does not change `gen.py` or the asset's own outputs.
 
-Model the LODs to the generated shape: authored detail that the generated mesh also shows (window frames, posts) appears twice, once as geometry and once in the texture, so flat walls work best on a baked LOD.
+The alignment moves whole columns and rows, so it cannot fix a wall whose authored window count differs from the generated one. Model the LODs to the generated shape: authored detail that the generated mesh also shows (window frames, posts) appears twice, once as geometry and once in the texture, so flat walls work best on a baked LOD.
 
 Measured on the Station Rest House (i7-8850H, sharing the CPU with a `trellis-cli` run), from the 15 M-triangle `.ply` at `--size 1024`: silhouette IoU 0.85, 77–84 % of texels hit from outside, 38–55 min for all four LODs at 4.2 GiB peak. Texel density falls with polygon count — 26 texels/m on the 44-triangle far LOD, 18 on LOD2 (1,400), 13 on LOD1 (6,448), 7 on LOD0 (39,524). At 7 texels/m LOD0 bakes soft, with most trims and bevels below one texel wide; bake only the low LODs, or raise `--size`.
