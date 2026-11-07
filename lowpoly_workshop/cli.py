@@ -10,6 +10,14 @@ def main(argv=None):
     except (ValueError,FileNotFoundError,KeyError) as e:
         print("ERROR:",e,file=sys.stderr);raise SystemExit(2)
 
+def _join_signed(args):
+    """Fuse `--front -z` into `--front=-z`, which argparse would otherwise read as an unknown option."""
+    out=[]
+    for i,a in enumerate(args):
+        if i and args[i-1]=="--front" and a.lower() in ("+z","-z","+x","-x"):out[-1]="--front="+a
+        else:out.append(a)
+    return out
+
 def dispatch(args):
     if not args or args[0] in ("-h","--help"):
         print("""Lowpoly Workshop
@@ -29,6 +37,10 @@ def dispatch(args):
   lowpoly ASSET references import JOB_ID IMAGE
   lowpoly ASSET coverage [SET] [--size 256] [--budget 4]
   lowpoly ASSET paint | pieces | shell-lods
+  lowpoly ASSET base import PATH [--name base] [--source-url URL] [--licence ID] [--credit TEXT] [--front +z|-z|+x|-x]
+                         [--height METRES] [--budget TRIANGLES] [--drop-plinth | --drop-node NAME ...]
+                         [--separate-nodes] [--replace]
+  lowpoly ASSET base status | palette [--cells 8] | bake [--source GLB] [--front F] [--variant V ...]
   lowpoly ASSET pixal3d status | prep | run | mcp-script | decimate
   lowpoly ASSET pixal3d bake [--source PLY_OR_GLB] [--variant V ...] [--fit-variant V] [--size 1024] [--no-align]
   lowpoly ASSET fit all --grid | render views | render show | compose
@@ -131,6 +143,31 @@ def dispatch(args):
         a=Asset(folder);nodes=a.build(spec.get("review",{}).get("variant"))
         print(json.dumps({"nodes":{n:topology(triangles({n:nd})[0]) for n,nd in nodes.items() if nd["faces"]},"uv":uv_diagnostics(nodes,a.gen.ATLAS)},indent=2));return
     if command=="shell-lods":pipeline.blender("shell_lods.py",folder);return
+    if command=="base":
+        from . import base_mesh
+        action=args[2] if len(args)>2 else "status"
+        rest=_join_signed(args[3:])
+        if action=="import":
+            parser=argparse.ArgumentParser(prog="lowpoly ASSET base import");parser.add_argument("path");parser.add_argument("--name",default="base");parser.add_argument("--source-url",default=None);parser.add_argument("--licence","--license",dest="licence",default=None);parser.add_argument("--credit",default=None);parser.add_argument("--front",default="+z");parser.add_argument("--height",type=float,default=None);parser.add_argument("--budget",type=int,default=None);parser.add_argument("--separate-nodes",action="store_true");parser.add_argument("--replace",action="store_true")
+            drops=parser.add_mutually_exclusive_group();drops.add_argument("--drop-plinth",action="store_true");drops.add_argument("--drop-node",action="append",nargs="+",default=None)
+            ns=parser.parse_args(rest);nodes=[n for group in (ns.drop_node or []) for n in group]
+            if ns.licence is None:print("WARNING: no --licence given; record the base model's licence and credit in the ledger",file=sys.stderr)
+            result=base_mesh.import_base(folder,ns.path,ns.name,source_url=ns.source_url,licence=ns.licence,credit=ns.credit,front=ns.front,height=ns.height,budget=ns.budget,drop_plinth=ns.drop_plinth,drop_node=nodes,separate_nodes=ns.separate_nodes,replace=ns.replace)
+            tris=result["triangles"];print("BASE imported",Path(result["lowpoly"]).relative_to(folder).as_posix(),f"{tris['source']} -> {tris['final']} triangles"+(" (reduced)" if tris["reduced"] else ""))
+            for line in result["warnings"]:print("NOTE:",line)
+            return
+        if action in ("status","palette","bake"):
+            parser=argparse.ArgumentParser(prog="lowpoly ASSET base "+action);parser.add_argument("--name",default="base")
+            if action=="palette":parser.add_argument("--cells",type=int,default=8);parser.add_argument("--source",default=None)
+            if action=="bake":
+                parser.add_argument("--source",default=None);parser.add_argument("--front",default=None);parser.add_argument("--variant",nargs="+",default=None);parser.add_argument("--fit-variant",default=None);parser.add_argument("--size",type=int,default=1024);parser.add_argument("--no-align",action="store_true");parser.add_argument("--drop-plinth",action="store_true");parser.add_argument("--drop-node",nargs="+",default=None)
+            ns=parser.parse_args(rest)
+            if action=="status":print(json.dumps(base_mesh.status(folder,ns.name),indent=2));return
+            if action=="palette":
+                paths=base_mesh.base_paths(folder,ns.name);src=ns.source or paths["lowpoly"]
+                print(json.dumps(base_mesh.propose_palette(src,ns.cells),indent=2));return
+            print(base_mesh.bake_base(folder,ns.source,ns.name,ns.variant,ns.fit_variant,ns.size,not ns.no_align,ns.front,ns.drop_node,ns.drop_plinth));return
+        raise ValueError("Unknown base action: "+action)
     if command=="pixal3d":
         from . import pixal3d
         action=args[2] if len(args)>2 else "status"

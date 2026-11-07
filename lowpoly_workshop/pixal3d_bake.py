@@ -14,15 +14,14 @@ geometry and moves only the colour across:
   4. Write per LOD the atlas, a textured `.glb` (all nodes flattened into one mesh) and a preview.
 """
 from pathlib import Path
-import json
-import struct
 
 import numpy as np
 
 from .spec import local_path
 from .kit.atlas import write_png
 from .kit.atomic import replacing, write_json
-from .kit.glb import Glb
+from .kit.glb import write_glb
+from . import base_mesh
 
 FIT_STEPS = ((0.08, 0.043), (0.04, 0.021), (0.02, 0.0086), (0.01, 0.0036))  # (scale, offset / extent)
 BUCKET_DOT = 0.35  # how closely a fallback point's normal must agree with the polygon's
@@ -57,46 +56,36 @@ def _read_ply(path):
     return p, v["c"].astype(np.float64) / 255.0, fc["i"].astype(np.int64)
 
 
-def _read_glb(path):
-    """Positions, texture colours and triangles of every mesh primitive, face centres included."""
-    g = Glb(path)
-    world = g.world(g.sample())
-    images = g.images()
-    tex = np.asarray(images[0].convert("RGB"), np.float64) / 255.0 if images else None
+def _read_glb(path, front="-z", order=("vertex", "texture", "factor"), drop_node=(), drop_plinth=False):
+    """Positions, sRGB colours and triangles of every mesh primitive (at rest pose), turned to face +Z.
+
+    `front` is the direction the file's model faces (Pixal3D's glTF faces -Z). Colours come from `order`:
+    by default vertex colours, then the base-colour texture, then the material colour."""
+    scene = base_mesh.read_scene(path)
+    prims = list(scene.prims)
+    if drop_node:
+        prims, _ = base_mesh.drop_nodes(scene, prims, drop_node)
+    elif drop_plinth:
+        prims, _ = base_mesh.detect_plinth(scene, prims)
+    prims = base_mesh.rotate(prims, front)
     pts, cols, faces, base = [], [], [], 0
-    for i, node in enumerate(g.nodes):
-        if "mesh" not in node:
-            continue
-        R, T = world[i]
-        for prim in g.js["meshes"][node["mesh"]]["primitives"]:
-            attrs = prim["attributes"]
-            p = g.acc(attrs["POSITION"]).astype(np.float64) @ R.T + T
-            idx = g.acc(prim["indices"]).astype(np.int64).reshape(-1, 3)
-            if "COLOR_0" in attrs:
-                c = g.acc(attrs["COLOR_0"]).astype(np.float64)[:, :3]
-                c = c / 255.0 if c.max() > 1.0 else c
-            elif tex is not None and "TEXCOORD_0" in attrs:
-                uv = g.acc(attrs["TEXCOORD_0"]).astype(np.float64)
-                h, w = tex.shape[:2]
-                c = tex[np.clip((uv[:, 1] % 1.0 * h).astype(int), 0, h - 1),
-                        np.clip((uv[:, 0] % 1.0 * w).astype(int), 0, w - 1)]
-            else:
-                raise ValueError(f"{path}: mesh has neither COLOR_0 nor a textured TEXCOORD_0")
-            pts.append(p)
-            cols.append(c)
-            faces.append(idx + base)
-            base += len(p)
-    if not pts:
-        raise ValueError(f"No mesh in {path}")
-    p, c, f = np.concatenate(pts), np.concatenate(cols), np.concatenate(faces)
-    p = np.stack([-p[:, 0], p[:, 1], -p[:, 2]], axis=1)  # Pixal3D glTF faces -Z; Workshop faces +Z
-    return p, c, f
+    for prim in prims:
+        c, source = base_mesh.vertex_colours(scene, prim, order)
+        if c is None:
+            raise ValueError(f"{path}: mesh has neither COLOR_0, a textured TEXCOORD_0 nor a material colour")
+        pts.append(prim.pos)
+        cols.append(c)
+        faces.append(prim.tri + base)
+        base += len(prim.pos)
+    return np.concatenate(pts), np.concatenate(cols), np.concatenate(faces)
 
 
-def load_source(path):
-    """(points, colours 0..1, unit normals) of the generated surface in Workshop's frame."""
+def load_source(path, **glb_options):
+    """(points, colours 0..1, unit normals) of the generated surface in Workshop's frame.
+
+    `glb_options` (front, order, drop_node, drop_plinth) apply to a GLB; a PLY is always trellis-cli's."""
     path = Path(path)
-    p, c, f = _read_ply(path) if path.suffix.lower() == ".ply" else _read_glb(path)
+    p, c, f = _read_ply(path) if path.suffix.lower() == ".ply" else _read_glb(path, **glb_options)
     fn = np.cross(p[f[:, 1]] - p[f[:, 0]], p[f[:, 2]] - p[f[:, 0]])
     vn = np.zeros_like(p)
     for k in range(3):
@@ -445,7 +434,7 @@ class Baker:
 
 # -- output
 
-def write_textured_glb(path, polys, uvs, png_bytes, name="Model"):
+def write_textured_glb(path, polys, uvs, png_bytes, name="Model", material="pixal3d_bake", generator="Lowpoly Workshop pixal3d bake"):
     """One flat-shaded mesh and one PBR material with the baked atlas embedded."""
     pos, nor, tex = [], [], []
     for (q, _), uv in zip(polys, uvs):
@@ -468,13 +457,13 @@ def write_textured_glb(path, polys, uvs, png_bytes, name="Model"):
     binc = b"".join(b + b"\0" * ((4 - len(b) % 4) % 4) for b in blobs)
     n = len(pos)
     gltf = {
-        "asset": {"version": "2.0", "generator": "Lowpoly Workshop pixal3d bake"},
+        "asset": {"version": "2.0", "generator": generator},
         "scene": 0,
         "scenes": [{"nodes": [0]}],
         "nodes": [{"name": name, "mesh": 0}],
         "meshes": [{"name": name, "primitives": [{
             "attributes": {"POSITION": 0, "NORMAL": 1, "TEXCOORD_0": 2}, "indices": 3, "material": 0}]}],
-        "materials": [{"name": "pixal3d_bake", "pbrMetallicRoughness": {
+        "materials": [{"name": material, "pbrMetallicRoughness": {
             "baseColorTexture": {"index": 0}, "metallicFactor": 0.0, "roughnessFactor": 1.0}}],
         "textures": [{"source": 0, "sampler": 0}],
         "samplers": [{"magFilter": 9729, "minFilter": 9987, "wrapS": 33071, "wrapT": 33071}],
@@ -489,14 +478,7 @@ def write_textured_glb(path, polys, uvs, png_bytes, name="Model"):
         "bufferViews": views,
         "buffers": [{"byteLength": len(binc)}],
     }
-    js = json.dumps(gltf, separators=(",", ":")).encode()
-    js += b" " * ((4 - len(js) % 4) % 4)
-    total = 12 + 8 + len(js) + 8 + len(binc)
-    with replacing(str(path)) as tmp:
-        with open(tmp, "wb") as f:
-            f.write(struct.pack("<III", 0x46546C67, 2, total))
-            f.write(struct.pack("<II", len(js), 0x4E4F534A) + js)
-            f.write(struct.pack("<II", len(binc), 0x004E4942) + binc)
+    write_glb(path, gltf, binc)
 
 
 def _preview(path, baker, lods, size=360):
@@ -548,8 +530,19 @@ def _preview(path, baker, lods, size=360):
         sheet.save(tmp, format="PNG")
 
 
-def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, align=True):
-    """Bake the generated colours onto the asset's outputs; returns the path of the bake record."""
+def _inside_or_name(path, root):
+    """A project-relative path for a file inside the project, else only its file name (no absolute paths)."""
+    path = Path(path).resolve()
+    return path.relative_to(Path(root).resolve()).as_posix() if path.is_relative_to(Path(root).resolve()) else path.name
+
+
+def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, align=True, *,
+              label="PIXAL3D", out_name="pixal3d_bake", material="pixal3d_bake", default=None, glb_options=None,
+              relative_source=False):
+    """Bake a dense source's colours onto the asset's outputs; returns the path of the bake record.
+
+    The defaults are the Pixal3D bake. `base bake` passes its own label, output folder, default source and
+    GLB options (front, colour order, nodes to drop)."""
     import io
     import time
     from PIL import Image
@@ -567,21 +560,22 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, a
         raise ValueError(f"No output with variant {unknown[0]!r}; outputs have {sorted(by_variant)}")
     if size < 64 or size & (size - 1):
         raise ValueError("--size must be a power of two of at least 64")
-    src = Path(source).resolve() if source else default_source(a.dir)
+    src = Path(source).resolve() if source else (default or default_source)(a.dir)
 
     def polys_of(variant):
         o = by_variant[variant]
         return lod_polygons(a.build(o.get("variant"), o.get("scale", 1.0)))
 
-    dense = load_source(src)
+    dense = load_source(src, **(glb_options or {}))
     ref = str(fit_variant) if fit_variant is not None else chosen[0]
     to_lod, fit_record = fit(dense[0], polys_of(ref))
-    print("PIXAL3D bake fit on variant %s: scale %s offset %s silhouette IoU %.3f" % (
-        ref, fit_record["scale"], fit_record["offset"], fit_record["silhouette_iou"]), flush=True)
+    print("%s bake fit on variant %s: scale %s offset %s silhouette IoU %.3f" % (
+        label, ref, fit_record["scale"], fit_record["offset"], fit_record["silhouette_iou"]), flush=True)
     baker = Baker(dense, to_lod)
     del dense
-    out_dir = Path(a.out("pixal3d_bake", "bake.json")).parent
-    record = {"source": src.as_posix(), "source_sha256": file_sha256(src), "fit_variant": ref,
+    out_dir = Path(a.out(out_name, "bake.json")).parent
+    shown = (_inside_or_name(src, a.dir) if relative_source else src.as_posix())
+    record = {"source": shown, "source_sha256": file_sha256(src), "fit_variant": ref,
               "fit": fit_record, "size": int(size), "outputs": []}
     previews = []
     for variant in chosen:
@@ -596,9 +590,10 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, a
             write_png(tmp, pixels)
         buf = io.BytesIO()
         Image.fromarray(pixels).save(buf, format="PNG")
-        write_textured_glb(glb, polys, uvs, buf.getvalue(), name=stem)
+        write_textured_glb(glb, polys, uvs, buf.getvalue(), name=stem, material=material,
+                           generator=f"Lowpoly Workshop {out_name.replace('_bake', '')} bake")
         tris = sum(len(q) - 2 for q, _ in polys)
-        print(f"PIXAL3D baked {stem}: {tris} tris, {len(polys)} charts, {density:.0f} texels/m, "
+        print(f"{label} baked {stem}: {tris} tris, {len(polys)} charts, {density:.0f} texels/m, "
               f"{hits:.0%} hit from outside", flush=True)
         record["outputs"].append({"variant": variant, "triangles": tris, "charts": len(polys),
                                   "texels_per_metre": round(density, 1), "texels": texels,

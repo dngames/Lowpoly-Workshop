@@ -37,6 +37,25 @@ def load_glb(path):
     return js, binc
 
 
+def pack_glb(js, binc=b""):
+    """Bytes of a GLB container from a glTF JSON dict and its binary chunk (both padded to 4 bytes)."""
+    text = json.dumps(js, separators=(",", ":")).encode()
+    text += b" " * ((4 - len(text) % 4) % 4)
+    binc = bytes(binc) + b"\0" * ((4 - len(binc) % 4) % 4)
+    total = 12 + 8 + len(text) + (8 + len(binc) if binc else 0)
+    out = struct.pack("<III", 0x46546C67, 2, total) + struct.pack("<II", len(text), 0x4E4F534A) + text
+    if binc:
+        out += struct.pack("<II", len(binc), 0x004E4942) + binc
+    return out
+
+
+def write_glb(path, js, binc=b""):
+    """Write a GLB atomically: a partly written file never replaces the previous one."""
+    from .atomic import replacing
+    with replacing(str(path)) as tmp:
+        Path(tmp).write_bytes(pack_glb(js, binc))
+
+
 def accessor(js, binc, i):
     a = js["accessors"][i]
     bv = js["bufferViews"][a["bufferView"]]
