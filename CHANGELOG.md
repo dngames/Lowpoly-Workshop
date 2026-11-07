@@ -8,6 +8,8 @@
 
 ## Unreleased
 
+`lowpoly ASSET base import|status|palette|bake` starts a project from an existing low-poly base mesh (any GLB) instead of a generated one — see docs/base-mesh.md. Import copies the source unchanged, records its licence, credit and hash in a ledger, turns the chosen front to +Z, scales to a height, grounds and centres it (plain numpy; Blender only when a `--budget` reduction is needed), and can drop a plinth or named nodes. `load_glb_node` moved to `lowpoly_workshop.base_mesh` (still importable from `lowpoly_workshop.pixal3d`): it now reads `COLOR_0` vertex colours (linear, converted to sRGB, times the material colour) and material colours, poses skinned meshes at their rest pose, honours node scale and matrices, and can keep glTF nodes as separate named Workshop nodes. `propose_palette` suggests a palette from a base's own colours. `base bake` transfers any source mesh's colours onto hand-built LODs. Pixal3D stays an optional generator with unchanged commands; its Blender reduction code is now shared (`lowpoly_workshop/reduce.py`).
+
 `lowpoly ASSET pixal3d bake` bakes a Pixal3D generation's colours onto the asset's hand-built LODs — see docs/pixal3d.md. It lines up each wall's posts and windows with the authored ones first (`--no-align` to skip).
 
 `pixal3d run` no longer passes `--decim 50000` by default, so generated meshes are simplified to 1M faces instead of staying at ≈ 25 M triangles — see docs/pixal3d.md.

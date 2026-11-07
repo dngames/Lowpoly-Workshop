@@ -11,6 +11,8 @@ lowpoly selftest --blender
 
 Tests cover topology, wrapped fringe, attachment frames, posed contact/gaps, containment/support rays, decal underside/distortion, stable skin weights, reference immutability/provider requests, path containment, templates, cache and release manifests.
 
+Base-mesh tests (`tests/test_base_mesh.py`) build every GLB fixture inside the test with `tests/synthetic_glb.py`; they cover vertex-colour and material-colour matching, rest-pose skinning, node layout, dropping, normalising, the ledger, palette proposal and baking from a base. They run without Blender; the reduction step is exercised with a stand-in for Blender's collapse, so only a real over-budget `base import --budget` needs the Blender selftest machine.
+
 Blender selftest exports all starters, validates nodes/pivots/empties/geometry/budgets/masks/closed shells, exports a generic skeleton with finite posed roundtrip, renders an actual-export underside, and checks UV survival through duplicate-face removal. It writes under TEMP; set TEMP/TMP to the task scratch drive.
 
 scripts/test_viewer.mjs takes a local review URL and screenshot folder. It requires Playwright separately and checks controls, browser errors and absence of external requests.

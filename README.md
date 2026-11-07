@@ -30,6 +30,8 @@ Turn your references and modelling decisions into a Python generator, a Blender 
 
 Workshop executes your generator; it does not reconstruct arbitrary images into meshes by itself. Optional image tools can suggest missing design views, with their provenance kept separate from supplied references.
 
+**Starting from an existing low-poly mesh.** Instead of authoring step 2 from scratch you can import a base mesh (any GLB): `lowpoly ASSET base import` normalises its orientation, scale and ground contact, records its licence and credit in a ledger, and drops a display plinth or named parts if you ask. `load_glb_node` then loads it into `gen.py` as editable nodes, with its vertex colours or texture mapped onto your palette, and `base bake` puts its colours onto hand-built LODs. See [Start from a base mesh](docs/base-mesh.md); keep third-party meshes in your own project, not in this repository.
+
 ## Procedural character construction examples
 
 **Design input: a written brief, not a 2D original.** These models were authored procedurally. The diagram below was added later to explain the construction; it is not their historical reference.
@@ -113,6 +115,7 @@ Use it directly or give your modelling assistant the [Workshop skill](lowpoly_wo
 | [Guided review](docs/guided-review.md) | [Modelling and repair recipes](docs/modelling.md) |
 | [Coverage and appearance](docs/appearance-workflow.md) | [Build validation](docs/build-validation.md) |
 | [Reference views and providers](docs/references.md) | [Game adapters](docs/adapters.md) |
+| [Start from a base mesh](docs/base-mesh.md) | [Optional Pixal3D generation](docs/pixal3d.md) |
 | [Review and release](docs/review-release.md) | [Legacy kit parity audit](docs/legacy-port-audit.md) |
 
 [Roadmap](docs/roadmap.md) · [Testing](docs/testing.md) · [Validation record](VALIDATION.md) · [Licensing](docs/licensing.md) · [Contributing](CONTRIBUTING.md)

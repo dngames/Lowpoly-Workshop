@@ -6,7 +6,7 @@ Projects contain asset.json, gen.py, optional ref/ and cams/, and generated out/
 
 Metres, +Y up, +Z forward, +X toward the model's left. Face points and pivots use **world rest coordinates**. Each node has parent, pivot, faces and optional orthonormal rot. Faces are `(points, atlas_cell, explicit_uv_or_None, thin_flag)`, wound outward. Parents are validated/sorted; empty socket nodes survive export.
 
-Generators provide `ATLAS`, `params(variant=None, overrides=None)` and `build(p)`. Optional hooks: extras(p, scale), clips(nodes, p), skin(nodes, p), show_scenes(asset), fit_scene(set, view, extra, asset), fit_extra(set, view), extra_checks(asset, report). Core module docstrings define their data. Keep inputs within the project for portable bundles/cache.
+Generators provide `ATLAS`, `params(variant=None, overrides=None)` and `build(p)`. Optional hooks: extras(p, scale), clips(nodes, p), skin(nodes, p), show_scenes(asset), fit_scene(set, view, extra, asset), fit_extra(set, view), extra_checks(asset, report). Core module docstrings define their data. `lowpoly_workshop.base_mesh.load_glb_node` turns an existing GLB into generator nodes (see [base mesh](base-mesh.md)). Keep inputs within the project for portable bundles/cache.
 
 ## Outputs and profiles
 

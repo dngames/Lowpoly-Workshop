@@ -3,11 +3,14 @@ import io
 import json
 import struct
 import tempfile
+import sys
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 import numpy as np
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/synthetic_glb.py
 
 from lowpoly_workshop import pixal3d
 from lowpoly_workshop.cli import main
@@ -264,6 +267,16 @@ class Pixal3DTests(unittest.TestCase):
         validated_dec = validate_nodes(nodes_dec, decal_atlas)
         self.assertEqual(uv_diagnostics(validated_dec, decal_atlas), [])
 
+    def test_loader_and_reduction_code_are_shared_with_the_base_mesh_module(self):
+        from lowpoly_workshop import base_mesh, reduce
+        from lowpoly_workshop.pixal3d import load_glb_node
+
+        self.assertIs(load_glb_node, base_mesh.load_glb_node)
+        code = pixal3d.blender_mcp_decimate_code(self.asset, budget=400, height=0.5, node_name="Crate")
+        config = json.loads(eval(code.split("CFG = json.loads(")[1].split(")\n")[0]))
+        self.assertEqual(code, reduce.reduce_code(config))
+        self.assertNotIn("normalize", config)  # Pixal3D keeps normalising inside Blender
+
     def test_cli_pixal3d_prep_and_mcp_script(self):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
@@ -473,6 +486,23 @@ class Pixal3DBakeTests(unittest.TestCase):
         after = np.abs(authored - warped)[30:170].mean()
         self.assertLess(after, 0.6 * before)
         self.assertLessEqual(np.abs(shift).max(), 12)
+
+    def test_bake_reads_a_textured_pixal3d_glb_facing_minus_z(self):
+        """The GLB source keeps Pixal3D's frame (front -Z) and its base-colour texture."""
+        from lowpoly_workshop import pixal3d_bake
+        from synthetic_glb import GlbBuilder
+
+        img = Image.new("RGB", (2, 2), (0, 0, 0))
+        img.putpixel((0, 0), (200, 40, 30))
+        g = GlbBuilder()
+        mat = g.material([1, 1, 1, 1], image=img)
+        pos = [[1, 0, 2], [3, 0, 2], [1, 4, 2]]
+        g.node("Mesh", mesh=g.mesh([dict(pos=pos, tri=[[0, 1, 2]], uv=[[0.0, 0.0]] * 3, material=mat)]))
+        path = g.write(Path(self.tmp.name) / "raw.glb")
+        pts, cols, faces = pixal3d_bake._read_glb(path)
+        np.testing.assert_allclose(pts, [[-1, 0, -2], [-3, 0, -2], [-1, 4, -2]])
+        np.testing.assert_allclose(cols * 255, [[200, 40, 30]] * 3)
+        self.assertEqual(faces.tolist(), [[0, 1, 2]])
 
     def test_bake_rejects_unknown_variant_and_missing_source(self):
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()) as err:

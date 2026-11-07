@@ -1,5 +1,7 @@
 # Pixal3D (`raven38/pixal3d.cpp`) and Blender MCP polycount reduction
 
+**Pixal3D is optional.** A project that starts from a supplied base mesh (any GLB) skips generation entirely and uses [`lowpoly ASSET base ...`](base-mesh.md): `base import` normalises the file, `load_glb_node` loads it, and `base bake` transfers its colours onto hand-built LODs. Everything below that produces `inputs/pixal3d_raw.glb` is needed only when there is no base to start from. The commands on this page are unchanged; the reduction code and the GLB loader are shared with the base-mesh path.
+
 This optional workflow uses [`raven38/pixal3d.cpp`](https://github.com/raven38/pixal3d.cpp) (`trellis-cli`) to generate the initial 3D mesh from reference image(s), then uses **Blender MCP** (`tools.blender.execute_blender_code`) or headless Blender to reduce polycount and normalize orientation, scale, and ground contact before running Workshop's standard `build`, `check`, `review`, and `page` pipeline.
 
 ## 1. Environment & GGUF model sets
@@ -106,7 +108,7 @@ This step rotates the mesh `180°` to face `+Z`, welds close vertices, applies p
 
 ## 4. Load the reduced mesh in `gen.py` and run Workshop checks
 
-In `gen.py`, load `inputs/pixal3d_lowpoly.glb` through `lowpoly_workshop.pixal3d.load_glb_node`:
+In `gen.py`, load `inputs/pixal3d_lowpoly.glb` through `lowpoly_workshop.pixal3d.load_glb_node` (the same function as `lowpoly_workshop.base_mesh.load_glb_node`, which also reads vertex colours, skinned meshes and separate nodes; see [base mesh](base-mesh.md)):
 
 ```python
 from pathlib import Path
@@ -148,6 +150,8 @@ Decimation keeps the generated shape but loses its detail: below a few thousand 
 lowpoly ASSET pixal3d bake
 lowpoly ASSET pixal3d bake --variant 2 3 --fit-variant 2 --size 2048 [--no-align]
 ```
+
+`lowpoly ASSET base bake` does the same for any other source mesh (see [base mesh](base-mesh.md)).
 
 The source is `inputs/pixal3d_raw.ply` (the vertex-coloured dense mesh `trellis-cli` writes beside its `.glb`), else `inputs/pixal3d_raw.glb` with its base-colour texture; `--source` picks another file. The bake
 
