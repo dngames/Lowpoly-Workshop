@@ -78,6 +78,38 @@ Estimated image normals compared with mesh normals may help flag invented geomet
 an optional, fallible review aid: stylized paint and image inference can disagree with a correct
 mesh. Do not automatically remodel or reject an asset from this signal.
 
+## Character turnaround trial: what the image can and cannot provide
+
+A local low-memory test generated a front/side/back character sheet from a single game-art
+reference. The sheet preserved several design cues and suggested a plausible rear view, but
+invented unseen details and did not keep every accessory in every view. Treat these views as
+design proposals, not recovered geometry or proof of multi-view consistency. Check the model
+and adapter licences for the intended use.
+
+An adaptation of an existing animated archer showed why visual and technical checks must be
+separate. The model retained the existing rig, clips and sockets and stayed within its triangle
+budget, but neither a tiled generated material swatch nor a direct turnaround projection met
+the target appearance. Tiling exaggerated patterns; projecting an illustration made for a
+different silhouette and pose placed the quiver on the cloak and produced seams, skin errors and
+painted-in lighting. The corrected candidate still had visible seams and was not installed or
+validated in the game. Reusing a mesh tests adaptation, not reconstruction from an image.
+
+For the next iteration, establish the player-facing camera first (the character's back may be
+the dominant view), compare the actual export to the reference at that scale and close up, and
+model the major silhouette and attachments before painting. Give a cloak a continuous, suitably
+sized UV region where practical; verify UV overlap, distortion and padding in a checker view.
+Use part and visibility masks to keep skin, cloth and equipment separate; remove occluded or
+painted-on accessories from the source before transferring color. A quiver that moves with the
+character needs real geometry, UVs and rig weights, with its deformation checked in the target
+runtime. Inspect both the chosen game view and independent views after each repair. Generated
+material samples can inform paint, but are not a registered UV atlas; measure whether their
+actual detail survives the export and runtime at the intended texture resolution.
+
+This is one exploratory character test, not a measured ranking of models or a general quality
+claim. The Workshop does not automatically reconstruct a character or paint a production atlas
+from a turnaround; the projection workflow described above remains guidance, not a built-in
+image-generation or painting feature.
+
 ## Source and scope
 
 These workflow ideas were informed by [Trompe](https://github.com/Patch-gg/trompe), reviewed at
@@ -86,3 +118,4 @@ and independent-view experiments. Our coverage implementation uses the kit's exi
 rasterizer and geometry; no external source code, image models or service dependency is imported.
 The original experiment is small; its model rankings and scene-specific thresholds are not
 universal acceptance rules for this kit.
+
