@@ -194,4 +194,6 @@ lowpoly ASSET pixal3d decimate --source inputs/rodin_raw.glb --no-rotate-front -
 lowpoly ASSET pixal3d bake --source inputs/rodin_raw.glb --source-front +z
 ```
 
-`--no-rotate-front` and `--source-front +z` are the only orientation changes. The bake's fit measurements in section 5 are from Pixal3D output; Rodin output has not been measured, so check `fit.silhouette_iou` in `bake.json` before relying on it.
+`--no-rotate-front` and `--source-front +z` are the only orientation changes. Rodin's GLB lists its normal map before the base colour, so the bake follows each material's `baseColorTexture` instead of taking the first image.
+
+Measured once on the Station Rest House front view (base endpoint, seed 42, one run of under ten minutes, $0.40 listed): the result is a 40,446-triangle PBR mesh with 2048² textures, 1.89 m wide, with the front gable, two window rows, porch benches and side chimney matching the design sheet. Baked at `--size 1024` onto LOD1–far, silhouette IoU was 0.842 (Pixal3D: 0.85) and 51–54 % of texels were hit from outside (Pixal3D: 78–87 %). The share is lower because the source has 40 thousand triangles, not 15 million; the missing texels take the nearest generated colour, so the bake is softer. Facade shifts reached 22 cm. The bake of all four LODs took seconds, not 38 minutes. One asset and one seed is not a quality benchmark.

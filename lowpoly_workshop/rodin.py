@@ -130,6 +130,8 @@ def _http_json(url, key, body=None, method=None, request=None, timeout=120):
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")[:2000]
         raise RuntimeError(f"fal {req.get_method()} {url} failed ({e.code}): {detail}") from None
+    except (urllib.error.URLError, OSError) as e:
+        raise RuntimeError(f"fal {req.get_method()} {url} failed: {getattr(e, 'reason', e)}") from None
 
 
 def upload(path, key, request=None):
@@ -148,6 +150,9 @@ def upload(path, key, request=None):
             response.read()
     except urllib.error.HTTPError as e:
         raise RuntimeError(f"fal CDN upload of {path.name} failed ({e.code})") from None
+    except (urllib.error.URLError, OSError) as e:
+        host = urllib.parse.urlsplit(reply["upload_url"]).hostname
+        raise RuntimeError(f"fal CDN upload to {host} failed: {getattr(e, 'reason', e)}") from None
     return reply["file_url"]
 
 
@@ -184,8 +189,11 @@ def download(url, dest, request=None, timeout=300):
     if urllib.parse.urlsplit(url).scheme != "https":
         raise ValueError(f"Refusing non-HTTPS download {url}")
     req = urllib.request.Request(url, headers={"Accept": "*/*"})
-    with (request or urllib.request.urlopen)(req, timeout=timeout) as response:
-        Path(dest).write_bytes(response.read())
+    try:
+        with (request or urllib.request.urlopen)(req, timeout=timeout) as response:
+            Path(dest).write_bytes(response.read())
+    except (urllib.error.URLError, OSError) as e:
+        raise RuntimeError(f"download of {url} failed: {getattr(e, 'reason', e)}") from None
 
 
 def cache_key(endpoint, payload, field, digests):

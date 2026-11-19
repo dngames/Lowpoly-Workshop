@@ -57,6 +57,19 @@ def _read_ply(path):
     return p, v["c"].astype(np.float64) / 255.0, fc["i"].astype(np.int64)
 
 
+def base_colour_image(js, prim):
+    """Index of the image holding the primitive's base colour: its material's baseColorTexture, else the
+    first image. Generated PBR files list the normal map first, so the first image is not always colour."""
+    mat = js.get("materials", [])
+    mat = mat[prim["material"]] if "material" in prim and prim["material"] < len(mat) else {}
+    ref = mat.get("pbrMetallicRoughness", {}).get("baseColorTexture")
+    if ref is not None:
+        tex = js.get("textures", [])
+        if ref.get("index", -1) < len(tex) and "source" in tex[ref["index"]]:
+            return tex[ref["index"]]["source"]
+    return 0
+
+
 def _read_glb(path, front="-z"):
     """Positions, texture colours and triangles of every mesh primitive, face centres included.
     `front` is the generated model's facing axis: Pixal3D faces -Z; a GLB that already faces +Z is kept."""
@@ -65,7 +78,15 @@ def _read_glb(path, front="-z"):
     g = Glb(path)
     world = g.world(g.sample())
     images = g.images()
-    tex = np.asarray(images[0].convert("RGB"), np.float64) / 255.0 if images else None
+    decoded = {}
+
+    def texture(i):
+        if i >= len(images):
+            return None
+        if i not in decoded:
+            decoded[i] = np.asarray(images[i].convert("RGB"), np.float64) / 255.0
+        return decoded[i]
+
     pts, cols, faces, base = [], [], [], 0
     for i, node in enumerate(g.nodes):
         if "mesh" not in node:
@@ -78,7 +99,8 @@ def _read_glb(path, front="-z"):
             if "COLOR_0" in attrs:
                 c = g.acc(attrs["COLOR_0"]).astype(np.float64)[:, :3]
                 c = c / 255.0 if c.max() > 1.0 else c
-            elif tex is not None and "TEXCOORD_0" in attrs:
+            elif texture(base_colour_image(g.js, prim)) is not None and "TEXCOORD_0" in attrs:
+                tex = texture(base_colour_image(g.js, prim))
                 uv = g.acc(attrs["TEXCOORD_0"]).astype(np.float64)
                 h, w = tex.shape[:2]
                 c = tex[np.clip((uv[:, 1] % 1.0 * h).astype(int), 0, h - 1),

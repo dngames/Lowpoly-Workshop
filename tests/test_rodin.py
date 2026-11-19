@@ -258,6 +258,18 @@ class GeneratedSourceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             pixal3d_bake.load_source(path, "+x")
 
+    def test_base_colour_image_skips_the_normal_map(self):
+        from lowpoly_workshop.pixal3d_bake import base_colour_image
+        rodin_like = {"materials": [{"normalTexture": {"index": 0},
+                                     "pbrMetallicRoughness": {"baseColorTexture": {"index": 1},
+                                                              "metallicRoughnessTexture": {"index": 2}}}],
+                      "textures": [{"source": 0}, {"source": 1}, {"source": 2}]}
+        self.assertEqual(base_colour_image(rodin_like, {"material": 0}), 1)
+        remapped = dict(rodin_like, textures=[{"source": 2}, {"source": 0}, {"source": 1}])
+        self.assertEqual(base_colour_image(remapped, {"material": 0}), 0)
+        self.assertEqual(base_colour_image({}, {}), 0, "no material information keeps the first image")
+        self.assertEqual(base_colour_image(rodin_like, {}), 0)
+
     def test_decimate_script_reads_another_generated_glb(self):
         from lowpoly_workshop import pixal3d
         other = self.asset / "inputs" / "rodin_raw.glb"
