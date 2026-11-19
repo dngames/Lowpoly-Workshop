@@ -161,3 +161,37 @@ It writes, per output, `out/pixal3d_bake/<output>_bake.png` and `<output>_baked.
 The alignment moves whole columns and rows, so it cannot fix a wall whose authored window count differs from the generated one. Model the LODs to the generated shape: authored detail that the generated mesh also shows (window frames, posts) appears twice, once as geometry and once in the texture, so flat walls work best on a baked LOD.
 
 Measured on the Station Rest House (i7-8850H, sharing the CPU with a `trellis-cli` run), from the 15 M-triangle `.ply` at `--size 1024`: silhouette IoU 0.85, 78–87 % of texels hit from outside, facade shifts of up to 21 cm, 38 min for all four LODs at 6.3 GiB peak. Texel density falls with polygon count — 26 texels/m on the 44-triangle far LOD, 18 on LOD2 (1,400), 13 on LOD1 (6,448), 7 on LOD0 (39,524). At 7 texels/m LOD0 bakes soft, with most trims and bevels below one texel wide; bake only the low LODs, or raise `--size`.
+
+## 6. Hosted alternative: Hyper3D Rodin through fal.ai
+
+`pixal3d run` takes 1.5–3 days on a laptop CPU. To skip that, `lowpoly ASSET rodin run` sends the same prepared cutout to Hyper3D Rodin on [fal.ai](https://fal.ai) and writes the result to `inputs/rodin_raw.glb`. It is optional: nothing else calls it, and `build`, `check` and `all` never make a paid request.
+
+fal lists $0.40 per generation for the base and v2.5 endpoints, and $0.80 more with the `HighPack` add-on (checked 2026-11-19; the price page is the authority). Set the key locally; never put it in `asset.json`:
+
+```sh
+export FAL_KEY=...
+lowpoly ASSET rodin run --dry-run          # prints the exact request, sends nothing, needs no key
+lowpoly ASSET rodin run --seed 42          # one paid generation
+lowpoly ASSET rodin status
+```
+
+The run prepares the inputs like `pixal3d prep`, uploads them to fal's CDN (`--inline` sends data URIs instead; fal advises against that above a few KB), submits one job to the queue API, polls until it finishes and downloads the GLB. Options:
+
+- `--endpoint fal-ai/hyper3d/rodin` (default), `.../rodin/v2` or `.../rodin/v2.5`, also `LOWPOLY_RODIN_ENDPOINT`. They name the image input differently (`input_image_urls`, `image_urls`); an endpoint not on that list needs `--image-field`.
+- `--seed`, `--quality`, `--material`, `--tier`, and `--param KEY=VALUE` for anything else (values parse as JSON, so `--param TAPose=false` or `--param quality_mesh_option='"50K Triangle"'`). Only options you pass are sent. `--mode mv` sends the four views, with `condition_mode=concat` on the base endpoint only.
+- `--image-url URL` skips the upload and passes an HTTPS image you host.
+
+Behaviour worth knowing:
+
+- **Cost safety.** A submitted job is stored in `inputs/rodin_pending.json`. If the wait times out (`--timeout`, default 1800 s) or is interrupted, running the same command again resumes that request and does not submit or pay for another. Identical inputs and parameters with an existing result are a cache hit, with no request. Different parameters while a request is pending stop with an error until you pass `--force`.
+- **Key handling.** The key goes only to fal's API hosts. It is never sent to the signed upload URL or the media CDN, and is never written to `inputs/rodin_meta.json`. The record stores the SHA-256 of each input image, the request id, the seed fal returns and the full result, and marks the output `inferred` with `review_status: pending`, like the generated reference views.
+- **Privacy and licence.** Uploaded images are public to anyone holding the URL, and fal passes them to Hyper3D. Do not use confidential references. Check Hyper3D's and fal's terms for commercial use of the output before shipping it.
+
+Rodin returns a GLB that already faces +Z, unlike Pixal3D's −Z. Use it with the later steps like this:
+
+```sh
+lowpoly ASSET pixal3d decimate --source inputs/rodin_raw.glb --no-rotate-front --budget 1500 --height 1.0
+lowpoly ASSET pixal3d bake --source inputs/rodin_raw.glb --source-front +z
+```
+
+`--no-rotate-front` and `--source-front +z` are the only orientation changes. The bake's fit measurements in section 5 are from Pixal3D output; Rodin output has not been measured, so check `fit.silhouette_iou` in `bake.json` before relying on it.

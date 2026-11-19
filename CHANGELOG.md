@@ -8,6 +8,8 @@
 
 ## Unreleased
 
+`lowpoly ASSET rodin run` generates the initial mesh with Hyper3D Rodin through fal.ai instead of a local `trellis-cli` run: one paid request per run, resumable after a timeout, cached by input hash, key never recorded — see docs/pixal3d.md. `pixal3d decimate --source` and `pixal3d bake --source-front +z` take generated GLBs that already face +Z.
+
 `lowpoly ASSET pixal3d bake` bakes a Pixal3D generation's colours onto the asset's hand-built LODs — see docs/pixal3d.md. It lines up each wall's posts and windows with the authored ones first (`--no-align` to skip).
 
 `pixal3d run` no longer passes `--decim 50000` by default, so generated meshes are simplified to 1M faces instead of staying at ≈ 25 M triangles — see docs/pixal3d.md.

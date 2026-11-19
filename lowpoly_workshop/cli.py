@@ -29,8 +29,10 @@ def dispatch(args):
   lowpoly ASSET references import JOB_ID IMAGE
   lowpoly ASSET coverage [SET] [--size 256] [--budget 4]
   lowpoly ASSET paint | pieces | shell-lods
-  lowpoly ASSET pixal3d status | prep | run | mcp-script | decimate
-  lowpoly ASSET pixal3d bake [--source PLY_OR_GLB] [--variant V ...] [--fit-variant V] [--size 1024] [--no-align]
+  lowpoly ASSET pixal3d status | prep | run | mcp-script | decimate [--source GLB]
+  lowpoly ASSET pixal3d bake [--source PLY_OR_GLB] [--source-front -z|+z] [--variant V ...] [--fit-variant V] [--size 1024] [--no-align]
+  lowpoly ASSET rodin status
+  lowpoly ASSET rodin run [--mode sv|mv] [--endpoint E] [--seed N] [--quality Q] [--material M] [--tier T] [--param K=V ...] [--image-url URL ...] [--inline] [--dry-run] [--force]
   lowpoly ASSET fit all --grid | render views | render show | compose
 """);return
     if args[0]=="--version":print(__version__);return
@@ -143,16 +145,32 @@ def dispatch(args):
             parser=argparse.ArgumentParser();parser.add_argument("--mode",choices=("sv","mv"),default="sv");parser.add_argument("--view",default="front");parser.add_argument("--set",dest="set_name",default=None);parser.add_argument("--threads",type=int,default=None);parser.add_argument("--gpu",type=int,default=-1);parser.add_argument("--seed",type=int,default=42);parser.add_argument("--decim",type=int,default=None);parser.add_argument("--atlas",type=int,default=1024);parser.add_argument("--fov",type=float,default=pixal3d.DEFAULT_SV_FOV);parser.add_argument("--force",action="store_true")
             ns=parser.parse_args(args[3:]);meta_path,_=pixal3d.run_pixal3d(folder,ns.mode,ns.view,ns.set_name,ns.threads,ns.gpu,ns.seed,ns.decim,ns.atlas,ns.fov,ns.force);print(meta_path);return
         if action in ("mcp-script","decimate"):
-            parser=argparse.ArgumentParser();parser.add_argument("--budget",type=int,default=None);parser.add_argument("--height",type=float,default=None);parser.add_argument("--node",default=None);parser.add_argument("--no-ground",action="store_true");parser.add_argument("--no-rotate-front",action="store_true")
+            parser=argparse.ArgumentParser();parser.add_argument("--budget",type=int,default=None);parser.add_argument("--height",type=float,default=None);parser.add_argument("--node",default=None);parser.add_argument("--no-ground",action="store_true");parser.add_argument("--no-rotate-front",action="store_true");parser.add_argument("--source",default=None)
             ns=parser.parse_args(args[3:]);ground=False if ns.no_ground else None
             if action=="mcp-script":
-                print(pixal3d.blender_mcp_decimate_code(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front));return
-            print(pixal3d.decimate_with_blender(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front));return
+                print(pixal3d.blender_mcp_decimate_code(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front,source=ns.source));return
+            print(pixal3d.decimate_with_blender(folder,ns.budget,ns.height,ns.node,ground,not ns.no_rotate_front,source=ns.source));return
         if action=="bake":
             from .pixal3d_bake import bake_lods
-            parser=argparse.ArgumentParser();parser.add_argument("--source",default=None);parser.add_argument("--variant",nargs="+",default=None);parser.add_argument("--fit-variant",default=None);parser.add_argument("--size",type=int,default=1024);parser.add_argument("--no-align",action="store_true")
-            ns=parser.parse_args(args[3:]);print(bake_lods(folder,ns.source,ns.variant,ns.fit_variant,ns.size,not ns.no_align));return
+            parser=argparse.ArgumentParser();parser.add_argument("--source",default=None);parser.add_argument("--variant",nargs="+",default=None);parser.add_argument("--fit-variant",default=None);parser.add_argument("--size",type=int,default=1024);parser.add_argument("--no-align",action="store_true");parser.add_argument("--source-front",choices=("-z","+z"),default="-z")
+            ns=parser.parse_args(args[3:]);print(bake_lods(folder,ns.source,ns.variant,ns.fit_variant,ns.size,not ns.no_align,ns.source_front));return
         raise ValueError("Unknown pixal3d action: "+action)
+    if command=="rodin":
+        from . import rodin
+        action=args[2] if len(args)>2 else "status"
+        if action=="status":
+            print(json.dumps(rodin.status(folder),indent=2));return
+        if action=="run":
+            parser=argparse.ArgumentParser(prog="lowpoly ASSET rodin run");parser.add_argument("--mode",choices=("sv","mv"),default="sv");parser.add_argument("--view",default="front");parser.add_argument("--set",dest="set_name",default=None)
+            parser.add_argument("--endpoint",default=None);parser.add_argument("--image-field",default=None);parser.add_argument("--seed",type=int,default=None);parser.add_argument("--quality",default=None);parser.add_argument("--material",default=None);parser.add_argument("--tier",default=None)
+            parser.add_argument("--param",action="append",default=[],metavar="KEY=VALUE");parser.add_argument("--image-url",action="append",default=[]);parser.add_argument("--timeout",type=float,default=1800);parser.add_argument("--inline",action="store_true");parser.add_argument("--dry-run",action="store_true");parser.add_argument("--force",action="store_true")
+            ns=parser.parse_args(args[3:])
+            try:
+                out=rodin.run_rodin(folder,ns.mode,ns.view,ns.set_name,ns.endpoint,ns.image_field,ns.seed,ns.quality,ns.material,ns.tier,rodin.parse_params(ns.param),ns.image_url,ns.force,ns.dry_run,ns.timeout,inline=ns.inline)
+            except (TimeoutError,RuntimeError) as e:
+                print("ERROR:",e,file=sys.stderr);raise SystemExit(3)
+            print(json.dumps(out,indent=2) if ns.dry_run else out[0]);return
+        raise ValueError("Unknown rodin action: "+action)
     if command=="review":pipeline.blender("review.py",folder);return
     if command=="skin":pipeline.blender("skin_export.py",folder);return
     if command=="all":

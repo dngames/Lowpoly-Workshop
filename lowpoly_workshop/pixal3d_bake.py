@@ -57,8 +57,11 @@ def _read_ply(path):
     return p, v["c"].astype(np.float64) / 255.0, fc["i"].astype(np.int64)
 
 
-def _read_glb(path):
-    """Positions, texture colours and triangles of every mesh primitive, face centres included."""
+def _read_glb(path, front="-z"):
+    """Positions, texture colours and triangles of every mesh primitive, face centres included.
+    `front` is the generated model's facing axis: Pixal3D faces -Z; a GLB that already faces +Z is kept."""
+    if front not in ("-z", "+z"):
+        raise ValueError("source front must be '-z' or '+z'")
     g = Glb(path)
     world = g.world(g.sample())
     images = g.images()
@@ -89,14 +92,15 @@ def _read_glb(path):
     if not pts:
         raise ValueError(f"No mesh in {path}")
     p, c, f = np.concatenate(pts), np.concatenate(cols), np.concatenate(faces)
-    p = np.stack([-p[:, 0], p[:, 1], -p[:, 2]], axis=1)  # Pixal3D glTF faces -Z; Workshop faces +Z
+    if front == "-z":
+        p = np.stack([-p[:, 0], p[:, 1], -p[:, 2]], axis=1)  # Pixal3D glTF faces -Z; Workshop faces +Z
     return p, c, f
 
 
-def load_source(path):
+def load_source(path, front="-z"):
     """(points, colours 0..1, unit normals) of the generated surface in Workshop's frame."""
     path = Path(path)
-    p, c, f = _read_ply(path) if path.suffix.lower() == ".ply" else _read_glb(path)
+    p, c, f = _read_ply(path) if path.suffix.lower() == ".ply" else _read_glb(path, front)
     fn = np.cross(p[f[:, 1]] - p[f[:, 0]], p[f[:, 2]] - p[f[:, 0]])
     vn = np.zeros_like(p)
     for k in range(3):
@@ -548,7 +552,7 @@ def _preview(path, baker, lods, size=360):
         sheet.save(tmp, format="PNG")
 
 
-def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, align=True):
+def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, align=True, source_front="-z"):
     """Bake the generated colours onto the asset's outputs; returns the path of the bake record."""
     import io
     import time
@@ -573,7 +577,7 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, a
         o = by_variant[variant]
         return lod_polygons(a.build(o.get("variant"), o.get("scale", 1.0)))
 
-    dense = load_source(src)
+    dense = load_source(src, source_front)
     ref = str(fit_variant) if fit_variant is not None else chosen[0]
     to_lod, fit_record = fit(dense[0], polys_of(ref))
     print("PIXAL3D bake fit on variant %s: scale %s offset %s silhouette IoU %.3f" % (
@@ -582,7 +586,7 @@ def bake_lods(folder, source=None, variants=None, fit_variant=None, size=1024, a
     del dense
     out_dir = Path(a.out("pixal3d_bake", "bake.json")).parent
     record = {"source": src.as_posix(), "source_sha256": file_sha256(src), "fit_variant": ref,
-              "fit": fit_record, "size": int(size), "outputs": []}
+              "source_front": source_front, "fit": fit_record, "size": int(size), "outputs": []}
     previews = []
     for variant in chosen:
         polys = polys_of(variant)

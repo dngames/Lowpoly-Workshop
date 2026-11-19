@@ -507,6 +507,7 @@ def blender_mcp_decimate_code(
     rotate_front=True,
     planar_deg=3.0,
     weld_dist=1e-4,
+    source=None,
 ):
     """Return deterministic Blender Python code for `tools.blender.execute_blender_code`.
 
@@ -514,6 +515,7 @@ def blender_mcp_decimate_code(
     Workshop's +Z glTF front, welds close vertices, reduces polycount to `budget` via
     Blender's UV-preserving Collapse Decimate modifier, normalizes metric height and
     ground contact, and writes `inputs/pixal3d_lowpoly.glb` + `inputs/pixal3d_atlas.png`.
+    `source` reads another generated GLB (for example `inputs/rodin_raw.glb`) instead.
     """
     folder = Path(folder).resolve()
     defaults = default_target_params(folder, budget=budget, height=height, node_name=node_name)
@@ -522,7 +524,7 @@ def blender_mcp_decimate_code(
     target_node = defaults["node_name"]
     do_ground = defaults["ground"] if ground is None else bool(ground)
 
-    raw_glb = local_path(folder, "inputs/pixal3d_raw.glb")
+    raw_glb = Path(source).resolve() if source else local_path(folder, "inputs/pixal3d_raw.glb")
     low_glb = local_path(folder, "inputs/pixal3d_lowpoly.glb")
     atlas_png = local_path(folder, "inputs/pixal3d_atlas.png")
     report_json = local_path(folder, "inputs/pixal3d_lowpoly.json")
@@ -718,7 +720,8 @@ print("DECIMATED", low_path.name, f"{{raw_tris}} -> {{final_tris}} tris (budget 
 """
 
 
-def decimate_with_blender(folder, budget=None, height=None, node_name=None, ground=None, rotate_front=True):
+def decimate_with_blender(folder, budget=None, height=None, node_name=None, ground=None, rotate_front=True,
+                          source=None):
     """Run the Blender decimation step via Workshop's headless Blender launcher."""
     from .pipeline import blender
     folder = Path(folder).resolve()
@@ -732,6 +735,7 @@ def decimate_with_blender(folder, budget=None, height=None, node_name=None, grou
         str(defaults["node_name"]),
         "1" if do_ground else "0",
         "1" if rotate_front else "0",
+        str(Path(source).resolve()) if source else "",
     )
     return local_path(folder, "inputs/pixal3d_lowpoly.glb")
 
